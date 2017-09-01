@@ -1,0 +1,6 @@
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
+import(RcppParallel)
+import(Biostrings)
+import(ape)
+useDynLib(distIUPAC)
