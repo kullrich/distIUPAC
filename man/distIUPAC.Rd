@@ -8,11 +8,12 @@ distIUPAC()
 }
 \examples{
 data("MySequences", package = "distDNA")
-ditsIUPAC(MySequences$dna)
+distIUPAC(as.character(MySequences$dna))
+distIUPAC(as.character(MySequences$iupac))
 }
 \author{
 Kristian K Ullrich
 }
 \seealso{
-\link[ape]{dist.dna}
+\link[distIUPAC]{distIUPACmatrix}, \link[ape]{dist.dna}
 }

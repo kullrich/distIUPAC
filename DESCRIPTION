@@ -15,4 +15,4 @@ Depends:
  Biostrings (>= 2.40.2),
  ape (>= 4.1)
 LinkingTo: Rcpp
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

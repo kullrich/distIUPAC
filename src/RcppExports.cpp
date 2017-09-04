@@ -16,9 +16,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// distIUPACmatrix
+Rcpp::NumericMatrix distIUPACmatrix(Rcpp::StringVector myvector, Rcpp::NumericMatrix scoreMatrix);
+RcppExport SEXP _distIUPAC_distIUPACmatrix(SEXP myvectorSEXP, SEXP scoreMatrixSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::StringVector >::type myvector(myvectorSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type scoreMatrix(scoreMatrixSEXP);
+    rcpp_result_gen = Rcpp::wrap(distIUPACmatrix(myvector, scoreMatrix));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_distIUPAC_distIUPAC", (DL_FUNC) &_distIUPAC_distIUPAC, 1},
+    {"_distIUPAC_distIUPACmatrix", (DL_FUNC) &_distIUPAC_distIUPACmatrix, 2},
     {NULL, NULL, 0}
 };
 

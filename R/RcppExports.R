@@ -2,8 +2,14 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #' @export distIUPAC
-#' @author Kristian K Ullrich <ullrich@evolbio.mpg.de>
+#' @author Kristian K Ullrich
 distIUPAC <- function(myvector) {
     .Call('_distIUPAC_distIUPAC', PACKAGE = 'distIUPAC', myvector)
+}
+
+#' @export distIUPACmatrix
+#' @author Kristian K Ullrich
+distIUPACmatrix <- function(myvector, scoreMatrix) {
+    .Call('_distIUPAC_distIUPACmatrix', PACKAGE = 'distIUPAC', myvector, scoreMatrix)
 }
 
