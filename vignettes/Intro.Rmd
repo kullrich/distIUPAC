@@ -46,3 +46,9 @@ Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr*
 
 ## References
 
+Korneliussen TS, Albrechtsen A and Nielsen R. __ANGSD: Analysis of Next Generation Sequencing Data.__ _BMC Bioinformatics_ (2014) _15_:356 [https://doi.org/10.1186/s12859-014-0356-4](https://doi.org/10.1186/s12859-014-0356-4)
+
+Paradis E, Claude J, Strimmer K. __APE: Analyses of Phylogenetics and Evolution in R language.__ _Bioinformatics_ (2004) _2_:289 [https://doi.org/10.1093/bioinformatics/btg412](https://doi.org/10.1093/bioinformatics/btg412)
+
+Sedlazeck FJ, Rescheneder P, von Haeseler A. __NextGenMap: fast and accurate read mapping in highly polymorphic genomes.__ _Bioinformatics_ (2013) _21_:2790 [https://doi.org/10.1093/bioinformatics/btt468](https://doi.org/10.1093/bioinformatics/btt468)
+
