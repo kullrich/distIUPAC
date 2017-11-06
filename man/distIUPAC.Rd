@@ -7,7 +7,7 @@ distIUPAC()
 \description{
 }
 \examples{
-data("MySequences", package = "distDNA")
+data("MySequences", package = "distIUPAC")
 distIUPAC(as.character(MySequences$dna))
 distIUPAC(as.character(MySequences$iupac))
 }

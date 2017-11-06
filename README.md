@@ -34,9 +34,37 @@ During the installation process following R packages will be installed as depend
 
 ### Vignettes
 
+These vignettes introduce `distIUPAC`
+
+- [distIUPAC Intro]()
+- [distIUPAC to bionjs trees]()
+
 ### Quick-guide
 
+```
+library(distIUPAC)
+
+#browse vignettes
+browseVignettes(distIUPAC)
+
+#load IUPAC encoded nucleotide sequences with Biostrings
+#change path to your input file
+input.fasta <- paste0(find.package("distIUPAC"),"/data/seqIUPAC.fasta")
+MySequences <- readBStringSet(input.fasta)
+MySequences
+
+#get IUPAC distances using a pre-defined distance matrix
+distIUPAC(as.character(MySequences))
+
+#get IUPAC distance using your own distance matrix
+MyScoreMatrix <- scoreMatrix()
+MyScoreMatrix["C","Y"] <- 1.0
+distIUPACmatrix(as.character(MySequences), MyScoreMatrix)
+```
+
 ### License
+
+MIT (see LICENSE)
 
 ### Bug reports
 

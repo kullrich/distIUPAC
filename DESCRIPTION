@@ -5,7 +5,8 @@ Version: 0.1.0
 Author: Kristian K Ullrich
 Maintainer: Kristian K Ullrich <ullrich@evolbio.mpg.de>
 Description: calculates IUPAC distances on Biostrings DNAStringSet and BStringSet objects
-License: What license is it under?
+License: MIT + LICENSE
+NeedsCompilation: yes
 Encoding: UTF-8
 LazyData: true
 Imports:
