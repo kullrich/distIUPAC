@@ -5,7 +5,7 @@ using namespace Rcpp;
 //' @export distIUPAC
 //' @author Kristian K Ullrich
 // [[Rcpp::export]]
-Rcpp::NumericMatrix distIUPAC( Rcpp::StringVector myvector ) {
+Rcpp::List distIUPAC( Rcpp::StringVector myvector ) {
   std::map<std::string, double> iupac_dist;
   iupac_dist["AA"]=0.0;iupac_dist["AC"]=1.0;iupac_dist["AG"]=1.0;iupac_dist["AT"]=1.0;iupac_dist["AR"]=0.5;iupac_dist["AY"]=1.0;iupac_dist["AS"]=1.0;iupac_dist["AW"]=0.5;iupac_dist["AK"]=1.0;iupac_dist["AM"]=0.5;iupac_dist["AB"]=-1.0;iupac_dist["AD"]=-1.0;iupac_dist["AH"]=-1.0;iupac_dist["AV"]=-1.0;iupac_dist["A."]=-1.0;iupac_dist["A-"]=-1.0;iupac_dist["AN"]=-1.0;iupac_dist["AX"]=-1.0;
   iupac_dist["CA"]=1.0;iupac_dist["CC"]=0.0;iupac_dist["CG"]=1.0;iupac_dist["CT"]=1.0;iupac_dist["CR"]=1.0;iupac_dist["CY"]=0.5;iupac_dist["CS"]=0.5;iupac_dist["CW"]=1.0;iupac_dist["CK"]=1.0;iupac_dist["CM"]=0.5;iupac_dist["CB"]=-1.0;iupac_dist["CD"]=-1.0;iupac_dist["CH"]=-1.0;iupac_dist["CV"]=-1.0;iupac_dist["C."]=-1.0;iupac_dist["C-"]=-1.0;iupac_dist["CN"]=-1.0;iupac_dist["CX"]=-1.0;
@@ -27,9 +27,17 @@ Rcpp::NumericMatrix distIUPAC( Rcpp::StringVector myvector ) {
   iupac_dist["XA"]=-1.0;iupac_dist["XC"]=-1.0;iupac_dist["XG"]=-1.0;iupac_dist["XT"]=-1.0;iupac_dist["XR"]=-1.0;iupac_dist["XY"]=-1.0;iupac_dist["XS"]=-1.0;iupac_dist["XW"]=-1.0;iupac_dist["XK"]=-1.0;iupac_dist["XM"]=-1.0;iupac_dist["XB"]=-1.0;iupac_dist["XD"]=-1.0;iupac_dist["XH"]=-1.0;iupac_dist["XV"]=-1.0;iupac_dist["X."]=-1.0;iupac_dist["X-"]=-1.0;iupac_dist["XN"]=-1.0;iupac_dist["XX"]=-1.0;
   int n = myvector.size();
   Rcpp::NumericMatrix distMatrix(n, n);
+  CharacterVector myvectornames = myvector.attr("names");
+  colnames(distMatrix) = myvectornames;
+  rownames(distMatrix) = myvectornames;
+  Rcpp::NumericMatrix sitesMatrix(n, n);
+  colnames(sitesMatrix) = myvectornames;
+  rownames(sitesMatrix) = myvectornames;
   int nsites = myvector[1].size();
   for( int i=0; i < n - 1; i++ ){
+    sitesMatrix(i,i) = nsites;
     for( int j=1; j < n; j++ ){
+      sitesMatrix(j,j) = nsites;
       double eqnum = 0;
       int ij_n = nsites;
       for( int s=0; s < nsites; s++){
@@ -46,8 +54,10 @@ Rcpp::NumericMatrix distIUPAC( Rcpp::StringVector myvector ) {
         };
         distMatrix(i,j) = eqnum / ij_n;
         distMatrix(j,i) = eqnum / ij_n;
+        sitesMatrix(i,j) = ij_n;
+        sitesMatrix(j,i) = ij_n;
       }
     }
   }
-  return distMatrix;
+  return Rcpp::List::create(Rcpp::Named("distIUPAC") = distMatrix, Rcpp::Named("sitesUsed") = sitesMatrix);
 }

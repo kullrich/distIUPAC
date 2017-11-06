@@ -5,7 +5,7 @@ using namespace Rcpp;
 //' @export distIUPACmatrix
 //' @author Kristian K Ullrich
 // [[Rcpp::export]]
-Rcpp::NumericMatrix distIUPACmatrix( Rcpp::StringVector myvector, Rcpp::NumericMatrix scoreMatrix ) {
+Rcpp::List distIUPACmatrix( Rcpp::StringVector myvector, Rcpp::NumericMatrix scoreMatrix ) {
   std::map<std::string, double> iupac_dist;
   int nCols = scoreMatrix.ncol();
   int nRows = scoreMatrix.nrow();
@@ -22,9 +22,17 @@ Rcpp::NumericMatrix distIUPACmatrix( Rcpp::StringVector myvector, Rcpp::NumericM
   }
   int n = myvector.size();
   Rcpp::NumericMatrix distMatrix(n, n);
+  CharacterVector myvectornames = myvector.attr("names");
+  colnames(distMatrix) = myvectornames;
+  rownames(distMatrix) = myvectornames;
+  Rcpp::NumericMatrix sitesMatrix(n, n);
+  colnames(sitesMatrix) = myvectornames;
+  rownames(sitesMatrix) = myvectornames;
   int nsites = myvector[1].size();
   for( int i=0; i < n - 1; i++ ){
+    sitesMatrix(i,i) = nsites;
     for( int j=1; j < n; j++ ){
+      sitesMatrix(j,j) = nsites;
       double eqnum = 0;
       int ij_n = nsites;
       for( int s=0; s < nsites; s++){
@@ -41,8 +49,10 @@ Rcpp::NumericMatrix distIUPACmatrix( Rcpp::StringVector myvector, Rcpp::NumericM
         };
         distMatrix(i,j) = eqnum / ij_n;
         distMatrix(j,i) = eqnum / ij_n;
+        sitesMatrix(i,j) = ij_n;
+        sitesMatrix(j,i) = ij_n;
       }
     }
   }
-  return distMatrix;
+  return Rcpp::List::create(Rcpp::Named("distIUPAC") = distMatrix, Rcpp::Named("sitesUsed") = sitesMatrix);
 }

@@ -6,7 +6,7 @@
 using namespace Rcpp;
 
 // distIUPAC
-Rcpp::NumericMatrix distIUPAC(Rcpp::StringVector myvector);
+Rcpp::List distIUPAC(Rcpp::StringVector myvector);
 RcppExport SEXP _distIUPAC_distIUPAC(SEXP myvectorSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -17,7 +17,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // distIUPACmatrix
-Rcpp::NumericMatrix distIUPACmatrix(Rcpp::StringVector myvector, Rcpp::NumericMatrix scoreMatrix);
+Rcpp::List distIUPACmatrix(Rcpp::StringVector myvector, Rcpp::NumericMatrix scoreMatrix);
 RcppExport SEXP _distIUPAC_distIUPACmatrix(SEXP myvectorSEXP, SEXP scoreMatrixSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
