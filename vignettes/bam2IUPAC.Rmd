@@ -115,7 +115,7 @@ The following commands needs to be executed in __`R`__:
 
 ```
 library(distIUPAC)
-dna<-readBStringSet("chr1.fa")
+dna<-readDNAStringSet("chr1.fa")
 chr1.dist<-distIUPAC(as.character(subseq(dna,1,10000)))
 ```
 

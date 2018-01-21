@@ -309,7 +309,7 @@ for file in *.chr1.fa;do cat $file &gt;&gt; chr1.fa;done</code></pre>
 <h2>Calculating <strong><code>IUPAC distances</code></strong> for ‘chr1’ with <strong><code>distIUPAC</code></strong></h2>
 <p>The following commands needs to be executed in <strong><code>R</code></strong>:</p>
 <pre><code>library(distIUPAC)
-dna&lt;-readBStringSet(&quot;chr1.fa&quot;)
+dna&lt;-readDNAStringSet(&quot;chr1.fa&quot;)
 chr1.dist&lt;-distIUPAC(as.character(subseq(dna,1,10000)))</code></pre>
 </div>
 <div id="pre-requisites-installation---unix-based-systems-no-mac-os-x" class="section level2">
