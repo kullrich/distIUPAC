@@ -37,7 +37,10 @@ During the installation process following R packages will be installed as depend
 These vignettes introduce `distIUPAC`
 
 - [distIUPAC Intro]()
+- [distIUPAC bam2IUPAC]()
 - [distIUPAC to bionjs trees]()
+- [distIUPAC sliding windows analysis to genrate twisst input]()
+- [distIUPAC on GTF featues]()
 
 ### Quick-guide
 
