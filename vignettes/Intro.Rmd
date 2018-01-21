@@ -1,54 +1,22 @@
 ---
-title: "distIUPAC Intro"
+title: "00. distIUPAC Intro"
 author: "Kristian K Ullrich"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{00. distIUPAC Intro}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  %\usepackage[utf8]{inputenc}
 ---
-
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
-
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
-```
-
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
 
 ## References
 
 Korneliussen TS, Albrechtsen A and Nielsen R. __ANGSD: Analysis of Next Generation Sequencing Data.__ _BMC Bioinformatics_ (2014) _15_:356 [https://doi.org/10.1186/s12859-014-0356-4](https://doi.org/10.1186/s12859-014-0356-4)
 
+Li, H. & Durbin, R. __Fast and accurate short read alignment with Burrows-Wheeler transform.__ _Bioinformatics_ (2009) _25_:1754 [https://doi.org/10.1093/bioinformatics/btp324](https://doi.org/10.1093/bioinformatics/btp324)
+
 Paradis E, Claude J, Strimmer K. __APE: Analyses of Phylogenetics and Evolution in R language.__ _Bioinformatics_ (2004) _2_:289 [https://doi.org/10.1093/bioinformatics/btg412](https://doi.org/10.1093/bioinformatics/btg412)
 
-Sedlazeck FJ, Rescheneder P, von Haeseler A. __NextGenMap: fast and accurate read mapping in highly polymorphic genomes.__ _Bioinformatics_ (2013) _21_:2790 [https://doi.org/10.1093/bioinformatics/btt468](https://doi.org/10.1093/bioinformatics/btt468)
+__Picard tools__ [http://broadinstitute.github.io/picard](http://broadinstitute.github.io/picard)
 
+Sedlazeck FJ, Rescheneder P, von Haeseler A. __NextGenMap: fast and accurate read mapping in highly polymorphic genomes.__ _Bioinformatics_ (2013) _21_:2790 [https://doi.org/10.1093/bioinformatics/btt468](https://doi.org/10.1093/bioinformatics/btt468)

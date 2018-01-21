@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Kristian K Ullrich" />
+
+<meta name="date" content="2018-01-21" />
+
+<title>01. bam2IUPAC</title>
+
+
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">01. bam2IUPAC</h1>
+<h4 class="author"><em>Kristian K Ullrich</em></h4>
+<h4 class="date"><em>2018-01-21</em></h4>
+
+
+
+<p>In this vignette Users learn how to create <strong><code>IUPAC fasta format</code></strong> (<a href="https://www.bioinformatics.org/sms/iupac.html">IUPAC code</a>) files from <strong><code>reference mapped bam</code></strong> files which can be used with <a href="https://github.com/kullrich/distIUPAC">distIUPAC</a> to calculate <strong><code>IUPAC distances</code></strong>.</p>
+<div id="pre-requistes-for-obtaining-fasta-format-files-from-reference-mapped-bam-files" class="section level2">
+<h2>Pre-requistes for obtaining <strong>fasta</strong> format files from reference mapped <strong>bam</strong> files</h2>
+<p>The following external tools needs to be installed to be able to obtain IUPAC <strong>fasta</strong> format files:</p>
+<ol style="list-style-type: decimal">
+<li><strong><code>Genome mapper</code></strong> of your choice (e.g. <a href="http://bio-bwa.sourceforge.net/">bwa mem</a> or <a href="https://github.com/Cibiv/NextGenMap">NextGenMap</a>)</li>
+<li><strong><code>Picard tools</code></strong> for <strong><code>bam</code></strong> file sorting and de-duplication (<a href="http://broadinstitute.github.io/picard/">picard tools</a>)</li>
+<li><strong><code>angsd</code></strong> for <strong><code>IUPAC fasta format</code></strong> retrieval (<a href="https://github.com/ANGSD/angsd">angsd</a>)</li>
+</ol>
+<p>A manual how the pre-requisites needs to be installed is given at the end of this vignette.</p>
+</div>
+<div id="step-1-mapping-fastq-files-to-a-reference" class="section level2">
+<h2>STEP 1: Mapping <strong><code>fastq</code></strong> files to a <strong><code>reference</code></strong></h2>
+<div id="using-bwa-for-mapping" class="section level3">
+<h3>Using <strong><code>BWA</code></strong> for mapping:</h3>
+<p>The user needs to perform five steps:</p>
+<ol style="list-style-type: decimal">
+<li><strong><code>fastq</code></strong> files, prefernetially <strong><code>QC</code></strong> pre-processed (see <a href="http://www.usadellab.org/cms/?page=trimmomatic">trimmomatic</a> for one of many trimming tools available)</li>
+<li>reference <strong><code>fasta</code></strong> file</li>
+<li><strong><code>build index</code></strong> for the reference</li>
+<li><strong><code>map reads</code></strong></li>
+<li><strong><code>sort reads</code></strong></li>
+</ol>
+<pre><code>#FORWARD FASTQ FILE: 1.fq
+#REVERSE FASTQ FILE: 2.fq
+#REFERENCE: ref.fasta
+#USED THREADS: 12
+#SAMPLE NAME: IND1
+#SAM OUTPUT FILE: ind1.sam
+#build index
+bwa index ref.fasta
+#map reads
+bwa mem -t 12 -M -R @RG\tID:IND1\tLB:lib1\tPL:ILLUMINA\tPU:unit1\tSM:IND1 -o ind1.sam ref.fasta 1.fq 2.fq
+#sort sam file
+java -jar picard.jar SortSam I=ind1.sam O=ind1.sorted.bam SO=coordinate</code></pre>
+</div>
+<div id="using-nextgenmap-for-mapping" class="section level3">
+<h3>Using <strong><code>NextGenMap</code></strong> for mapping</h3>
+<p>The usere needs to perform four steps:</p>
+<ol style="list-style-type: decimal">
+<li><strong><code>fastq</code></strong> files, prefernetially <strong><code>QC</code></strong> pre-processed (see <a href="http://www.usadellab.org/cms/?page=trimmomatic">trimmomatic</a> for one of many trimming tools available)</li>
+<li>reference <strong><code>fasta</code></strong> file</li>
+<li><strong><code>map reads</code></strong></li>
+<li><strong><code>sort reads</code></strong></li>
+</ol>
+<pre><code>#FORWARD FASTQ FILE: 1.fq
+#REVERSE FASTQ FILE: 2.fq
+#REFERENCE: ref.fasta
+#USED THREADS: 12
+#SAMPLE NAME: IND1
+#SAM OUTPUT FILE: ind1.bam
+#map reads
+ngm -1 1.fq -2 2.fq -r ref.fasta -o ind1.bam --no-unal --sensitive -t 12 --no-progress --rg-id IND1 --rg-sm IND1 --rg-lb lib1 --rg-pl illumina --rg-pu unit1 -b
+#sort bam file
+java -jar picard.jar SortSam I=ind1.bam O=ind1.sorted.bam SO=coordinate</code></pre>
+</div>
+</div>
+<div id="optional-step-merge-sorted-bam-files" class="section level2">
+<h2>OPTIONAL STEP: Merge <strong><code>sorted bam</code></strong> files</h2>
+<p>In case that multiple <strong><code>fastq</code></strong> libraries exists or have been mapped without prior merging of the <strong><code>fastq</code></strong> files, the User can merge <strong><code>reference mapped bam</code></strong> files as follows:</p>
+<pre><code>java -jar picard.jar MergeSamFiles I=ind1_1.sorted.bam I=ind1_2.sorted.bam O=ind1.sorted.bam</code></pre>
+</div>
+<div id="step-2-remove-duplicates-from-sorted-bam-file" class="section level2">
+<h2>STEP 2: Remove duplicates from <strong><code>sorted bam</code></strong> file</h2>
+<pre><code>java -jar picard.jar RemoveDuplicates REMOVE_DUPLICATES=true I=ind1.sorted.bam O=ind1.sorted.nodup.bam M=ind1.sorted.bam.duplicate.metrics</code></pre>
+</div>
+<div id="step-3-create-iupac-fasta-file-for-the-de-duplicated-referenced-mapped-bam-file" class="section level2">
+<h2>STEP 3: Create <strong><code>IUPAC fasta</code></strong> file for the de-duplicated <strong><code>referenced mapped bam</code></strong> file</h2>
+<p>Chromosomes should be processed separately to be able to merge different samples into <strong><code>chromosome alignments</code></strong>, which can be processed with <strong><code>distIUPAC</code></strong> as follows:</p>
+<pre><code>#chromosomes should be processed separately to be able to easily merge different samples into one alignment to be processed with 'distIUPAC'
+#chromosome 'chr1' will be processed here
+angsd -doFasta 4 -doCounts 1 -minQ 20 -minMapQ 30 -uniqueOnly -setMinDepth 5 -setMaxDepth 1000 -iupacRatio 0.2 -i ind1.sorted.nodup.bam -out IND1.minQ20.minMapQ30.uniqueOnly.setMinDepth5.setMaxDepth100.chr1 -r chr1</code></pre>
+</div>
+<div id="step-4-repeat-step-1-to-step-3-for-multiple-individuals" class="section level2">
+<h2>STEP 4: Repeat STEP 1 to STEP 3 for multiple individuals</h2>
+</div>
+<div id="step-5-merge-samples-into-chromosome-alignments" class="section level2">
+<h2>STEP 5: Merge samples into chromosome alignments</h2>
+<p>Assuming all <strong><code>IUPAC fasta</code></strong> files are located in the same folder and same chromosome files have the same ending, individuals can be merged as follows:</p>
+<pre><code>#chromosome 'chr1' from different individuals will be processed here
+#1. uncompress fasta files
+for file in *.chr1.fa.gz;do gunzip $file;done
+#2. rename fasta sequences according to file names
+for file in *.chr1.fa;do sed -i 's/&gt;chr1/&gt;'&quot;$file&quot;'/g' $file;done
+#3. merge fasta files
+for file in *.chr1.fa;do cat $file &gt;&gt; chr1.fa;done</code></pre>
+</div>
+<div id="calculating-iupac-distances-for-chr1-with-distiupac" class="section level2">
+<h2>Calculating <strong><code>IUPAC distances</code></strong> for ‘chr1’ with <strong><code>distIUPAC</code></strong></h2>
+<p>The following commands needs to be executed in <strong><code>R</code></strong>:</p>
+<pre><code>library(distIUPAC)
+dna&lt;-readBStringSet(&quot;chr1.fa&quot;)
+chr1.dist&lt;-distIUPAC(as.character(subseq(dna,1,10000)))</code></pre>
+</div>
+<div id="pre-requisites-installation---unix-based-systems-no-mac-os-x" class="section level2">
+<h2>Pre-requisites installation - unix based systems (no MAC OS X)</h2>
+<p>Short description of how to compile the external tools for a unix based system are given. See the next section for MAC OS X installation.</p>
+<div id="nextgenmap-installation" class="section level3">
+<h3>NextGenMap installation</h3>
+<pre><code>#download latest release from NextGenMap
+wget https://codeload.github.com/Cibiv/NextGenMap/tar.gz/NextGenMap-0.5.5.tar.gz
+tar -xvf v0.5.5.tar.gz
+rm v0.5.5.tar.gz
+cd NextGenMap-0.5.5/
+mkdir -p build/
+cd build/
+cmake ..
+make</code></pre>
+</div>
+<div id="picard-tools-installation" class="section level3">
+<h3>Picard tools installation</h3>
+<pre><code>#download latest release 'picard.jar' from broadinstitute
+wget https://github.com/broadinstitute/picard/releases/download/2.17.4/picard.jar</code></pre>
+</div>
+<div id="angsd-installation" class="section level3">
+<h3>ANGSD installation</h3>
+<p>Until now the functionality to also consider a certain nucleotide depth for IUPAC assignment is not directly implemented in ANGSD. However, below you will find all necessary changes that need to be included in the original code to get this functionality.</p>
+<pre><code>git clone https://github.com/samtools/htslib.git;
+git clone https://github.com/angsd/angsd.git;
+cd htslib;make;
+#change the follwoing files from ANGSD as given below
+cd ../angsd;
+#
+#'abcWriteFasta.h' CHANGES:
+# Line 11 add:
+ double iupacRatio;
+#
+#'abcWriteFasta.cpp' CHANGES:
+# Line 29 add:
+ fprintf(argFile,&quot;\t-iupacRatio\t%.3f\t (Remove nucleotide below total depth ratio for IUPAC assignment)\n&quot;,iupacRatio);
+#
+# Line 230 change the code into:
+ }else if(doFasta==4){
+    //supplied by kristian ullrich
+    for(int s=0;s&lt;pars-&gt;numSites&amp;&amp;pars-&gt;posi[s]&lt;header-&gt;target_len[pars-&gt;refId];s++){
+      if(pars-&gt;keepSites[s]==0)
+        continue;
+      if(pars-&gt;nInd==1)
+        myFasta[pars-&gt;posi[s]] = intToIupac[ angsd::getIupacCount(pars-&gt;counts[s],0,iupacRatio) ];
+      else
+        myFasta[pars-&gt;posi[s]] = intToIupac[ angsd::getIupacCountTotal(pars-&gt;counts[s],pars-&gt;nInd,iupacRatio) ];
+    }
+  }
+#
+#'analysisFunction.h' CHANGES:
+#
+# Line 71 change the code into:
+ int getIupacCount(suint *d, int i, double iRatio, int depth = -1);
+#
+# Line 74 change the code into:
+ int getIupacCountTotal(suint *d, int nInd, double iRatio);
+#
+#'analysisFunction.cpp' CHANGES:
+#
+# Line 
+ // iupack code supplied by kristian ullrich
+ int angsd::getIupacCount(suint *counts,int i, double iRatio, int depth){
+
+  if(depth==-1){
+    depth=0;
+    for( int b = 0; b &lt; 4; b++ )
+      depth+=counts[b+4*i];
+  }
+
+  if(depth&lt;=0)
+    return 14;
+
+  int whichIUPAC = 0;
+  double bIUPACscore = 0;
+  for(int b=0;b&lt;4;b++){
+    //if (counts[b+4*i]&gt;0){
+    if (double(counts[b+4*i])/double(depth)&gt;iRatio){
+      bIUPACscore = bIUPACscore + pow(b+1,2);
+    }
+  }
+#
+#Line
+
+#
+make HTSSRC=../htslib</code></pre>
+</div>
+</div>
+<div id="pre-requisites-installation---mac-os-x-systems" class="section level2">
+<h2>Pre-requisites installation - MAC OS X systems</h2>
+<p>For a MAC OS X system there are additional pre-requisites that needs to be installed to be able to compile all necessary software.</p>
+<div id="xcode-command-line-tools" class="section level3">
+<h3>Xcode Command Line Tools</h3>
+<p>‘Xcode’ needs to be installed from App-Store</p>
+</div>
+<div id="homebrew" class="section level3">
+<h3>Homebrew</h3>
+<p>‘Homebrew’ needs to be installed <a href="https://brew.sh/index_de.html" class="uri">https://brew.sh/index_de.html</a></p>
+<pre><code>/usr/bin/ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)</code></pre>
+</div>
+<div id="git" class="section level3">
+<h3>Git</h3>
+<p>‘Git’ needs to be installed <a href="https://git-scm.com/download/mac" class="uri">https://git-scm.com/download/mac</a></p>
+<ol style="list-style-type: decimal">
+<li>download latest Git DMG Image</li>
+<li>Open DMG Iamge and Install PKG file</li>
+</ol>
+</div>
+<div id="autoconf-via-homebrew" class="section level3">
+<h3>Autoconf via Homebrew</h3>
+<p>‘Autoconf’ needs to be installed <a href="http://www.gnu.org/software/autoconf/autoconf.html" class="uri">http://www.gnu.org/software/autoconf/autoconf.html</a></p>
+<pre><code>brew install autoconf</code></pre>
+</div>
+<div id="cmake" class="section level3">
+<h3>Cmake</h3>
+<p>‘Cmake’ needs to be installed <a href="https://cmake.org/download/" class="uri">https://cmake.org/download/</a></p>
+<ol style="list-style-type: decimal">
+<li>download latest cmake DMG Image release <a href="https://cmake.org/files/v3.10/cmake-3.10.2-Darwin-x86_64.dmg" class="uri">https://cmake.org/files/v3.10/cmake-3.10.2-Darwin-x86_64.dmg</a></li>
+<li>Open DMG Image and copy to Applications</li>
+<li>in a Terminal</li>
+</ol>
+<pre><code>sudo &quot;/Applications/CMake.app/Contents/bin/cmake-gui&quot; --install</code></pre>
+</div>
+<div id="nextgenmap-installation-1" class="section level3">
+<h3>NextGenMap installation</h3>
+<pre><code>#download latest release from NextGenMap
+curl -L https://github.com/Cibiv/NextGenMap/archive/v0.5.5.tar.gz &gt; v0.5.5.tar.gz
+tar -xvf v0.5.5.tar.gz
+rm v0.5.5.tar.gz
+cd NextGenMap-0.5.5/
+mkdir -p build/
+cd build/
+cmake ..
+make</code></pre>
+</div>
+<div id="picard-tools-installation-1" class="section level3">
+<h3>Picard tools installation</h3>
+<pre><code>#download latest release 'picard.jar' from broadinstitute
+curl -L https://github.com/broadinstitute/picard/releases/download/2.17.4/picard.jar &gt; picard.jar</code></pre>
+</div>
+<div id="angsd-installation-1" class="section level3">
+<h3>ANGSD installation</h3>
+<pre><code>git clone https://github.com/samtools/htslib.git;
+git clone https://github.com/angsd/angsd.git;
+cd htslib;/usr/local/Cellar/autoconf/2.69/bin/autoconf;/usr/local/Cellar/autoconf/2.69/bin/autoheader;./configure --disable-lzma;make;
+#change the follwoing files from ANGSD as given below
+cd ../angsd;
+#
+#'abcWriteFasta.h' CHANGES:
+# Line 11 add:
+# double iupacRatio;
+#
+#'abcWriteFasta.cpp' CHANGES:
+# Line 29 add:
+# fprintf(argFile,&quot;\t-iupacRatio\t%.3f\t (Remove nucleotide below total depth ratio for IUPAC assignment)\n&quot;,iupacRatio);
+#
+# Line 230 change the code into:
+#  }else if(doFasta==4){
+#    //supplied by kristian ullrich
+#    for(int s=0;s&lt;pars-&gt;numSites&amp;&amp;pars-&gt;posi[s]&lt;header-&gt;target_len[pars-&gt;refId];s++){
+#      if(pars-&gt;keepSites[s]==0)
+#        continue;
+#      if(pars-&gt;nInd==1)
+#        myFasta[pars-&gt;posi[s]] = intToIupac[ angsd::getIupacCount(pars-&gt;counts[s],0,iupacRatio) ];
+#      else
+#        myFasta[pars-&gt;posi[s]] = intToIupac[ angsd::getIupacCountTotal(pars-&gt;counts[s],pars-&gt;nInd,iupacRatio) ];
+#    }
+#  }
+#
+#'analysisFunction.h' CHANGES:
+#
+# Line 71 change the code into:
+# int getIupacCount(suint *d, int i, double iRatio, int depth = -1);
+#
+# Line 74 change the code into:
+# int getIupacCountTotal(suint *d, int nInd, double iRatio);
+#
+#'analysisFunction.cpp' CHANGES:
+#
+# Line 
+# // iupack code supplied by kristian ullrich
+# int angsd::getIupacCount(suint *counts,int i, double iRatio, int depth){
+#
+#  if(depth==-1){
+#    depth=0;
+#    for( int b = 0; b &lt; 4; b++ )
+#      depth+=counts[b+4*i];
+#  }
+#
+#  if(depth&lt;=0)
+#    return 14;
+#
+#  int whichIUPAC = 0;
+#  double bIUPACscore = 0;
+#  for(int b=0;b&lt;4;b++){
+#    //if (counts[b+4*i]&gt;0){
+#    if (double(counts[b+4*i])/double(depth)&gt;iRatio){
+#      bIUPACscore = bIUPACscore + pow(b+1,2);
+#    }
+#  }
+make HTSSRC=../htslib</code></pre>
+</div>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<p>Korneliussen TS, Albrechtsen A and Nielsen R. <strong>ANGSD: Analysis of Next Generation Sequencing Data.</strong> <em>BMC Bioinformatics</em> (2014) <em>15</em>:356 <a href="https://doi.org/10.1186/s12859-014-0356-4" class="uri">https://doi.org/10.1186/s12859-014-0356-4</a></p>
+<p>Li, H. &amp; Durbin, R. <strong>Fast and accurate short read alignment with Burrows-Wheeler transform.</strong> <em>Bioinformatics</em> (2009) <em>25</em>:1754 <a href="https://doi.org/10.1093/bioinformatics/btp324" class="uri">https://doi.org/10.1093/bioinformatics/btp324</a></p>
+<p><strong>Picard tools</strong> <a href="http://broadinstitute.github.io/picard" class="uri">http://broadinstitute.github.io/picard</a></p>
+<p>Sedlazeck FJ, Rescheneder P, von Haeseler A. <strong>NextGenMap: fast and accurate read mapping in highly polymorphic genomes.</strong> <em>Bioinformatics</em> (2013) <em>21</em>:2790 <a href="https://doi.org/10.1093/bioinformatics/btt468" class="uri">https://doi.org/10.1093/bioinformatics/btt468</a></p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

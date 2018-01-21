@@ -1,25 +1,125 @@
 ---
-title: "bam2IUPAC"
+title: "01. bam2IUPAC"
 author: "Kristian K Ullrich"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{bam2IUPAC}
+  %\VignetteIndexEntry{01. bam2IUPAC}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  %\usepackage[utf8]{inputenc}
 ---
 
-In this vignette users learn how to create IUPAC __fasta__ format files from __bam__ files which can be used from distIUPAC to calculate IUPAC distances.
+In this vignette Users learn how to create  __`IUPAC fasta format`__ ([IUPAC code](https://www.bioinformatics.org/sms/iupac.html)) files from __`reference mapped bam`__ files which can be used with [distIUPAC](https://github.com/kullrich/distIUPAC) to calculate __`IUPAC distances`__.
 
-## Prerequistes for obtaining __fasta__ format files from reference mapped __bam__ files
+## Pre-requistes for obtaining __fasta__ format files from reference mapped __bam__ files
 
 The following external tools needs to be installed to be able to obtain IUPAC __fasta__ format files:
 
-1. Genome mapper of your choice (e.g. [http://bio-bwa.sourceforge.net/](http://bio-bwa.sourceforge.net/) or [https://github.com/Cibiv/NextGenMap][https://github.com/Cibiv/NextGenMap]))
-2. Picard tools for __bam__ file sorting and de-duplication [http://broadinstitute.github.io/picard/](http://broadinstitute.github.io/picard/)
-3. ANGSD for IUPAC __fasta__ format retrieval [https://github.com/ANGSD/angsd](https://github.com/ANGSD/angsd)
+1. __`Genome mapper`__ of your choice (e.g. [bwa mem](http://bio-bwa.sourceforge.net/) or [NextGenMap](https://github.com/Cibiv/NextGenMap))
+2. __`Picard tools`__ for __`bam`__ file sorting and de-duplication ([picard tools](http://broadinstitute.github.io/picard/))
+3. __`angsd`__ for __`IUPAC fasta format`__ retrieval ([angsd](https://github.com/ANGSD/angsd))
 
-## Prerequisites installation - unix based systems (no MAC OS X)
+A manual how the pre-requisites needs to be installed is given at the end of this vignette.
+
+## STEP 1: Mapping __`fastq`__ files to a __`reference`__
+
+### Using __`BWA`__ for mapping:
+
+The user needs to perform five steps:
+
+1. __`fastq`__ files, prefernetially __`QC`__ pre-processed (see [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) for one of many trimming tools available)
+2. reference __`fasta`__ file
+3. __`build index`__ for the reference
+4. __`map reads`__
+5. __`sort reads`__
+
+```
+#FORWARD FASTQ FILE: 1.fq
+#REVERSE FASTQ FILE: 2.fq
+#REFERENCE: ref.fasta
+#USED THREADS: 12
+#SAMPLE NAME: IND1
+#SAM OUTPUT FILE: ind1.sam
+#build index
+bwa index ref.fasta
+#map reads
+bwa mem -t 12 -M -R @RG\tID:IND1\tLB:lib1\tPL:ILLUMINA\tPU:unit1\tSM:IND1 -o ind1.sam ref.fasta 1.fq 2.fq
+#sort sam file
+java -jar picard.jar SortSam I=ind1.sam O=ind1.sorted.bam SO=coordinate
+```
+
+### Using __`NextGenMap`__ for mapping
+
+The usere needs to perform four steps:
+
+1. __`fastq`__ files, prefernetially __`QC`__ pre-processed (see [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) for one of many trimming tools available)
+2. reference __`fasta`__ file
+3. __`map reads`__
+4. __`sort reads`__
+
+```
+#FORWARD FASTQ FILE: 1.fq
+#REVERSE FASTQ FILE: 2.fq
+#REFERENCE: ref.fasta
+#USED THREADS: 12
+#SAMPLE NAME: IND1
+#SAM OUTPUT FILE: ind1.bam
+#map reads
+ngm -1 1.fq -2 2.fq -r ref.fasta -o ind1.bam --no-unal --sensitive -t 12 --no-progress --rg-id IND1 --rg-sm IND1 --rg-lb lib1 --rg-pl illumina --rg-pu unit1 -b
+#sort bam file
+java -jar picard.jar SortSam I=ind1.bam O=ind1.sorted.bam SO=coordinate
+```
+## OPTIONAL STEP: Merge __`sorted bam`__ files
+
+In case that multiple __`fastq`__ libraries exists or have been mapped without prior merging of the __`fastq`__ files, the User can merge __`reference mapped bam`__ files as follows:
+
+```
+java -jar picard.jar MergeSamFiles I=ind1_1.sorted.bam I=ind1_2.sorted.bam O=ind1.sorted.bam
+```
+
+## STEP 2: Remove duplicates from __`sorted bam`__ file
+
+```
+java -jar picard.jar RemoveDuplicates REMOVE_DUPLICATES=true I=ind1.sorted.bam O=ind1.sorted.nodup.bam M=ind1.sorted.bam.duplicate.metrics
+```
+
+## STEP 3: Create __`IUPAC fasta`__ file for the de-duplicated __`referenced mapped bam`__ file
+
+Chromosomes should be processed separately to be able to merge different samples into __`chromosome alignments`__, which can be processed with __`distIUPAC`__ as follows:
+
+```
+#chromosomes should be processed separately to be able to easily merge different samples into one alignment to be processed with 'distIUPAC'
+#chromosome 'chr1' will be processed here
+angsd -doFasta 4 -doCounts 1 -minQ 20 -minMapQ 30 -uniqueOnly -setMinDepth 5 -setMaxDepth 1000 -iupacRatio 0.2 -i ind1.sorted.nodup.bam -out IND1.minQ20.minMapQ30.uniqueOnly.setMinDepth5.setMaxDepth100.chr1 -r chr1
+```
+
+## STEP 4: Repeat STEP 1 to STEP 3 for multiple individuals
+
+## STEP 5: Merge samples into chromosome alignments
+
+Assuming all __`IUPAC fasta`__ files are located in the same folder and same chromosome files have the same ending, individuals can be merged as follows:
+
+```
+#chromosome 'chr1' from different individuals will be processed here
+#1. uncompress fasta files
+for file in *.chr1.fa.gz;do gunzip $file;done
+#2. rename fasta sequences according to file names
+for file in *.chr1.fa;do sed -i 's/>chr1/>'"$file"'/g' $file;done
+#3. merge fasta files
+for file in *.chr1.fa;do cat $file >> chr1.fa;done
+```
+
+## Calculating __`IUPAC distances`__ for 'chr1' with __`distIUPAC`__
+
+The following commands needs to be executed in __`R`__:
+
+```
+library(distIUPAC)
+dna<-readBStringSet("chr1.fa")
+chr1.dist<-distIUPAC(as.character(subseq(dna,1,10000)))
+```
+
+## Pre-requisites installation - unix based systems (no MAC OS X)
 
 Short description of how to compile the external tools for a unix based system are given.
 See the next section for MAC OS X installation.
@@ -56,62 +156,66 @@ cd ../angsd;
 #
 #'abcWriteFasta.h' CHANGES:
 # Line 11 add:
-# double iupacRatio;
+ double iupacRatio;
 #
 #'abcWriteFasta.cpp' CHANGES:
 # Line 29 add:
-# fprintf(argFile,"\t-iupacRatio\t%.3f\t (Remove nucleotide below total depth ratio for IUPAC assignment)\n",iupacRatio);
+ fprintf(argFile,"\t-iupacRatio\t%.3f\t (Remove nucleotide below total depth ratio for IUPAC assignment)\n",iupacRatio);
 #
 # Line 230 change the code into:
-#  }else if(doFasta==4){
-#    //supplied by kristian ullrich
-#    for(int s=0;s<pars->numSites&&pars->posi[s]<header->target_len[pars->refId];s++){
-#      if(pars->keepSites[s]==0)
-#        continue;
-#      if(pars->nInd==1)
-#        myFasta[pars->posi[s]] = intToIupac[ angsd::getIupacCount(pars->counts[s],0,iupacRatio) ];
-#      else
-#        myFasta[pars->posi[s]] = intToIupac[ angsd::getIupacCountTotal(pars->counts[s],pars->nInd,iupacRatio) ];
-#    }
-#  }
+ }else if(doFasta==4){
+    //supplied by kristian ullrich
+    for(int s=0;s<pars->numSites&&pars->posi[s]<header->target_len[pars->refId];s++){
+      if(pars->keepSites[s]==0)
+        continue;
+      if(pars->nInd==1)
+        myFasta[pars->posi[s]] = intToIupac[ angsd::getIupacCount(pars->counts[s],0,iupacRatio) ];
+      else
+        myFasta[pars->posi[s]] = intToIupac[ angsd::getIupacCountTotal(pars->counts[s],pars->nInd,iupacRatio) ];
+    }
+  }
 #
 #'analysisFunction.h' CHANGES:
 #
 # Line 71 change the code into:
-# int getIupacCount(suint *d, int i, double iRatio, int depth = -1);
+ int getIupacCount(suint *d, int i, double iRatio, int depth = -1);
 #
 # Line 74 change the code into:
-# int getIupacCountTotal(suint *d, int nInd, double iRatio);
+ int getIupacCountTotal(suint *d, int nInd, double iRatio);
 #
 #'analysisFunction.cpp' CHANGES:
 #
 # Line 
-# // iupack code supplied by kristian ullrich
-# int angsd::getIupacCount(suint *counts,int i, double iRatio, int depth){
+ // iupack code supplied by kristian ullrich
+ int angsd::getIupacCount(suint *counts,int i, double iRatio, int depth){
+
+  if(depth==-1){
+    depth=0;
+    for( int b = 0; b < 4; b++ )
+      depth+=counts[b+4*i];
+  }
+
+  if(depth<=0)
+    return 14;
+
+  int whichIUPAC = 0;
+  double bIUPACscore = 0;
+  for(int b=0;b<4;b++){
+    //if (counts[b+4*i]>0){
+    if (double(counts[b+4*i])/double(depth)>iRatio){
+      bIUPACscore = bIUPACscore + pow(b+1,2);
+    }
+  }
 #
-#  if(depth==-1){
-#    depth=0;
-#    for( int b = 0; b < 4; b++ )
-#      depth+=counts[b+4*i];
-#  }
+#Line
+
 #
-#  if(depth<=0)
-#    return 14;
-#
-#  int whichIUPAC = 0;
-#  double bIUPACscore = 0;
-#  for(int b=0;b<4;b++){
-#    //if (counts[b+4*i]>0){
-#    if (double(counts[b+4*i])/double(depth)>iRatio){
-#      bIUPACscore = bIUPACscore + pow(b+1,2);
-#    }
-#  }
 make HTSSRC=../htslib
 ```
 
-## Prerequisites installation - MAC OS X systems
+## Pre-requisites installation - MAC OS X systems
 
-For MAC OS X systems there are additional prerequisites that needs to be installed to be able to compile all necessary software.
+For a MAC OS X system there are additional pre-requisites that needs to be installed to be able to compile all necessary software.
 
 ### Xcode Command Line Tools
 'Xcode' needs to be installed from App-Store
@@ -124,7 +228,7 @@ For MAC OS X systems there are additional prerequisites that needs to be install
 ```
 
 ### Git
-'Git' needs to be installe [https://git-scm.com/download/mac](https://git-scm.com/download/mac)
+'Git' needs to be installed [https://git-scm.com/download/mac](https://git-scm.com/download/mac)
 
 1. download latest Git DMG Image
 2. Open DMG Iamge and Install PKG file
@@ -143,9 +247,9 @@ brew install autoconf
 3. in a Terminal
 ```
 sudo "/Applications/CMake.app/Contents/bin/cmake-gui" --install
-``
+```
 
-### NextGenMap installation - MAC OS X systems
+### NextGenMap installation
 ```
 #download latest release from NextGenMap
 curl -L https://github.com/Cibiv/NextGenMap/archive/v0.5.5.tar.gz > v0.5.5.tar.gz
@@ -158,7 +262,7 @@ cmake ..
 make
 ```
 
-### Picard tools installation - MAC OS X systems
+### Picard tools installation
 ```
 #download latest release 'picard.jar' from broadinstitute
 curl -L https://github.com/broadinstitute/picard/releases/download/2.17.4/picard.jar > picard.jar
@@ -228,97 +332,12 @@ cd ../angsd;
 make HTSSRC=../htslib
 ```
 
-## STEP 1: Mapping __fastq__ files to a reference
-
-### Using __BWA__ for mapping:
-
-The user needs:
-1. __fastq__ files, prefernetially QC preprocessed (see [http://www.usadellab.org/cms/?page=trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) for one of many trimming options of __fastq__ files)
-2. reference __fasta__ file
-3. build index for the reference
-4. map reads
-5. sort reads
-
-```
-#build index
-bwa index ref.fasta
-#map reads
-#set the correct number of available threads with '-t' and add the corresponding read group tags for your sample
-#here, 12 threads were used and the sample is named SAMPLE1 with paired-end data
-bwa mem -t 12 -M -R @RG\tID:SAMPLE1\tLB:lib1\tPL:ILLUMINA\tPU:unit1\tSM:SAMPLE1 -o sample2ref.sam ref.fasta SAMPLE1.fwd.fq SAMPLE1.rev.fq
-#sort sam file
-java -jar picard.jar SortSam I=sample2ref.sam O=sample2ref.sorted.bam SO=coordinate
-```
-
-### Using __NextGenMap__ for mapping
-
-The usere needs:
-1. __fastq__ files, prefernetially QC preprocessed (see [http://www.usadellab.org/cms/?page=trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) for one of many trimming options of __fastq__ files)
-2. reference __fasta__ file
-3. map reads
-4. sort reads
-
-```
-#map reads
-#set the correct number of available threads with '-t' and add the corresponding read group tags for your sample
-#here, 12 threads were used and the sample is named SAMPLE1 with paired-end data
-ngm -1 SAMPLE1.fwd.fq -2 SAMPLE1.rev.fq -r ref.fasta -o sample2ref.bam --no-unal --sensitive -t 12 --no-progress --rg-id SAMPLE1 --rg-sm SAMPLE1 --rg-lb lib1 --rg-pl illumina --rg-pu unit1 -b
-#sort bam file
-java -jar picard.jar SortSam I=sample2ref.bam O=sample2ref.sorted.bam SO=coordinate
-```
-## OPTIONAL STEP: Merge sorted __bam__ files
-
-```
-java -jar picard.jar MergeSamFiles I=file1.sorted.bam I=file2.sorted.bam O=merged.sorted.bam
-```
-
-## STEP 2: Remove duplicates from sorted __bam__ file
-
-```
-java -jar picard.jar RemoveDuplicates REMOVE_DUPLICATES=true I=sample2ref.sorted.bam O=sample2ref.sorted.nodup.bam M=sample2ref.sorted.bam.duplicate.metrics
-```
-
-## STEP 3: Create IUPAC __fasta__ file for the de-duplicated referenced mapped __bam__ file
-
-Chromosomes should be processed separately to be able to merge different samples into chromosome alignments, which can be processed with __distIUPAC__.
-
-```
-#chromosomes should be processed separately to be able to easily merge different samples into one alignment to be processed with 'distIUPAC'
-#chromosome 'chr1' will be processed here
-angsd -doFasta 4 -doCounts 1 -minQ 20 -minMapQ 30 -uniqueOnly -setMinDepth 5 -setMaxDepth 1000 -iupacRatio 0.2 -i sample2ref.sorted.nodup.bam -out SAMPLE1.minQ20.minMapQ30.guniqueOnly.setMinDepth5.setMaxDepth100.chr1 -r chr1
-```
-
-## STEP 4: Repeat STEP 1 to STEP 3 for multiples samples
-
-## STEP 5: Merge samples into chromosome alignments
-
-Assuming all IUPAC __fasta__ files are located in the same folder and same chromosome files have the same ending
-
-```
-#chromosome 'chr1' from different samples will be processed here
-#1. uncompress fasta files
-for file in *.chr1.fa.gz;do gunzip $file;done
-#2. rename fasta sequences according to file names
-for file in *.chr1.fa;do sed -i 's/>chr1/>'"$file"'/g' $file;done
-#3. merge fasta files
-for file in *.chr1.fa;do cat $file >> chr1.fa;done
-```
-## Calculating IUPAC distances for 'chr1' with __distIUPAC__
-
-The following commands needs to be executed in __R__
-
-```
-library(distIUPAC)
-dna<-readBStringSet("chr1.fa")
-chr1.dist<-distIUPAC(as.character(subseq(dna,1,10000)))
-```
-
 ## References
 
 Korneliussen TS, Albrechtsen A and Nielsen R. __ANGSD: Analysis of Next Generation Sequencing Data.__ _BMC Bioinformatics_ (2014) _15_:356 [https://doi.org/10.1186/s12859-014-0356-4](https://doi.org/10.1186/s12859-014-0356-4)
 
 Li, H. & Durbin, R. __Fast and accurate short read alignment with Burrows-Wheeler transform.__ _Bioinformatics_ (2009) _25_:1754 [https://doi.org/10.1093/bioinformatics/btp324](https://doi.org/10.1093/bioinformatics/btp324)
 
-Picard tools [http://broadinstitute.github.io/picard](http://broadinstitute.github.io/picard)
+__Picard tools__ [http://broadinstitute.github.io/picard](http://broadinstitute.github.io/picard)
 
 Sedlazeck FJ, Rescheneder P, von Haeseler A. __NextGenMap: fast and accurate read mapping in highly polymorphic genomes.__ _Bioinformatics_ (2013) _21_:2790 [https://doi.org/10.1093/bioinformatics/btt468](https://doi.org/10.1093/bioinformatics/btt468)
