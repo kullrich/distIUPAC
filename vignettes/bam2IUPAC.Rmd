@@ -90,7 +90,7 @@ Chromosomes should be processed separately to be able to merge different samples
 ```
 #chromosomes should be processed separately to be able to easily merge different samples into one alignment to be processed with 'distIUPAC'
 #chromosome 'chr1' will be processed here
-angsd -doFasta 4 -doCounts 1 -minQ 20 -minMapQ 30 -uniqueOnly -setMinDepth 5 -setMaxDepth 1000 -iupacRatio 0.2 -i ind1.sorted.nodup.bam -out IND1.minQ20.minMapQ30.uniqueOnly.setMinDepth5.setMaxDepth100.chr1 -r chr1
+angsd -doFasta 4 -doCounts 1 -minQ 20 -minMapQ 30 -uniqueOnly -setMinDepth 5 -setMaxDepth 100 -iupacRatio 0.2 -i ind1.sorted.nodup.bam -out IND1.minQ20.minMapQ30.uniqueOnly.setMinDepth5.setMaxDepth100.chr1 -r chr1
 ```
 
 ## STEP 4: Repeat STEP 1 to STEP 3 for multiple individuals
@@ -170,6 +170,9 @@ cd ../angsd;
 
 # Line 29 add:
  fprintf(argFile,"\t-iupacRatio\t%.3f\t (Remove nucleotide below total depth ratio for IUPAC assignment)\n",iupacRatio); 
+
+# Line 44 add:
+ iupacRatio=angsd::getArg("-iupacRatio",iupacRatio,arguments);
 
 # Line 84 add:
  iupacRatio = 0.0;
@@ -297,6 +300,9 @@ cd ../angsd;
 
 # Line 29 add:
  fprintf(argFile,"\t-iupacRatio\t%.3f\t (Remove nucleotide below total depth ratio for IUPAC assignment)\n",iupacRatio);
+
+# Line 44 add:
+ iupacRatio=angsd::getArg("-iupacRatio",iupacRatio,arguments);
 
 # Line 84 add:
  iupacRatio = 0.0;
