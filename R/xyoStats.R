@@ -48,7 +48,7 @@ pb<-txtProgressBar(min=1,max=dim(tmp.sw)[2],initial=1,style=3)
      deltaMean.xyo<-NA
      deltaMin.xyo<-NA
      RNDmin.xyo<-NA
-OUT<-list(XNAME,YNAME.ONAME,START,END,dMean.xy,dSites.xy,dMin.xy,dMean.xo,dSites.xo,dMin.xo,dMean.yo,dSites.yo,dMin.yo,dMean.xyo,dSites.xyo,dMin.xyo,deltaMean.xyo,deltaMin.xyo,RNDmin.xyo)
+OUT<-list(XNAME,YNAME,ONAME,START,END,dMean.xy,dSites.xy,dMin.xy,dMean.xo,dSites.xo,dMin.xo,dMean.yo,dSites.yo,dMin.yo,dMean.xyo,dSites.xyo,dMin.xyo,deltaMean.xyo,deltaMin.xyo,RNDmin.xyo)
 names(OUT)<-c("XNAME","YNAME","ONAME","START","END","dMean.xy","dSites.xy","dMin.xy","dMean.xo","dSites.xo","dMin.xo","dMean.yo","dSites.yo","dMin.yo","dMean.xyo","dSites.xyo","dMin.xyo","deltaMean.xyo","deltaMin.xyo","RNDmin.xyo")
      OUT$START<-tmp.sw[1,j][[1]]
      OUT$END<-tmp.sw[2,j][[1]]
