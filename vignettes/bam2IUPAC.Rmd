@@ -146,78 +146,12 @@ wget https://github.com/broadinstitute/picard/releases/download/2.17.4/picard.ja
 
 ### ANGSD installation
 
-Until now the functionality to also consider a certain nucleotide depth for IUPAC assignment is not directly implemented in ANGSD. However, below you will find all necessary changes that need to be included in the original code to get this functionality.
-
 ```
+#download latest release ANGSD from https://github.com/ANGSD/angsd
 git clone https://github.com/samtools/htslib.git;
 git clone https://github.com/angsd/angsd.git;
 cd htslib;make;
 cd ../angsd;
-
-#####
-###change the follwoing files from ANGSD as given below
-#####
-
-###
-#'abcWriteFasta.h' CHANGES:
-###
-
-# Line 11 add:
- double iupacRatio;
-
-###
-#'abcWriteFasta.cpp' CHANGES:
-###
-
-# Line 29 add:
- fprintf(argFile,"\t-iupacRatio\t%.3f\t (Remove nucleotide below total depth ratio for IUPAC assignment)\n",iupacRatio); 
-
-# Line 44 add:
- iupacRatio=angsd::getArg("-iupacRatio",iupacRatio,arguments);
-
-# Line 84 add:
- iupacRatio = 0.0;
-
-# Line 234 change the code into:
- myFasta[pars->posi[s]] = intToIupac[ angsd::getIupacCount(pars->counts[s],0,iupacRatio) ];
-
-# Line 236 change the code into:
- myFasta[pars->posi[s]] = intToIupac[ angsd::getIupacCountTotal(pars->counts[s],pars->nInd,iupacRatio) ];
-
-###
-#'analysisFunction.h' CHANGES:
-####
-
-# Line 71 change the code into:
- int getIupacCount(suint *d, int i, double iRatio, int depth = -1);
-
-# Line 74 change the code into:
- int getIupacCountTotal(suint *d, int nInd, double iRatio);
-
-###
-#'analysisFunction.cpp' CHANGES:
-###
-
-# Line 753 change the code into:
- int angsd::getIupacCount(suint *counts,int i, double iRatio, int depth){
-
-# Line 767 change the code into:
- if (double(counts[b+4*i])/double(depth)>iRatio){
-
-# Line 922 change the code into:
-int angsd::getIupacCountTotal(suint *counts,int nInd, double iRatio){
-
-# Line 939 change the code into:
- for(int b=0;b<4;b++){
-
-# Line 940 change the code into:
- if (double(totalCounts[b])/double(depth)>iRatio){
-
-# Line 941 change the code into:
- bIUPACscore = bIUPACscore + pow(b+1,2); 
-
-#####
-
 make HTSSRC=../htslib
 ```
 
@@ -279,75 +213,11 @@ curl -L https://github.com/broadinstitute/picard/releases/download/2.17.4/picard
 ### ANGSD installation
 
 ```
+#download latest release ANGSD from https://github.com/ANGSD/angsd
 git clone https://github.com/samtools/htslib.git;
 git clone https://github.com/angsd/angsd.git;
 cd htslib;/usr/local/Cellar/autoconf/2.69/bin/autoconf;/usr/local/Cellar/autoconf/2.69/bin/autoheader;./configure --disable-lzma;make;
 cd ../angsd;
-
-#####
-###change the follwoing files from ANGSD as given below
-#####
-
-###
-#'abcWriteFasta.h' CHANGES:
-###
-
-# Line 11 add:
- double iupacRatio;
-
-###
-#'abcWriteFasta.cpp' CHANGES:
-###
-
-# Line 29 add:
- fprintf(argFile,"\t-iupacRatio\t%.3f\t (Remove nucleotide below total depth ratio for IUPAC assignment)\n",iupacRatio);
-
-# Line 44 add:
- iupacRatio=angsd::getArg("-iupacRatio",iupacRatio,arguments);
-
-# Line 84 add:
- iupacRatio = 0.0;
-
-# Line 234 change the code into:
- myFasta[pars->posi[s]] = intToIupac[ angsd::getIupacCount(pars->counts[s],0,iupacRatio) ];
-
-# Line 236 change the code into:
- myFasta[pars->posi[s]] = intToIupac[ angsd::getIupacCountTotal(pars->counts[s],pars->nInd,iupacRatio) ];
-
-###
-#'analysisFunction.h' CHANGES:
-####
-
-# Line 71 change the code into:
- int getIupacCount(suint *d, int i, double iRatio, int depth = -1);
-
-# Line 74 change the code into:
- int getIupacCountTotal(suint *d, int nInd, double iRatio);
-
-###
-#'analysisFunction.cpp' CHANGES:
-###
-
-# Line 753 change the code into:
- int angsd::getIupacCount(suint *counts,int i, double iRatio, int depth){
-
-# Line 767 change the code into:
- if (double(counts[b+4*i])/double(depth)>iRatio){
-
-# Line 922 change the code into:
-int angsd::getIupacCountTotal(suint *counts,int nInd, double iRatio){
-
-# Line 939 change the code into:
- for(int b=0;b<4;b++){
-
-# Line 940 change the code into:
- if (double(totalCounts[b])/double(depth)>iRatio){
-
-# Line 941 change the code into:
- bIUPACscore = bIUPACscore + pow(b+1,2);
-
-#####
-
 make HTSSRC=../htslib
 ```
 
