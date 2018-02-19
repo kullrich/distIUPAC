@@ -4,12 +4,12 @@
 #' @export distIUPAC
 #' @author Kristian K Ullrich
 distIUPAC <- function(myvector) {
-    .Call('_distIUPAC_distIUPAC', PACKAGE = 'distIUPAC', myvector)
+  .Call('_distIUPAC_distIUPAC', PACKAGE = 'distIUPAC', myvector)
 }
 
 #' @export distIUPACmatrix
 #' @author Kristian K Ullrich
 distIUPACmatrix <- function(myvector, scoreMatrix) {
-    .Call('_distIUPAC_distIUPACmatrix', PACKAGE = 'distIUPAC', myvector, scoreMatrix)
+  .Call('_distIUPAC_distIUPACmatrix', PACKAGE = 'distIUPAC', myvector, scoreMatrix)
 }
 
