@@ -13,16 +13,26 @@ source("https://bioconductor.org/biocLite.R")
 biocLite("Biostrings")
 ```
 
-Second install [ape](http://ape-package.ird.fr/) package.
+Second install additional packages from cran [CRAN](https://cran.r-project.org/web/packages/index.html).
+- [devtools](https://cran.r-project.org/web/packages/devtools/index.html)
+- [Rcpp](https://cran.r-project.org/web/packages/Rcpp/index.html)
+- [RcppParallel](https://cran.r-project.org/web/packages/RcppParallel/index.html)
+- [ape](https://cran.r-project.org/web/packages/ape/index.html)
+- [foreach](https://cran.r-project.org/web/packages/foreach/index.html)
+- [doMC](https://cran.r-project.org/web/packages/doMC/index.html)
 
 ```
+install.packages("devtools")
+install.packages("Rcpp")
+install.packages("RcppParallel")
 install.packages("ape")
+install.packages("foreach")
+install.packages("doMC")
 ```
 
 Third install `distIUPAC` package from [github](https://github.com/kullrich) using the [devtools](https://cran.r-project.org/web/packages/devtools/index.html) package.
 
 ```
-#install.packages("devtools")
 library(devtools)
 install_github("kullrich/distIUPAC", build_vignettes = TRUE, dependencies = TRUE)
 ```
