@@ -13,3 +13,9 @@ distIUPACmatrix <- function(myvector, scoreMatrix) {
     .Call('_distIUPAC_distIUPACmatrix', PACKAGE = 'distIUPAC', myvector, scoreMatrix)
 }
 
+#' @export pairwiseDeletion
+#' @author Kristian K Ullrich
+pairwiseDeletion <- function(myvector) {
+    .Call('_distIUPAC_pairwiseDeletion', PACKAGE = 'distIUPAC', myvector)
+}
+
