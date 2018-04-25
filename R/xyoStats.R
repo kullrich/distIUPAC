@@ -79,7 +79,7 @@ xyoStats<-function(dna,x.pos,y.pos,o.pos,wlen=25000,wjump=25000,dist="IUPAC",thr
     }
     if(dist!="IUPAC"){
       tmp.seq.dist<-dist.dna(as.DNAbin(dnastring2apealg(tmp.seq)),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
-      tmp.seq.sites<-pairwsieDeletion(as.character(tmp.seq))$sitesUsed
+      tmp.seq.sites<-pairwiseDeletion(as.character(tmp.seq))$sitesUsed
       OUT$dMean.xy<-mean(tmp.seq.dist[x.pos_,y.pos_],na.rm=T)
       OUT$dSites.xy<-mean(tmp.seq.sites[x.pos_,y.pos_],na.rm=T)
       OUT$dMin.xy<-min(tmp.seq.dist[x.pos_,y.pos_],na.rm=T)
