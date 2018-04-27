@@ -36,8 +36,9 @@ xyStats<-function(dna,x.pos,y.pos,wlen=25000,wjump=25000,dist="IUPAC",threads=1,
     dSd.xy<-NA
     dSites.xy<-NA
     dMin.xy<-NA
-    OUT<-list(XNAME,YNAME,CHRNAME,START,END,dMean.xy,dSd.xy,dSites.xy,dMin.xy)
-    names(OUT)<-c("XNAME","YNAME","CHRNAME","START","END","dMean.xy","dSd.xy","dSites.xy","dMin.xy")
+    dMax.xy<-NA
+    OUT<-list(XNAME,YNAME,CHRNAME,START,END,dMean.xy,dSd.xy,dSites.xy,dMin.xy,dMax.xy)
+    names(OUT)<-c("XNAME","YNAME","CHRNAME","START","END","dMean.xy","dSd.xy","dSites.xy","dMin.xy","dMax.xy")
     OUT$START<-tmp.sw[1,j][[1]]
     OUT$END<-tmp.sw[2,j][[1]]
     tmp.seq<-subseq(dna_,OUT$START,OUT$END)
@@ -47,6 +48,7 @@ xyStats<-function(dna,x.pos,y.pos,wlen=25000,wjump=25000,dist="IUPAC",threads=1,
       OUT$dSd.xy<-sd(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=T)
       OUT$dSites.xy<-mean(tmp.seq.dist$sitesUsed[x.pos_,y.pos_],na.rm=T)
       OUT$dMin.xy<-min(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=T)
+      OUT$dMax.xy<-max(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=T)
     }
     if(dist!="IUPAC"){
       tmp.seq.dist<-dist.dna(as.DNAbin(dnastring2apealg(tmp.seq)),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
@@ -55,6 +57,7 @@ xyStats<-function(dna,x.pos,y.pos,wlen=25000,wjump=25000,dist="IUPAC",threads=1,
       OUT$dSd.xy<-sd(tmp.seq.dist[x.pos_,y.pos_],na.rm=T)
       OUT$dSites.xy<-mean(tmp.seq.sites[x.pos_,y.pos_],na.rm=T)
       OUT$dMin.xy<-min(tmp.seq.dist[x.pos_,y.pos_],na.rm=T)
+      OUT$dMax.xy<-max(tmp.seq.dist[x.pos_,y.pos_],na.rm=T)
     }
     setTxtProgressBar(pb,j)
     OUT
