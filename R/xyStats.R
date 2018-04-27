@@ -18,7 +18,7 @@
 #' @examples
 #' @export xyStats
 #' @author Kristian K Ullrich
-xyoStats<-function(dna,x.pos,y.pos,wlen=25000,wjump=25000,dist="IUPAC",threads=1,x.name="x",y.name="y",chr.name="chr"){
+xyStats<-function(dna,x.pos,y.pos,wlen=25000,wjump=25000,dist="IUPAC",threads=1,x.name="x",y.name="y",chr.name="chr"){
   options(scipen=22)
   dna_<-dna[c(x.pos,y.pos)]
   x.pos_<-seq(1,length(x.pos))
