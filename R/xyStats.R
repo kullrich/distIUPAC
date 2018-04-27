@@ -36,8 +36,8 @@ xyStats<-function(dna,x.pos,y.pos,wlen=25000,wjump=25000,dist="IUPAC",threads=1,
     dSd.xy<-NA
     dSites.xy<-NA
     dMin.xy<-NA
-    OUT<-list(XNAME,YNAME,ONAME,CHRNAME,START,END,dMean.xy,dSd.xy,dSites.xy,dMin.xy)
-    names(OUT)<-c("XNAME","YNAME","ONAME","CHRNAME","START","END","dMean.xy","dSd.xy","dSites.xy","dMin.xy")
+    OUT<-list(XNAME,YNAME,CHRNAME,START,END,dMean.xy,dSd.xy,dSites.xy,dMin.xy)
+    names(OUT)<-c("XNAME","YNAME","CHRNAME","START","END","dMean.xy","dSd.xy","dSites.xy","dMin.xy")
     OUT$START<-tmp.sw[1,j][[1]]
     OUT$END<-tmp.sw[2,j][[1]]
     tmp.seq<-subseq(dna_,OUT$START,OUT$END)
