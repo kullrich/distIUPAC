@@ -14,11 +14,13 @@
 #' @author Kristian K Ullrich
 IUPAC_CODE_MAP_LIST<-list(c("A"),c("C"),c("G"),c("T"),c("A","C"),c("A","G"),c("A","T"),c("C","G"),c("C","T"),c("G","T"),c("A","C","G"),c("A","C","T"),c("A","G","T"),c("C","G","T"),c(),c(),c(),c())
 names(IUPAC_CODE_MAP_LIST)<-c("A","C","G","T","M","R","W","S","Y","K","V","H","D","B","N","-","+",".")
-triSites<-function(dna,x.pos,wlen=25000,threads=1){
+triSites<-function(dna,x.pos,wlen=25000,threads=1,pB=TRUE){
   options(scipen=22)
   dna_<-dna[x.pos]
   tmp.sw<-swgen(wlen=wlen,wjump=wlen,start.by=1,end.by=unique(width(dna)))
-  pb<-txtProgressBar(min=1,max=dim(tmp.sw)[2],initial=1,style=3)
+  if(pB){
+    pb<-txtProgressBar(min=1,max=dim(tmp.sw)[2],initial=1,style=3)
+  }
   registerDoMC(threads)
   OUT<-foreach(j=1:dim(tmp.sw)[2], .combine=c) %dopar% {
     START<-NA
@@ -31,10 +33,14 @@ triSites<-function(dna,x.pos,wlen=25000,threads=1){
     tmp.seq<-subseq(dna_,OUT$START,OUT$END)
     tmp.seq.cM<-apply(consensusMatrix(tmp.seq),1,function(x) ifelse(x>0,1,0))
     triPOS<-OUT$START-1+which(apply(tmp.seq.cM,1,function(x) length(unlist(unique(IUPAC_CODE_MAP_LIST[names(x[x==1])]))))==3)
-    setTxtProgressBar(pb,j)
+    if(pB){
+      setTxtProgressBar(pb,j)
+    }
     triPOS
   }
-  setTxtProgressBar(pb,dim(tmp.sw)[2])
-  close(pb)
+  if(pB){
+    setTxtProgressBar(pb,dim(tmp.sw)[2])
+    close(pb)  
+  }
   return(OUT)
 }
