@@ -16,11 +16,21 @@
 #' @examples
 #' @export xStats
 #' @author Kristian K Ullrich
-xStats<-function(dna,x.pos,wlen=25000,wjump=25000,dist="IUPAC",threads=1,x.name="x",chr.name="chr"){
+xStats<-function(dna,x.pos,wlen=25000,wjump=25000,wtype="bp",dist="IUPAC",threads=1,x.name="x",chr.name="chr"){
   options(scipen=22)
   dna_<-dna[x.pos]
   x.pos_<-seq(1,length(x.pos))
-  tmp.sw<-swgen(wlen=wlen,wjump=wjump,start.by=1,end.by=unique(width(dna)))
+  if(wtype=="bp"){
+    tmp.sw<-swgen(wlen=wlen,wjump=wjump,start.by=1,end.by=unique(width(dna)))  
+  }
+  if(wtype=="biPOS"){
+    tmp.POS<-biPOS(dna_,x.pos_,threads=threads,pB=FALSE)
+    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=1,end.by=unique(width(dna)))
+  }
+  if(wtype=="triPOS"){
+    tmp.POS<-triPOS(dna_,x.pos_,threads=threads,pB=FALSE)
+    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=1,end.by=unique(width(dna)))
+  }
   pb<-txtProgressBar(min=1,max=dim(tmp.sw)[2],initial=1,style=3)
   registerDoMC(threads)
   OUT<-foreach(j=1:dim(tmp.sw)[2], .combine=rbind) %dopar% {
