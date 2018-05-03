@@ -23,12 +23,12 @@ xStats<-function(dna,x.pos,wlen=25000,wjump=25000,wtype="bp",dist="IUPAC",thread
   if(wtype=="bp"){
     tmp.sw<-swgen(wlen=wlen,wjump=wjump,start.by=1,end.by=unique(width(dna)))  
   }
-  if(wtype=="biPOS"){
-    tmp.POS<-biPOS(dna_,x.pos_,threads=threads,pB=FALSE)
+  if(wtype=="biSites"){
+    tmp.POS<-biSites(dna_,x.pos_,threads=threads,pB=FALSE)
     tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=1,end.by=unique(width(dna)))
   }
-  if(wtype=="triPOS"){
-    tmp.POS<-triPOS(dna_,x.pos_,threads=threads,pB=FALSE)
+  if(wtype=="triSites"){
+    tmp.POS<-triSites(dna_,x.pos_,threads=threads,pB=FALSE)
     tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=1,end.by=unique(width(dna)))
   }
   pb<-txtProgressBar(min=1,max=dim(tmp.sw)[2],initial=1,style=3)
