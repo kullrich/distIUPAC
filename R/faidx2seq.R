@@ -11,7 +11,7 @@
 #' @author Kristian K Ullrich
 faidx2seq<-function(fasta, start, end, format="dna", samtools="samtools"){
   options(scipen=22)
-  if(end>start){stop("end smaller than start")}
+  if(end<start){stop("end smaller than start")}
   samples<-read.table(paste0(fasta,".fai"),sep="\t",header=FALSE,stringsAsFactor=FALSE)[,1]
   tmpfile<-tempfile()
   for(i in samples){
