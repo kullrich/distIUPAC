@@ -17,10 +17,10 @@ faidx2seq<-function(fasta, start, end, format="dna", samtools="samtools"){
   for(i in samples){
     system(paste0(samtools," faidx ",fasta," ",i,":",start,"-",end," >> ",tmpfile))
   }
-  if(format="dna"){
+  if(format=="dna"){
     out<-readDNAStringSet(tmpfile)
   }
-  if(format="aa"){
+  if(format=="aa"){
     out<-readAAStringSet(tmpfile)
   }
   system(paste0("rm ",tmpfile))
