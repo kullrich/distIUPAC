@@ -11,6 +11,7 @@
 #' @param o.pos population O positions
 #' @param wlen sliding windows length
 #' @param wjump sliding windows jump
+#' @param wtype sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}
 #' @param dist distance to use
 #' @param threads number of parallel threads
 #' @param x.name population X name
@@ -20,13 +21,23 @@
 #' @examples
 #' @export xyoStats
 #' @author Kristian K Ullrich
-xyoStats<-function(dna,x.pos,y.pos,o.pos,wlen=25000,wjump=25000,dist="IUPAC",threads=1,x.name="x",y.name="y",o.name="o",chr.name="chr"){
+xyoStats<-function(dna,x.pos,y.pos,o.pos,wlen=25000,wjump=25000,wtype="bp",dist="IUPAC",threads=1,x.name="x",y.name="y",o.name="o",chr.name="chr"){
   options(scipen=22)
   dna_<-dna[c(x.pos,y.pos,o.pos)]
   x.pos_<-seq(1,length(x.pos))
   y.pos_<-seq(length(x.pos_)+1,length(x.pos_)+length(y.pos))
   o.pos_<-seq(length(x.pos_)+length(y.pos_)+1,length(x.pos_)+length(y.pos_)+length(o.pos))
-  tmp.sw<-swgen(wlen=wlen,wjump=wjump,start.by=1,end.by=unique(width(dna)))
+  if(wtype=="bp"){
+    tmp.sw<-swgen(wlen=wlen,wjump=wjump,start.by=1,end.by=unique(width(dna)))  
+  }
+  if(wtype=="biSites"){
+    tmp.POS<-biSites(dna_,c(x.pos_,y.pos_),threads=threads,pB=FALSE)
+    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=1,end.by=unique(width(dna)))
+  }
+  if(wtype=="triSites"){
+    tmp.POS<-triSites(dna_,c(x.pos_,y.pos_),threads=threads,pB=FALSE)
+    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=1,end.by=unique(width(dna)))
+  }
   pb<-txtProgressBar(min=1,max=dim(tmp.sw)[2],initial=1,style=3)
   registerDoMC(threads)
   OUT<-foreach(j=1:dim(tmp.sw)[2], .combine=rbind) %dopar% {

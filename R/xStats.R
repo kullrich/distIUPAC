@@ -1,5 +1,5 @@
-#' @title xyoStats
-#' @name xyoStats
+#' @title xStats
+#' @name xStats
 #' @description This function calculates \code{distIUPAC} based distances within one population (x: receiver; x: donor).
 #' @import Biostrings
 #' @import ape
@@ -9,6 +9,7 @@
 #' @param x.pos population X positions
 #' @param wlen sliding windows length
 #' @param wjump sliding windows jump
+#' @param wtype sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}
 #' @param dist distance to use
 #' @param threads number of parallel threads
 #' @param x.name population X name
