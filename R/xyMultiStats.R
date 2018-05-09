@@ -23,10 +23,10 @@ xyMultiStats<-function(dna,list.pos,wlen=25000,wjump=25000,wtype="bp",dist="IUPA
   COMBOUT<-vector("list",length=dim(pop.comb)[2])
   names(COMBOUT)<-apply(pop.comb,2,function(x) paste0(x,collapse="_"))
   for(c.idx in 1:(dim(pop.comb)[2])){
-    x.pos<-list.pos[pop.comb[c.idx,1]]
-    y.pos<-list.pos[pop.comb[c.idx,2]]
-    x.name<-names(list.pos[pop.comb[c.idx,1]])
-    y.name<-names(list.pos[pop.comb[c.idx,2]])
+    x.pos<-unlist(list.pos[pop.comb[1,c.idx]])
+    y.pos<-unlist(list.pos[pop.comb[2,c.idx]])
+    x.name<-names(list.pos[pop.comb[1,c.idx]])
+    y.name<-names(list.pos[pop.comb[2,c.idx]])
     dna_<-dna[c(x.pos,y.pos)]
     x.pos_<-seq(1,length(x.pos))
     y.pos_<-seq(length(x.pos_)+1,length(x.pos_)+length(y.pos))
