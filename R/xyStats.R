@@ -85,7 +85,7 @@ xyStats<-function(dna,x.pos,y.pos,wlen=25000,wjump=25000,wtype="bp",dist="IUPAC"
       OUT$dMin.xy<-min(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=T)
       OUT$dMax.xy<-max(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=T)
       OUT$dTotal.xy<-mean(as.dist(tmp.seq.dist$distIUPAC),na.rm=T)
-      OUT$dSweighted.xy<-(2*length(x.pos_)/(2*length(c(x.pos_,y.pos_)))) * OUT$dMean.x + (2*length(y.pos_)/(2*length(c(x.pos_,y.pos_)))) * OUT$dMean.y
+      OUT$dSweighted.xy<-(length(x.pos_)/(length(c(x.pos_,y.pos_)))) * OUT$dMean.x + (length(y.pos_)/(length(c(x.pos_,y.pos_)))) * OUT$dMean.y
       OUT$Fst.xy<-(OUT$dTotal.xy - OUT$dSweighted.xy) / OUT$dTotal.xy
       OUT$dRelative.xy<-OUT$dMean.xy - OUT$dSweighted.xy
     }
