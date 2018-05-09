@@ -123,7 +123,7 @@ xyMultiStats<-function(dna,list.pos,wlen=25000,wjump=25000,wtype="bp",dist="IUPA
     }
     setTxtProgressBar(pb,dim(tmp.sw)[2])
     close(pb)
-    COMBOUT[c.idx]<-OUT
+    COMBOUT[c.idx]<-list(OUT)
   }
   return(COMBOUT)
 }
