@@ -7,15 +7,25 @@
 #' @import foreach
 #' @param dna \code{DNAStringSet}
 #' @param x.pos population X positions
-#' @param wlen sliding windows length
+#' @param wlen sliding window length
 #' @param threads number of parallel threads
+#' @param pB specifies if progress should be shown as a progress bar
 #' @examples
+#' data("MySequences", package = "distIUPAC")
+#' #consider all sequences
+#' MySequences.triSites<-triSites(MySequences)
+#' as.matrix(MySequences)[,head(MySequences.triSites)]
+#' #consider only a subset of all sequences
+#' CAS.pos<-5:34
+#' CAS.triSites<-triSites(MySequences,x.pos=CAS.pos)
+#' as.matrix(MySequences[CAS.pos])[,head(CAS.triSites)]
 #' @export triSites
 #' @author Kristian K Ullrich
-IUPAC_CODE_MAP_LIST<-list(c("A"),c("C"),c("G"),c("T"),c("A","C"),c("A","G"),c("A","T"),c("C","G"),c("C","T"),c("G","T"),c("A","C","G"),c("A","C","T"),c("A","G","T"),c("C","G","T"),c(),c(),c(),c())
-names(IUPAC_CODE_MAP_LIST)<-c("A","C","G","T","M","R","W","S","Y","K","V","H","D","B","N","-","+",".")
-triSites<-function(dna,x.pos,wlen=25000,threads=1,pB=TRUE){
+triSites<-function(dna,x.pos=NULL,wlen=25000,threads=1,pB=TRUE){
+  IUPAC_CODE_MAP_LIST<-list(c("A"),c("C"),c("G"),c("T"),c("A","C"),c("A","G"),c("A","T"),c("C","G"),c("C","T"),c("G","T"),c("A","C","G"),c("A","C","T"),c("A","G","T"),c("C","G","T"),c(),c(),c(),c())
+  names(IUPAC_CODE_MAP_LIST)<-c("A","C","G","T","M","R","W","S","Y","K","V","H","D","B","N","-","+",".")
   options(scipen=22)
+  if(is.null(x.pos)){x.pos<-seq(1,length(dna))}
   dna_<-dna[x.pos]
   tmp.sw<-swgen(wlen=wlen,wjump=wlen,start.by=1,end.by=unique(width(dna)))
   if(pB){

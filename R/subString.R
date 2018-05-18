@@ -10,7 +10,7 @@
 #' myStart<-c(1,3)
 #' myEnd<-c(2,4)
 #' mySubSequence <- subString(MySequence$dna, myStart, myEnd)
-#' @seealso \link[Biostrings]{subseq}
+#' @seealso \link[XVector]{subseq}
 #' @export subString
 #' @author Kristian K Ullrich
 subString<-function(x,s,e){

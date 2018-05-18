@@ -1,12 +1,13 @@
 #' @title swgen
 #' @name swgen
 #' @description This function constructs a sliding window matrix
-#' @param wlen
-#' @param wjump
-#' @param start.by
-#' @param end.by
+#' @param wlen window size
+#' @param wjump window jump
+#' @param start.by start position
+#' @param end.by end position
 #' @examples
 #' sw <- swgen(100, 100, 1, 1000)
+#' @seealso \link[distIUPAC]{posgen}
 #' @export swgen
 #' @author Kristian K Ullrich
 swgen<-function(wlen=1000,wjump=100,start.by=1,end.by=1000){

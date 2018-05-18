@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kristian K Ullrich" />
 
-<meta name="date" content="2018-01-21" />
+<meta name="date" content="2018-05-09" />
 
 <title>01. bam2IUPAC</title>
 
@@ -214,7 +214,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">01. bam2IUPAC</h1>
 <h4 class="author"><em>Kristian K Ullrich</em></h4>
-<h4 class="date"><em>2018-01-21</em></h4>
+<h4 class="date"><em>2018-05-09</em></h4>
 
 
 
@@ -289,7 +289,8 @@ java -jar picard.jar SortSam I=ind1.bam O=ind1.sorted.bam SO=coordinate</code></
 <p>Chromosomes should be processed separately to be able to merge different samples into <strong><code>chromosome alignments</code></strong>, which can be processed with <strong><code>distIUPAC</code></strong> as follows:</p>
 <pre><code>#chromosomes should be processed separately to be able to easily merge different samples into one alignment to be processed with 'distIUPAC'
 #chromosome 'chr1' will be processed here
-angsd -doFasta 4 -doCounts 1 -minQ 20 -minMapQ 30 -uniqueOnly -setMinDepth 5 -setMaxDepth 1000 -iupacRatio 0.2 -i ind1.sorted.nodup.bam -out IND1.minQ20.minMapQ30.uniqueOnly.setMinDepth5.setMaxDepth100.chr1 -r chr1</code></pre>
+samtools index ind1.sorted.nodup.bam
+angsd -doFasta 4 -doCounts 1 -minQ 20 -minMapQ 30 -uniqueOnly -setMinDepth 5 -setMaxDepth 100 -iupacRatio 0.2 -i ind1.sorted.nodup.bam -out IND1.minQ20.minMapQ30.uniqueOnly.setMinDepth5.setMaxDepth100.chr1 -r chr1</code></pre>
 </div>
 <div id="step-4-repeat-step-1-to-step-3-for-multiple-individuals" class="section level2">
 <h2>STEP 4: Repeat STEP 1 to STEP 3 for multiple individuals</h2>
@@ -334,69 +335,11 @@ wget https://github.com/broadinstitute/picard/releases/download/2.17.4/picard.ja
 </div>
 <div id="angsd-installation" class="section level3">
 <h3>ANGSD installation</h3>
-<p>Until now the functionality to also consider a certain nucleotide depth for IUPAC assignment is not directly implemented in ANGSD. However, below you will find all necessary changes that need to be included in the original code to get this functionality.</p>
-<pre><code>git clone https://github.com/samtools/htslib.git;
+<pre><code>#download latest release ANGSD from https://github.com/ANGSD/angsd
+git clone https://github.com/samtools/htslib.git;
 git clone https://github.com/angsd/angsd.git;
 cd htslib;make;
-#change the follwoing files from ANGSD as given below
 cd ../angsd;
-#
-#'abcWriteFasta.h' CHANGES:
-# Line 11 add:
- double iupacRatio;
-#
-#'abcWriteFasta.cpp' CHANGES:
-# Line 29 add:
- fprintf(argFile,&quot;\t-iupacRatio\t%.3f\t (Remove nucleotide below total depth ratio for IUPAC assignment)\n&quot;,iupacRatio);
-#
-# Line 230 change the code into:
- }else if(doFasta==4){
-    //supplied by kristian ullrich
-    for(int s=0;s&lt;pars-&gt;numSites&amp;&amp;pars-&gt;posi[s]&lt;header-&gt;target_len[pars-&gt;refId];s++){
-      if(pars-&gt;keepSites[s]==0)
-        continue;
-      if(pars-&gt;nInd==1)
-        myFasta[pars-&gt;posi[s]] = intToIupac[ angsd::getIupacCount(pars-&gt;counts[s],0,iupacRatio) ];
-      else
-        myFasta[pars-&gt;posi[s]] = intToIupac[ angsd::getIupacCountTotal(pars-&gt;counts[s],pars-&gt;nInd,iupacRatio) ];
-    }
-  }
-#
-#'analysisFunction.h' CHANGES:
-#
-# Line 71 change the code into:
- int getIupacCount(suint *d, int i, double iRatio, int depth = -1);
-#
-# Line 74 change the code into:
- int getIupacCountTotal(suint *d, int nInd, double iRatio);
-#
-#'analysisFunction.cpp' CHANGES:
-#
-# Line 
- // iupack code supplied by kristian ullrich
- int angsd::getIupacCount(suint *counts,int i, double iRatio, int depth){
-
-  if(depth==-1){
-    depth=0;
-    for( int b = 0; b &lt; 4; b++ )
-      depth+=counts[b+4*i];
-  }
-
-  if(depth&lt;=0)
-    return 14;
-
-  int whichIUPAC = 0;
-  double bIUPACscore = 0;
-  for(int b=0;b&lt;4;b++){
-    //if (counts[b+4*i]&gt;0){
-    if (double(counts[b+4*i])/double(depth)&gt;iRatio){
-      bIUPACscore = bIUPACscore + pow(b+1,2);
-    }
-  }
-#
-#Line
-
-#
 make HTSSRC=../htslib</code></pre>
 </div>
 </div>
@@ -454,64 +397,11 @@ curl -L https://github.com/broadinstitute/picard/releases/download/2.17.4/picard
 </div>
 <div id="angsd-installation-1" class="section level3">
 <h3>ANGSD installation</h3>
-<pre><code>git clone https://github.com/samtools/htslib.git;
+<pre><code>#download latest release ANGSD from https://github.com/ANGSD/angsd
+git clone https://github.com/samtools/htslib.git;
 git clone https://github.com/angsd/angsd.git;
 cd htslib;/usr/local/Cellar/autoconf/2.69/bin/autoconf;/usr/local/Cellar/autoconf/2.69/bin/autoheader;./configure --disable-lzma;make;
-#change the follwoing files from ANGSD as given below
 cd ../angsd;
-#
-#'abcWriteFasta.h' CHANGES:
-# Line 11 add:
-# double iupacRatio;
-#
-#'abcWriteFasta.cpp' CHANGES:
-# Line 29 add:
-# fprintf(argFile,&quot;\t-iupacRatio\t%.3f\t (Remove nucleotide below total depth ratio for IUPAC assignment)\n&quot;,iupacRatio);
-#
-# Line 230 change the code into:
-#  }else if(doFasta==4){
-#    //supplied by kristian ullrich
-#    for(int s=0;s&lt;pars-&gt;numSites&amp;&amp;pars-&gt;posi[s]&lt;header-&gt;target_len[pars-&gt;refId];s++){
-#      if(pars-&gt;keepSites[s]==0)
-#        continue;
-#      if(pars-&gt;nInd==1)
-#        myFasta[pars-&gt;posi[s]] = intToIupac[ angsd::getIupacCount(pars-&gt;counts[s],0,iupacRatio) ];
-#      else
-#        myFasta[pars-&gt;posi[s]] = intToIupac[ angsd::getIupacCountTotal(pars-&gt;counts[s],pars-&gt;nInd,iupacRatio) ];
-#    }
-#  }
-#
-#'analysisFunction.h' CHANGES:
-#
-# Line 71 change the code into:
-# int getIupacCount(suint *d, int i, double iRatio, int depth = -1);
-#
-# Line 74 change the code into:
-# int getIupacCountTotal(suint *d, int nInd, double iRatio);
-#
-#'analysisFunction.cpp' CHANGES:
-#
-# Line 
-# // iupack code supplied by kristian ullrich
-# int angsd::getIupacCount(suint *counts,int i, double iRatio, int depth){
-#
-#  if(depth==-1){
-#    depth=0;
-#    for( int b = 0; b &lt; 4; b++ )
-#      depth+=counts[b+4*i];
-#  }
-#
-#  if(depth&lt;=0)
-#    return 14;
-#
-#  int whichIUPAC = 0;
-#  double bIUPACscore = 0;
-#  for(int b=0;b&lt;4;b++){
-#    //if (counts[b+4*i]&gt;0){
-#    if (double(counts[b+4*i])/double(depth)&gt;iRatio){
-#      bIUPACscore = bIUPACscore + pow(b+1,2);
-#    }
-#  }
 make HTSSRC=../htslib</code></pre>
 </div>
 </div>
