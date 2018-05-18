@@ -19,7 +19,8 @@ faidx2seq(fasta, start = NULL, end = NULL, format = "dna",
 \item{samtools}{path to samtools executable}
 }
 \description{
-This function returns a region of a bgzipped and samtools indexed fasta alignment file using \code{samtools}
+This function returns a region of a bgzipped and samtools indexed fasta alignment
+file using \code{samtools}
 }
 \examples{
 fasta.gz.file<-system.file("extdata", "example.fasta.gz", package="distIUPAC")

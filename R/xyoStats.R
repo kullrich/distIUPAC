@@ -1,6 +1,7 @@
 #' @title xyoStats
 #' @name xyoStats
-#' @description This function calculates \code{distIUPAC} based distances comparing two populations (x: receiver; y: donor) with an outgroup population (o: outgroup).
+#' @description This function calculates \code{distIUPAC} based distances comparing two populations
+#' (x: receiver; y: donor) with an outgroup population (o: outgroup).
 #' @import Biostrings
 #' @import ape
 #' @import doMC
@@ -19,9 +20,16 @@
 #' @param o.name population O name
 #' @param chr.name chromosome name
 #' @examples
+#' data("MySequences", package = "distIUPAC")
+#' CAS.pos<-5:34
+#' AFG.pos<-82:87
+#' SPRE.pos<-106:113
+#' AFG.SPRE.CAS.xyoStats<-xyoStats(MySequences, x.pos=AFG.pos, y.pos=SPRE.pos, o.pos=CAS.pos,
+#' threads=4, x.name="AFG", y.name="SPRE", o.name="CAS")
+#' AFG.SPRE.CAS.xyoStats
 #' @export xyoStats
 #' @author Kristian K Ullrich
-xyoStats<-function(dna,x.pos,y.pos,o.pos,wlen=25000,wjump=25000,wtype="bp",dist="IUPAC",threads=1,x.name="x",y.name="y",o.name="o",chr.name="chr"){
+xyoStats<-function(dna, x.pos, y.pos, o.pos, wlen=25000, wjump=25000, wtype="bp", dist="IUPAC", threads=1, x.name="x", y.name="y", o.name="o", chr.name="chr"){
   options(scipen=22)
   dna_<-dna[c(x.pos,y.pos,o.pos)]
   x.pos_<-seq(1,length(x.pos))
@@ -38,6 +46,7 @@ xyoStats<-function(dna,x.pos,y.pos,o.pos,wlen=25000,wjump=25000,wtype="bp",dist=
     tmp.POS<-triSites(dna_,c(x.pos_,y.pos_),threads=threads,pB=FALSE)
     tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=1,end.by=unique(width(dna)))
   }
+  j<-NULL
   pb<-txtProgressBar(min=1,max=dim(tmp.sw)[2],initial=1,style=3)
   registerDoMC(threads)
   OUT<-foreach(j=1:dim(tmp.sw)[2], .combine=rbind) %dopar% {

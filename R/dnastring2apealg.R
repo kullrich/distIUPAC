@@ -2,6 +2,7 @@
 #' @name dnastring2apealg
 #' @description This function transforms a \code{DNAStringSet} object from the \code{Biostrings} package into an \code{alignment} class of the \code{ape} package.
 #' @import Biostrings
+#' @import ape
 #' @param dna \code{DNAStringSet}
 #' @examples
 #' data("MySequences", package = "distIUPAC")

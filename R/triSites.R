@@ -1,6 +1,7 @@
 #' @title triSites
 #' @name triSites
-#' @description This function returns tri-allelic site positions given a dna object \code{DNAStringSet}, also with IUPAC code.
+#' @description This function returns tri-allelic site positions given a dna object
+#' \code{DNAStringSet}, also with IUPAC code.
 #' @import Biostrings
 #' @import ape
 #' @import doMC
@@ -25,12 +26,13 @@ triSites<-function(dna,x.pos=NULL,wlen=25000,threads=1,pB=TRUE){
   IUPAC_CODE_MAP_LIST<-list(c("A"),c("C"),c("G"),c("T"),c("A","C"),c("A","G"),c("A","T"),c("C","G"),c("C","T"),c("G","T"),c("A","C","G"),c("A","C","T"),c("A","G","T"),c("C","G","T"),c(),c(),c(),c())
   names(IUPAC_CODE_MAP_LIST)<-c("A","C","G","T","M","R","W","S","Y","K","V","H","D","B","N","-","+",".")
   options(scipen=22)
-  if(is.null(x.pos)){x.pos<-seq(1,length(dna))}
-  dna_<-dna[x.pos]
+  if(is.null(x.pos)){dna_<-dna}
+  if(!is.null(x.pos)){dna_<-dna[x.pos]}
   tmp.sw<-swgen(wlen=wlen,wjump=wlen,start.by=1,end.by=unique(width(dna)))
   if(pB){
     pb<-txtProgressBar(min=1,max=dim(tmp.sw)[2],initial=1,style=3)
   }
+  j<-NULL
   registerDoMC(threads)
   OUT<-foreach(j=1:dim(tmp.sw)[2], .combine=c) %dopar% {
     START<-NA

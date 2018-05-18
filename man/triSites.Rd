@@ -18,7 +18,8 @@ triSites(dna, x.pos = NULL, wlen = 25000, threads = 1, pB = TRUE)
 \item{pB}{specifies if progress should be shown as a progress bar}
 }
 \description{
-This function returns tri-allelic site positions given a dna object \code{DNAStringSet}, also with IUPAC code.
+This function returns tri-allelic site positions given a dna object
+\code{DNAStringSet}, also with IUPAC code.
 }
 \examples{
 data("MySequences", package = "distIUPAC")
@@ -26,9 +27,9 @@ data("MySequences", package = "distIUPAC")
 MySequences.triSites<-triSites(MySequences)
 as.matrix(MySequences)[,head(MySequences.triSites)]
 #consider only a subset of all sequences
-AFG.pos<-c(1,2,3,4,5,6)
-AFG.triSites<-triSites(MySequences,x.pos=AFG.pos)
-as.matrix(MySequences[AFG.pos])[,head(AFG.triSites)]
+CAS.pos<-5:34
+CAS.triSites<-triSites(MySequences,x.pos=CAS.pos)
+as.matrix(MySequences[CAS.pos])[,head(CAS.triSites)]
 }
 \author{
 Kristian K Ullrich

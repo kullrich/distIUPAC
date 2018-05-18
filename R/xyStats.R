@@ -1,6 +1,7 @@
 #' @title xyStats
 #' @name xyStats
-#' @description This function calculates \code{distIUPAC} based distances comparing two populations (x: receiver; y: donor).
+#' @description This function calculates \code{distIUPAC} based distances comparing two populations 
+#' (x: receiver; y: donor).
 #' @import Biostrings
 #' @import ape
 #' @import doMC
@@ -17,9 +18,20 @@
 #' @param y.name population Y name
 #' @param chr.name chromosome name
 #' @examples
+#' data("MySequences", package = "distIUPAC")
+#' CAS.pos<-5:34
+#' AFG.pos<-82:87
+#' #sliding windows based on base-pair length
+#' CAS.AFG.xyStats<-xyStats(MySequences, x.pos=CAS.pos, y.pos=AFG.pos,
+#' x.name="CAS", y.name="AFG", threads=4)
+#' CAS.AFG.xyStats
+#' #sliding windows based on biSites
+#' CAS.AFG.xyStats<-xyStats(MySequences, x.pos=CAS.pos, y.pos=AFG.pos,
+#' wlen=50, wtype="biSites", x.name="CAS", y.name="AFG", threads=4)
+#' CAS.AFG.xyStats
 #' @export xyStats
 #' @author Kristian K Ullrich
-xyStats<-function(dna,x.pos,y.pos,wlen=25000,wjump=25000,wtype="bp",dist="IUPAC",threads=1,x.name="x",y.name="y",chr.name="chr"){
+xyStats<-function(dna, x.pos, y.pos, wlen=25000, wjump=25000, wtype="bp", dist="IUPAC", threads=1, x.name="x", y.name="y", chr.name="chr"){
   options(scipen=22)
   dna_<-dna[c(x.pos,y.pos)]
   x.pos_<-seq(1,length(x.pos))
@@ -35,6 +47,7 @@ xyStats<-function(dna,x.pos,y.pos,wlen=25000,wjump=25000,wtype="bp",dist="IUPAC"
     tmp.POS<-triSites(dna_,c(x.pos_,y.pos_),threads=threads,pB=FALSE)
     tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=1,end.by=unique(width(dna)))
   }
+  j<-NULL
   pb<-txtProgressBar(min=1,max=dim(tmp.sw)[2],initial=1,style=3)
   registerDoMC(threads)
   OUT<-foreach(j=1:dim(tmp.sw)[2], .combine=rbind) %dopar% {

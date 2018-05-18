@@ -1,6 +1,7 @@
 #' @title xyMultiStats
 #' @name xyMultiStats
-#' @description This function calculates \code{distIUPAC} based distances comparing all possible pairwise population combinations.
+#' @description This function calculates \code{distIUPAC} based distances comparing all
+#' possible pairwise population combinations.
 #' @import Biostrings
 #' @import ape
 #' @import doMC
@@ -14,6 +15,19 @@
 #' @param threads number of parallel threads
 #' @param chr.name chromosome name
 #' @examples
+#' data("MySequences", package = "distIUPAC")
+#' CAS.pos<-5:34
+#' AFG.pos<-82:87
+#' SPRE.pos<-106:113
+#' pop.list<-list(CAS.pos, AFG.pos, SPRE.pos)
+#' names(pop.list)<-c("AFG", "CAS", "SPRE")
+#' #sliding windows based on base-pair length
+#' CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, list.pos=pop.list, threads=4)
+#' CAS.AFG.SPRE.xyMultiStats
+#' #sliding windows based on biSites
+#' CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, list.pos=pop.list,
+#' wtype="biSites", wlen=50, threads=4)
+#' CAS.AFG.SPRE.xyMultiStats
 #' @export xyMultiStats
 #' @author Kristian K Ullrich
 xyMultiStats<-function(dna,list.pos,wlen=25000,wjump=25000,wtype="bp",dist="IUPAC",threads=1,chr.name="chr"){
@@ -41,6 +55,7 @@ xyMultiStats<-function(dna,list.pos,wlen=25000,wjump=25000,wtype="bp",dist="IUPA
       tmp.POS<-triSites(dna_,c(x.pos_,y.pos_),threads=threads,pB=FALSE)
       tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=1,end.by=unique(width(dna)))
     }
+    j<-NULL
     pb<-txtProgressBar(min=1,max=dim(tmp.sw)[2],initial=1,style=3)
     registerDoMC(threads)
     OUT<-foreach(j=1:dim(tmp.sw)[2], .combine=rbind) %dopar% {
