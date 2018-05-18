@@ -14,7 +14,7 @@ This function transforms a \code{DNAStringSet} object from the \code{Biostrings}
 }
 \examples{
 data("MySequences", package = "distIUPAC")
-alignment <- dnastring2apealg(MySequences$dna)
+alignment <- dnastring2apealg(MySequences)
 alignment.bin <- as.DNAbin(alignment)
 }
 \seealso{

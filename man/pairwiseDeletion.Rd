@@ -5,6 +5,7 @@
 pairwiseDeletion()
 }
 \description{
+This function returns the number of used sites for pairwise distance calculations obtained via \link[ape]{dist.dna}.
 }
 \examples{
 data("woodmouse", , package = "ape")

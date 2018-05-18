@@ -2,14 +2,17 @@
 \alias{distIUPAC}
 \title{distIUPAC}
 \usage{
-distIUPAC()
+distIUPAC(myvector)
+}
+\arguments{
+\item{myvector}{\code{as.character(DNAStringSet)}}
 }
 \description{
+This function calculates IUPAC distances on \code{Biostrings} \code{DNAStringSet} and \code{BStringSet} objects.
 }
 \examples{
 data("MySequences", package = "distIUPAC")
-distIUPAC(as.character(MySequences$dna))
-distIUPAC(as.character(MySequences$iupac))
+distIUPAC(as.character(MySequences))
 }
 \author{
 Kristian K Ullrich

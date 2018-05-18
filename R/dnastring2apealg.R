@@ -5,7 +5,7 @@
 #' @param dna \code{DNAStringSet}
 #' @examples
 #' data("MySequences", package = "distIUPAC")
-#' alignment <- dnastring2apealg(MySequences$dna)
+#' alignment <- dnastring2apealg(MySequences)
 #' alignment.bin <- as.DNAbin(alignment)
 #' @seealso \link[Biostrings]{DNAStringSet}, \link[ape]{as.alignment}
 #' @export dnastring2apealg

@@ -1,12 +1,13 @@
 #' @title posgen
 #' @name posgen
 #' @description This function constructs a sliding window matrix based on a SNP position vector
-#' @param pos
-#' @param wlen
-#' @param start.by
-#' @param end.by
+#' @param pos position vector
+#' @param wlen number of positions per window
+#' @param start.by start position
+#' @param end.by end position
 #' @examples
 #' sw <- posgen(seq(1,975,by=5), 50, 1, 1000)
+#' @seealso \link[distIUPAC]{swgen}, \link[distIUPAC]{biSites}, \link[distIUPAC]{triSites}
 #' @export posgen
 #' @author Kristian K Ullrich
 posgen<-function(pos,wlen=50,start.by=1,end.by=1000){

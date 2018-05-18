@@ -23,7 +23,7 @@ myEnd<-c(2,4)
 mySubSequence <- subString(MySequence$dna, myStart, myEnd)
 }
 \seealso{
-\link[Biostrings]{subseq}
+\link[XVector]{subseq}
 }
 \author{
 Kristian K Ullrich
