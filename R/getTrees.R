@@ -18,13 +18,16 @@
 #' @param x.name population X name
 #' @param r.name root name
 #' @param chr.name chromosome name
+#' @param plot indicates if tree should be plotted
 #' @examples
 #' data("MySequences", package = "distIUPAC")
 #' x.pos<-c(1,2,3,4,5,35,63,71,79,82,88,89,97,105,106,114,115,116,117)
 #' r.pos<-116
-#' trees<-getTrees(MySequences, x.pos = x.pos, r.pos = r.pos, wlen = 10000, wjump = 10000, x.name = "all", r.name = "Rnor", threads = 1)
+#' trees<-getTrees(MySequences, x.pos = x.pos, r.pos = r.pos,
+#' wlen = 10000, wjump = 10000, x.name = "all", r.name = "Rnor", threads = 1)
 #' trees
-#' trees<-getTrees(MySequences, x.pos = x.pos, r.pos = r.pos, wlen = 10000, wjump = 10000, x.name = "all", r.name = "Rnor", threads = 1, plot = TRUE)
+#' trees<-getTrees(MySequences, x.pos = x.pos, r.pos = r.pos,
+#' wlen = 10000, wjump = 10000, x.name = "all", r.name = "Rnor", threads = 1, plot = TRUE)
 #' @export getTrees
 #' @author Kristian K Ullrich
 getTrees<-function(dna, x.pos=NULL, r.pos=1, wlen=25000, wjump=25000, wtype="bp", dist="IUPAC", model="bionjs", threads=1, x.name="x", r.name="r", chr.name="chr", plot=FALSE){

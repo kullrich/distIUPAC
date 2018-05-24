@@ -32,6 +32,8 @@ getTrees(dna, x.pos = NULL, r.pos = 1, wlen = 25000, wjump = 25000,
 \item{r.name}{root name}
 
 \item{chr.name}{chromosome name}
+
+\item{plot}{indicates if tree should be plotted}
 }
 \description{
 This function returns nieghbor-joining (\link[ape]{njs} or \link[ape]{bionjs})
@@ -41,9 +43,11 @@ trees based on \code{distIUPAC} based distances rooted to a specific indibidual.
 data("MySequences", package = "distIUPAC")
 x.pos<-c(1,2,3,4,5,35,63,71,79,82,88,89,97,105,106,114,115,116,117)
 r.pos<-116
-trees<-getTrees(MySequences, x.pos = x.pos, r.pos = r.pos, wlen = 10000, wjump = 10000, x.name = "all", r.name = "Rnor", threads = 1)
+trees<-getTrees(MySequences, x.pos = x.pos, r.pos = r.pos,
+wlen = 10000, wjump = 10000, x.name = "all", r.name = "Rnor", threads = 1)
 trees
-trees<-getTrees(MySequences, x.pos = x.pos, r.pos = r.pos, wlen = 10000, wjump = 10000, x.name = "all", r.name = "Rnor", threads = 1, plot = TRUE)
+trees<-getTrees(MySequences, x.pos = x.pos, r.pos = r.pos,
+wlen = 10000, wjump = 10000, x.name = "all", r.name = "Rnor", threads = 1, plot = TRUE)
 }
 \author{
 Kristian K Ullrich

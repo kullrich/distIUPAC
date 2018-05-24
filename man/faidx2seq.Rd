@@ -27,7 +27,8 @@ fasta.gz.file<-system.file("extdata", "example.fasta.gz", package="distIUPAC")
 #complete alignment
 dna<-faidx2seq(fasta.gz.file, format="dna", samtools="samtools")
 #region from 5001 to 15000 from alignment
-dna.region<-faidx2seq(fasta.gz.file, start = 5001, end = 15000, format = "dna", samtools = "samtools")
+dna.region<-faidx2seq(fasta.gz.file, start = 5001, end = 15000,
+format = "dna", samtools = "samtools")
 }
 \author{
 Kristian K Ullrich

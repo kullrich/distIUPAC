@@ -5,7 +5,7 @@
 #' MyScoreMatrix <- scoreMatrix()
 #' MyScoreMatrix["A","R"] <- 0.5
 #' data("MySequences", package = "distIUPAC")
-#' distIUPACmatrix(MySequences, MyScoreMatrix)
+#' distIUPACmatrix(as.charachter(MySequences), MyScoreMatrix)
 #' @seealso \link[distIUPAC]{distIUPACmatrix}, \link[ape]{dist.dna}
 #' @export scoreMatrix
 #' @author Kristian K Ullrich
