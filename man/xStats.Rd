@@ -33,7 +33,7 @@ This function calculates \code{distIUPAC} based distances within one population
 \examples{
 data("MySequences", package = "distIUPAC")
 CAS.pos<-5:34
-CAS.xStats<-xStats(MySequences, x.pos=CAS.pos, x.name="CAS")
+CAS.xStats<-xStats(MySequences, x.pos = CAS.pos, x.name = "CAS")
 CAS.xStats
 }
 \author{

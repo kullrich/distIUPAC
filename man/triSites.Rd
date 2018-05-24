@@ -28,7 +28,7 @@ MySequences.triSites<-triSites(MySequences)
 as.matrix(MySequences)[,head(MySequences.triSites)]
 #consider only a subset of all sequences
 CAS.pos<-5:34
-CAS.triSites<-triSites(MySequences,x.pos=CAS.pos)
+CAS.triSites<-triSites(MySequences, x.pos = CAS.pos)
 as.matrix(MySequences[CAS.pos])[,head(CAS.triSites)]
 }
 \author{

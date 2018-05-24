@@ -44,8 +44,8 @@ data("MySequences", package = "distIUPAC")
 CAS.pos<-5:34
 AFG.pos<-82:87
 SPRE.pos<-106:113
-AFG.SPRE.CAS.xyoStats<-xyoStats(MySequences, x.pos=AFG.pos, y.pos=SPRE.pos, o.pos=CAS.pos,
-threads=4, x.name="AFG", y.name="SPRE", o.name="CAS")
+AFG.SPRE.CAS.xyoStats<-xyoStats(MySequences, x.pos = AFG.pos, y.pos = SPRE.pos, o.pos = CAS.pos,
+threads = 4, x.name = "AFG", y.name = "SPRE", o.name = "CAS")
 AFG.SPRE.CAS.xyoStats
 }
 \author{

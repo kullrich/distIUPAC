@@ -9,7 +9,7 @@
 #' data("MySequences", package = "distIUPAC")
 #' myStart<-c(1,3)
 #' myEnd<-c(2,4)
-#' mySubSequence <- subString(MySequence$dna, myStart, myEnd)
+#' mySubSequence <- subString(MySequence, myStart, myEnd)
 #' @seealso \link[XVector]{subseq}
 #' @export subString
 #' @author Kristian K Ullrich

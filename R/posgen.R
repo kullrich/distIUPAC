@@ -6,7 +6,7 @@
 #' @param start.by start position
 #' @param end.by end position
 #' @examples
-#' sw <- posgen(seq(1,975,by=5), 50, 1, 1000)
+#' sw <- posgen(seq(1, 975, by = 5), 50, 1, 1000)
 #' @seealso \link[distIUPAC]{swgen}, \link[distIUPAC]{biSites}, \link[distIUPAC]{triSites}
 #' @export posgen
 #' @author Kristian K Ullrich

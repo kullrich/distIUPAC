@@ -19,7 +19,7 @@ posgen(pos, wlen = 50, start.by = 1, end.by = 1000)
 This function constructs a sliding window matrix based on a SNP position vector
 }
 \examples{
-sw <- posgen(seq(1,975,by=5), 50, 1, 1000)
+sw <- posgen(seq(1, 975, by = 5), 50, 1, 1000)
 }
 \seealso{
 \link[distIUPAC]{swgen}, \link[distIUPAC]{biSites}, \link[distIUPAC]{triSites}

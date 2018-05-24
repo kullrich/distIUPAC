@@ -18,7 +18,7 @@
 #' as.matrix(MySequences)[,head(MySequences.biSites)]
 #' #consider only a subset of all sequences
 #' CAS.pos<-5:34
-#' CAS.biSites<-biSites(MySequences,x.pos=CAS.pos)
+#' CAS.biSites<-biSites(MySequences, x.pos = CAS.pos)
 #' as.matrix(MySequences[CAS.pos])[,head(CAS.biSites)]
 #' @export biSites
 #' @author Kristian K Ullrich

@@ -40,12 +40,12 @@ data("MySequences", package = "distIUPAC")
 CAS.pos<-5:34
 AFG.pos<-82:87
 #sliding windows based on base-pair length
-CAS.AFG.xyStats<-xyStats(MySequences, x.pos=CAS.pos, y.pos=AFG.pos,
-x.name="CAS", y.name="AFG", threads=4)
+CAS.AFG.xyStats<-xyStats(MySequences, x.pos = CAS.pos, y.pos = AFG.pos,
+x.name = "CAS", y.name = "AFG", threads = 4)
 CAS.AFG.xyStats
 #sliding windows based on biSites
-CAS.AFG.xyStats<-xyStats(MySequences, x.pos=CAS.pos, y.pos=AFG.pos,
-wlen=50, wtype="biSites", x.name="CAS", y.name="AFG", threads=4)
+CAS.AFG.xyStats<-xyStats(MySequences, x.pos = CAS.pos, y.pos = AFG.pos,
+wlen = 50, wtype = "biSites", x.name = "CAS", y.name = "AFG", threads = 4)
 CAS.AFG.xyStats
 }
 \author{

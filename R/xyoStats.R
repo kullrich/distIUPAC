@@ -24,8 +24,8 @@
 #' CAS.pos<-5:34
 #' AFG.pos<-82:87
 #' SPRE.pos<-106:113
-#' AFG.SPRE.CAS.xyoStats<-xyoStats(MySequences, x.pos=AFG.pos, y.pos=SPRE.pos, o.pos=CAS.pos,
-#' threads=4, x.name="AFG", y.name="SPRE", o.name="CAS")
+#' AFG.SPRE.CAS.xyoStats<-xyoStats(MySequences, x.pos = AFG.pos, y.pos = SPRE.pos, o.pos = CAS.pos,
+#' threads = 4, x.name = "AFG", y.name = "SPRE", o.name = "CAS")
 #' AFG.SPRE.CAS.xyoStats
 #' @export xyoStats
 #' @author Kristian K Ullrich
@@ -78,21 +78,21 @@ xyoStats<-function(dna, x.pos, y.pos, o.pos, wlen=25000, wjump=25000, wtype="bp"
     tmp.seq<-subseq(dna_,OUT$START,OUT$END)
     if(dist=="IUPAC"){
       tmp.seq.dist<-distIUPAC(as.character(tmp.seq))
-      OUT$dMean.xy<-mean(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=T)
-      OUT$dSites.xy<-mean(tmp.seq.dist$sitesUsed[x.pos_,y.pos_],na.rm=T)
-      OUT$dMin.xy<-min(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=T)
-      OUT$dMean.xo<-mean(tmp.seq.dist$distIUPAC[x.pos_,o.pos_],na.rm=T)
-      OUT$dSites.xo<-mean(tmp.seq.dist$sitesUsed[x.pos_,o.pos_],na.rm=T)
-      OUT$dMin.xo<-min(tmp.seq.dist$distIUPAC[x.pos_,o.pos_],na.rm=T)
-      OUT$dMean.yo<-mean(tmp.seq.dist$distIUPAC[y.pos_,o.pos_],na.rm=T)
-      OUT$dSites.yo<-mean(tmp.seq.dist$sitesUsed[y.pos_,o.pos_],na.rm=T)
-      OUT$dMin.yo<-min(tmp.seq.dist$distIUPAC[y.pos_,o.pos_],na.rm=T)
-      OUT$dMean.xy<-mean(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=T)
-      OUT$dSites.xy<-mean(tmp.seq.dist$sitesUsed[x.pos_,y.pos_],na.rm=T)
-      OUT$dMin.xy<-min(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=T)
-      OUT$dMean.xyo<-mean(as.dist(tmp.seq.dist$distIUPAC),na.rm=T)
-      OUT$dSites.xyo<-mean(as.dist(tmp.seq.dist$sitesUsed),na.rm=T)
-      OUT$dMin.xyo<-min(as.dist(tmp.seq.dist$distIUPAC),na.rm=T)
+      OUT$dMean.xy<-mean(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=TRUE)
+      OUT$dSites.xy<-mean(tmp.seq.dist$sitesUsed[x.pos_,y.pos_],na.rm=TRUE)
+      OUT$dMin.xy<-min(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=TRUE)
+      OUT$dMean.xo<-mean(tmp.seq.dist$distIUPAC[x.pos_,o.pos_],na.rm=TRUE)
+      OUT$dSites.xo<-mean(tmp.seq.dist$sitesUsed[x.pos_,o.pos_],na.rm=TRUE)
+      OUT$dMin.xo<-min(tmp.seq.dist$distIUPAC[x.pos_,o.pos_],na.rm=TRUE)
+      OUT$dMean.yo<-mean(tmp.seq.dist$distIUPAC[y.pos_,o.pos_],na.rm=TRUE)
+      OUT$dSites.yo<-mean(tmp.seq.dist$sitesUsed[y.pos_,o.pos_],na.rm=TRUE)
+      OUT$dMin.yo<-min(tmp.seq.dist$distIUPAC[y.pos_,o.pos_],na.rm=TRUE)
+      OUT$dMean.xy<-mean(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=TRUE)
+      OUT$dSites.xy<-mean(tmp.seq.dist$sitesUsed[x.pos_,y.pos_],na.rm=TRUE)
+      OUT$dMin.xy<-min(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=TRUE)
+      OUT$dMean.xyo<-mean(as.dist(tmp.seq.dist$distIUPAC),na.rm=TRUE)
+      OUT$dSites.xyo<-mean(as.dist(tmp.seq.dist$sitesUsed),na.rm=TRUE)
+      OUT$dMin.xyo<-min(as.dist(tmp.seq.dist$distIUPAC),na.rm=TRUE)
       OUT$deltaMean.xyo<-OUT$dMean.xy-OUT$dMean.xo
       OUT$deltaMin.xyo<-OUT$dMin.xy-OUT$dMean.xo
       OUT$RNDmin.xyo<-OUT$dMin.xy-((OUT$dMean.xo+OUT$dMean.yo)/2)
@@ -100,21 +100,21 @@ xyoStats<-function(dna, x.pos, y.pos, o.pos, wlen=25000, wjump=25000, wtype="bp"
     if(dist!="IUPAC"){
       tmp.seq.dist<-dist.dna(as.DNAbin(dnastring2apealg(tmp.seq)),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
       tmp.seq.sites<-pairwiseDeletion(as.character(tmp.seq))$sitesUsed
-      OUT$dMean.xy<-mean(tmp.seq.dist[x.pos_,y.pos_],na.rm=T)
-      OUT$dSites.xy<-mean(tmp.seq.sites[x.pos_,y.pos_],na.rm=T)
-      OUT$dMin.xy<-min(tmp.seq.dist[x.pos_,y.pos_],na.rm=T)
-      OUT$dMean.xo<-mean(tmp.seq.dist[x.pos_,o.pos_],na.rm=T)
-      OUT$dSites.xo<-mean(tmp.seq.sites[x.pos_,o.pos_],na.rm=T)
-      OUT$dMin.xo<-min(tmp.seq.dist[x.pos_,o.pos_],na.rm=T)
-      OUT$dMean.yo<-mean(tmp.seq.dist[y.pos_,o.pos_],na.rm=T)
-      OUT$dSites.yo<-mean(tmp.seq.sites[y.pos_,o.pos_],na.rm=T)
-      OUT$dMin.yo<-min(tmp.seq.dist[y.pos_,o.pos_],na.rm=T)
-      OUT$dMean.xy<-mean(tmp.seq.dist[x.pos_,y.pos_],na.rm=T)
-      OUT$dSites.xy<-mean(tmp.seq.sites[x.pos_,y.pos_],na.rm=T)
-      OUT$dMin.xy<-min(tmp.seq.dist[x.pos_,y.pos_],na.rm=T)
-      OUT$dMean.xyo<-mean(as.dist(tmp.seq.dist),na.rm=T)
-      OUT$dSites.xyo<-mean(as.dist(tmp.seq.sites),na.rm=T)
-      OUT$dMin.xyo<-min(as.dist(tmp.seq.dist),na.rm=T)
+      OUT$dMean.xy<-mean(tmp.seq.dist[x.pos_,y.pos_],na.rm=TRUE)
+      OUT$dSites.xy<-mean(tmp.seq.sites[x.pos_,y.pos_],na.rm=TRUE)
+      OUT$dMin.xy<-min(tmp.seq.dist[x.pos_,y.pos_],na.rm=TRUE)
+      OUT$dMean.xo<-mean(tmp.seq.dist[x.pos_,o.pos_],na.rm=TRUE)
+      OUT$dSites.xo<-mean(tmp.seq.sites[x.pos_,o.pos_],na.rm=TRUE)
+      OUT$dMin.xo<-min(tmp.seq.dist[x.pos_,o.pos_],na.rm=TRUE)
+      OUT$dMean.yo<-mean(tmp.seq.dist[y.pos_,o.pos_],na.rm=TRUE)
+      OUT$dSites.yo<-mean(tmp.seq.sites[y.pos_,o.pos_],na.rm=TRUE)
+      OUT$dMin.yo<-min(tmp.seq.dist[y.pos_,o.pos_],na.rm=TRUE)
+      OUT$dMean.xy<-mean(tmp.seq.dist[x.pos_,y.pos_],na.rm=TRUE)
+      OUT$dSites.xy<-mean(tmp.seq.sites[x.pos_,y.pos_],na.rm=TRUE)
+      OUT$dMin.xy<-min(tmp.seq.dist[x.pos_,y.pos_],na.rm=TRUE)
+      OUT$dMean.xyo<-mean(as.dist(tmp.seq.dist),na.rm=TRUE)
+      OUT$dSites.xyo<-mean(as.dist(tmp.seq.sites),na.rm=TRUE)
+      OUT$dMin.xyo<-min(as.dist(tmp.seq.dist),na.rm=TRUE)
       OUT$deltaMean.xyo<-OUT$dMean.xy-OUT$dMean.xo
       OUT$deltaMin.xyo<-OUT$dMin.xy-OUT$dMean.xo
       OUT$RNDmin.xyo<-OUT$dMin.xy-((OUT$dMean.xo+OUT$dMean.yo)/2)

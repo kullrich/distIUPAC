@@ -18,7 +18,7 @@
 #' @examples
 #' data("MySequences", package = "distIUPAC")
 #' CAS.pos<-5:34
-#' CAS.xStats<-xStats(MySequences, x.pos=CAS.pos, x.name="CAS")
+#' CAS.xStats<-xStats(MySequences, x.pos = CAS.pos, x.name = "CAS")
 #' CAS.xStats
 #' @export xStats
 #' @author Kristian K Ullrich
@@ -58,20 +58,20 @@ xStats<-function(dna, x.pos=NULL, wlen=25000, wjump=25000, wtype="bp", dist="IUP
     tmp.seq<-subseq(dna_,OUT$START,OUT$END)
     if(dist=="IUPAC"){
       tmp.seq.dist<-distIUPAC(as.character(tmp.seq))
-      OUT$dMean.x<-mean(as.dist(tmp.seq.dist$distIUPAC),na.rm=T)
-      OUT$dSd.x<-sd(as.dist(tmp.seq.dist$distIUPAC),na.rm=T)
-      OUT$dSites.x<-mean(as.dist(tmp.seq.dist$sitesUsed),na.rm=T)
-      OUT$dMin.x<-min(as.dist(tmp.seq.dist$distIUPAC),na.rm=T)
-      OUT$dMax.x<-max(as.dist(tmp.seq.dist$distIUPAC),na.rm=T)
+      OUT$dMean.x<-mean(as.dist(tmp.seq.dist$distIUPAC),na.rm=TRUE)
+      OUT$dSd.x<-sd(as.dist(tmp.seq.dist$distIUPAC),na.rm=TRUE)
+      OUT$dSites.x<-mean(as.dist(tmp.seq.dist$sitesUsed),na.rm=TRUE)
+      OUT$dMin.x<-min(as.dist(tmp.seq.dist$distIUPAC),na.rm=TRUE)
+      OUT$dMax.x<-max(as.dist(tmp.seq.dist$distIUPAC),na.rm=TRUE)
     }
     if(dist!="IUPAC"){
       tmp.seq.dist<-dist.dna(as.DNAbin(dnastring2apealg(tmp.seq)),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
       tmp.seq.sites<-pairwiseDeletion(as.character(tmp.seq))$sitesUsed
-      OUT$dMean.x<-mean(as.dist(tmp.seq.dist),na.rm=T)
-      OUT$dSd.x<-sd(as.dist(tmp.seq.dist),na.rm=T)
-      OUT$dSites.x<-mean(as.dist(tmp.seq.sites),na.rm=T)
-      OUT$dMin.x<-min(as.dist(tmp.seq.dist),na.rm=T)
-      OUT$dMax.x<-max(as.dist(tmp.seq.dist),na.rm=T)
+      OUT$dMean.x<-mean(as.dist(tmp.seq.dist),na.rm=TRUE)
+      OUT$dSd.x<-sd(as.dist(tmp.seq.dist),na.rm=TRUE)
+      OUT$dSites.x<-mean(as.dist(tmp.seq.sites),na.rm=TRUE)
+      OUT$dMin.x<-min(as.dist(tmp.seq.dist),na.rm=TRUE)
+      OUT$dMax.x<-max(as.dist(tmp.seq.dist),na.rm=TRUE)
     }
     setTxtProgressBar(pb,j)
     OUT

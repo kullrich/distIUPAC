@@ -22,11 +22,11 @@
 #' pop.list<-list(CAS.pos, AFG.pos, SPRE.pos)
 #' names(pop.list)<-c("AFG", "CAS", "SPRE")
 #' #sliding windows based on base-pair length
-#' CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, list.pos=pop.list, threads=4)
+#' CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, list.pos = pop.list, threads = 4)
 #' CAS.AFG.SPRE.xyMultiStats
 #' #sliding windows based on biSites
-#' CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, list.pos=pop.list,
-#' wtype="biSites", wlen=50, threads=4)
+#' CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, list.pos = pop.list,
+#' wtype = "biSites", wlen = 50, threads = 4)
 #' CAS.AFG.SPRE.xyMultiStats
 #' @export xyMultiStats
 #' @author Kristian K Ullrich
@@ -90,22 +90,22 @@ xyMultiStats<-function(dna,list.pos,wlen=25000,wjump=25000,wtype="bp",dist="IUPA
       tmp.seq<-subseq(dna_,OUT$START,OUT$END)
       if(dist=="IUPAC"){
         tmp.seq.dist<-distIUPAC(as.character(tmp.seq))
-        OUT$dMean.x<-mean(as.dist(tmp.seq.dist$distIUPAC[x.pos_,x.pos_]),na.rm=T)
-        OUT$dSd.x<-sd(as.dist(tmp.seq.dist$distIUPAC[x.pos_,x.pos_]),na.rm=T)
-        OUT$dSites.x<-mean(as.dist(tmp.seq.dist$sitesUsed[x.pos_,x.pos_]),na.rm=T)
-        OUT$dMin.x<-min(as.dist(tmp.seq.dist$distIUPAC[x.pos_,x.pos_]),na.rm=T)
-        OUT$dMax.x<-max(as.dist(tmp.seq.dist$distIUPAC[x.pos_,x.pos_]),na.rm=T)
-        OUT$dMean.y<-mean(as.dist(tmp.seq.dist$distIUPAC[y.pos_,y.pos_]),na.rm=T)
-        OUT$dSd.y<-sd(as.dist(tmp.seq.dist$distIUPAC[y.pos_,y.pos_]),na.rm=T)
-        OUT$dSites.y<-mean(as.dist(tmp.seq.dist$sitesUsed[y.pos_,y.pos_]),na.rm=T)
-        OUT$dMin.y<-min(as.dist(tmp.seq.dist$distIUPAC[y.pos_,y.pos_]),na.rm=T)
-        OUT$dMax.y<-max(as.dist(tmp.seq.dist$distIUPAC[y.pos_,y.pos_]),na.rm=T)
-        OUT$dMean.xy<-mean(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=T)
-        OUT$dSd.xy<-sd(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=T)
-        OUT$dSites.xy<-mean(tmp.seq.dist$sitesUsed[x.pos_,y.pos_],na.rm=T)
-        OUT$dMin.xy<-min(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=T)
-        OUT$dMax.xy<-max(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=T)
-        OUT$dTotal.xy<-mean(as.dist(tmp.seq.dist$distIUPAC),na.rm=T)
+        OUT$dMean.x<-mean(as.dist(tmp.seq.dist$distIUPAC[x.pos_,x.pos_]),na.rm=TRUE)
+        OUT$dSd.x<-sd(as.dist(tmp.seq.dist$distIUPAC[x.pos_,x.pos_]),na.rm=TRUE)
+        OUT$dSites.x<-mean(as.dist(tmp.seq.dist$sitesUsed[x.pos_,x.pos_]),na.rm=TRUE)
+        OUT$dMin.x<-min(as.dist(tmp.seq.dist$distIUPAC[x.pos_,x.pos_]),na.rm=TRUE)
+        OUT$dMax.x<-max(as.dist(tmp.seq.dist$distIUPAC[x.pos_,x.pos_]),na.rm=TRUE)
+        OUT$dMean.y<-mean(as.dist(tmp.seq.dist$distIUPAC[y.pos_,y.pos_]),na.rm=TRUE)
+        OUT$dSd.y<-sd(as.dist(tmp.seq.dist$distIUPAC[y.pos_,y.pos_]),na.rm=TRUE)
+        OUT$dSites.y<-mean(as.dist(tmp.seq.dist$sitesUsed[y.pos_,y.pos_]),na.rm=TRUE)
+        OUT$dMin.y<-min(as.dist(tmp.seq.dist$distIUPAC[y.pos_,y.pos_]),na.rm=TRUE)
+        OUT$dMax.y<-max(as.dist(tmp.seq.dist$distIUPAC[y.pos_,y.pos_]),na.rm=TRUE)
+        OUT$dMean.xy<-mean(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=TRUE)
+        OUT$dSd.xy<-sd(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=TRUE)
+        OUT$dSites.xy<-mean(tmp.seq.dist$sitesUsed[x.pos_,y.pos_],na.rm=TRUE)
+        OUT$dMin.xy<-min(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=TRUE)
+        OUT$dMax.xy<-max(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=TRUE)
+        OUT$dTotal.xy<-mean(as.dist(tmp.seq.dist$distIUPAC),na.rm=TRUE)
         OUT$dSweighted.xy<-(length(x.pos_)/(length(c(x.pos_,y.pos_)))) * OUT$dMean.x + (length(y.pos_)/(length(c(x.pos_,y.pos_)))) * OUT$dMean.y
         OUT$Fst.xy<-(OUT$dTotal.xy - OUT$dSweighted.xy) / OUT$dTotal.xy
         OUT$dRelative.xy<-OUT$dMean.xy - OUT$dSweighted.xy
@@ -113,22 +113,22 @@ xyMultiStats<-function(dna,list.pos,wlen=25000,wjump=25000,wtype="bp",dist="IUPA
       if(dist!="IUPAC"){
         tmp.seq.dist<-dist.dna(as.DNAbin(dnastring2apealg(tmp.seq)),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
         tmp.seq.sites<-pairwiseDeletion(as.character(tmp.seq))$sitesUsed
-        OUT$dMean.x<-mean(as.dist(tmp.seq.dist[x.pos_,x.pos_]),na.rm=T)
-        OUT$dSd.x<-sd(as.dist(tmp.seq.dist[x.pos_,x.pos_]),na.rm=T)
-        OUT$dSites.x<-mean(as.dist(tmp.seq.sites[x.pos_,x.pos_]),na.rm=T)
-        OUT$dMin.x<-min(as.dist(tmp.seq.dist[x.pos_,x.pos_]),na.rm=T)
-        OUT$dMax.x<-max(as.dist(tmp.seq.dist[x.pos_,x.pos_]),na.rm=T)
-        OUT$dMean.y<-mean(as.dist(tmp.seq.dist[y.pos_,y.pos_]),na.rm=T)
-        OUT$dSd.y<-sd(as.dist(tmp.seq.dist[y.pos_,y.pos_]),na.rm=T)
-        OUT$dSites.y<-mean(as.dist(tmp.seq.sites[y.pos_,y.pos_]),na.rm=T)
-        OUT$dMin.y<-min(as.dist(tmp.seq.dist[y.pos_,y.pos_]),na.rm=T)
-        OUT$dMax.y<-max(as.dist(tmp.seq.dist[y.pos_,y.pos_]),na.rm=T)
-        OUT$dMean.xy<-mean(tmp.seq.dist[x.pos_,y.pos_],na.rm=T)
-        OUT$dSd.xy<-sd(tmp.seq.dist[x.pos_,y.pos_],na.rm=T)
-        OUT$dSites.xy<-mean(tmp.seq.sites[x.pos_,y.pos_],na.rm=T)
-        OUT$dMin.xy<-min(tmp.seq.dist[x.pos_,y.pos_],na.rm=T)
-        OUT$dMax.xy<-max(tmp.seq.dist[x.pos_,y.pos_],na.rm=T)
-        OUT$dTotal.xy<-mean(as.dist(tmp.seq.dist),na.rm=T)
+        OUT$dMean.x<-mean(as.dist(tmp.seq.dist[x.pos_,x.pos_]),na.rm=TRUE)
+        OUT$dSd.x<-sd(as.dist(tmp.seq.dist[x.pos_,x.pos_]),na.rm=TRUE)
+        OUT$dSites.x<-mean(as.dist(tmp.seq.sites[x.pos_,x.pos_]),na.rm=TRUE)
+        OUT$dMin.x<-min(as.dist(tmp.seq.dist[x.pos_,x.pos_]),na.rm=TRUE)
+        OUT$dMax.x<-max(as.dist(tmp.seq.dist[x.pos_,x.pos_]),na.rm=TRUE)
+        OUT$dMean.y<-mean(as.dist(tmp.seq.dist[y.pos_,y.pos_]),na.rm=TRUE)
+        OUT$dSd.y<-sd(as.dist(tmp.seq.dist[y.pos_,y.pos_]),na.rm=TRUE)
+        OUT$dSites.y<-mean(as.dist(tmp.seq.sites[y.pos_,y.pos_]),na.rm=TRUE)
+        OUT$dMin.y<-min(as.dist(tmp.seq.dist[y.pos_,y.pos_]),na.rm=TRUE)
+        OUT$dMax.y<-max(as.dist(tmp.seq.dist[y.pos_,y.pos_]),na.rm=TRUE)
+        OUT$dMean.xy<-mean(tmp.seq.dist[x.pos_,y.pos_],na.rm=TRUE)
+        OUT$dSd.xy<-sd(tmp.seq.dist[x.pos_,y.pos_],na.rm=TRUE)
+        OUT$dSites.xy<-mean(tmp.seq.sites[x.pos_,y.pos_],na.rm=TRUE)
+        OUT$dMin.xy<-min(tmp.seq.dist[x.pos_,y.pos_],na.rm=TRUE)
+        OUT$dMax.xy<-max(tmp.seq.dist[x.pos_,y.pos_],na.rm=TRUE)
+        OUT$dTotal.xy<-mean(as.dist(tmp.seq.dist),na.rm=TRUE)
         OUT$dSweighted.xy<-(length(x.pos_)/(length(c(x.pos_,y.pos_)))) * OUT$dMean.x + (length(y.pos_)/(length(c(x.pos_,y.pos_)))) * OUT$dMean.y
         OUT$Fst.xy<-(OUT$dTotal.xy - OUT$dSweighted.xy) / OUT$dTotal.xy
         OUT$dRelative.xy<-OUT$dMean.xy - OUT$dSweighted.xy

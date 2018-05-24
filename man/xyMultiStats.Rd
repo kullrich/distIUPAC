@@ -36,11 +36,11 @@ SPRE.pos<-106:113
 pop.list<-list(CAS.pos, AFG.pos, SPRE.pos)
 names(pop.list)<-c("AFG", "CAS", "SPRE")
 #sliding windows based on base-pair length
-CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, list.pos=pop.list, threads=4)
+CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, list.pos = pop.list, threads = 4)
 CAS.AFG.SPRE.xyMultiStats
 #sliding windows based on biSites
-CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, list.pos=pop.list,
-wtype="biSites", wlen=50, threads=4)
+CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, list.pos = pop.list,
+wtype = "biSites", wlen = 50, threads = 4)
 CAS.AFG.SPRE.xyMultiStats
 }
 \author{
