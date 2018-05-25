@@ -62,17 +62,17 @@ getTrees<-function(dna, x.pos=NULL, r.pos=1, wlen=25000, wjump=25000, wtype="bp"
     tree.x<-NA
     topo.x<-NA
     treelength.x<-NA
-    Sites.x<-NA
+    dSites.x<-NA
     dNA.x<-NA
     comment.x<-NA
-    OUT<-list(XNAME,RNAME,CHRNAME,START,END,tree.x,topo.x,treelength.x,Sites.x,dNA.x,comment.x)
-    names(OUT)<-c("XNAME","RNAME","CHRNAME","START","END","tree.x","topo.x","treelength.x","Sites.x","dNA.x","comment.x")
+    OUT<-list(XNAME,RNAME,CHRNAME,START,END,dSites.x,dNA.x,tree.x,topo.x,treelength.x,comment.x)
+    names(OUT)<-c("XNAME","RNAME","CHRNAME","START","END","dSites.x","dNA.x","tree.x","topo.x","treelength.x","comment.x")
     OUT$START<-tmp.sw[1,j][[1]]
     OUT$END<-tmp.sw[2,j][[1]]
     tmp.seq<-subseq(dna_,OUT$START,OUT$END)
     if(dist=="IUPAC"){
       tmp.seq.dist<-distIUPAC(as.character(tmp.seq))
-      OUT$Sites.x<-mean(as.dist(tmp.seq.dist$sitesUsed),na.rm=TRUE)
+      OUT$dSites.x<-mean(as.dist(tmp.seq.dist$sitesUsed),na.rm=TRUE)
       OUT$dNA.x<-length(which(is.na(as.dist(tmp.seq.dist$distIUPAC))))/length(as.dist(tmp.seq.dist$distIUPAC))
       if(model=="njs"){
         tmp.seq.tree<-tryCatch(njs(as.dist(tmp.seq.dist$distIUPAC)), warning = function(war){return(paste0("WARNING: ",war))},
