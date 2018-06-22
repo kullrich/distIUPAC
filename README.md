@@ -30,17 +30,13 @@ install.packages("foreach")
 install.packages("doMC")
 ```
 
-Third install `distIUPAC` package from [github](https://github.com/kullrich) using the [devtools](https://cran.r-project.org/web/packages/devtools/index.html) package.
+Third install `distIUPAC` package from [github](https://github.com/kullrich) or [gwdg gitlab](https://gwdg.gitlab.de) using the [devtools](https://cran.r-project.org/web/packages/devtools/index.html) package.
 
 ```
 library(devtools)
-install_github("kullrich/distIUPAC", build_vignettes = TRUE, dependencies = TRUE)
+#install_github("kullrich/distIUPAC", build_vignettes = TRUE, dependencies = FALSE)
+install_git("https://gwdg.gitlab.de/evolgen/distIUPAC.git", build_vignettes = TRUE, dependencies = FALSE)
 ```
-
-During the installation process following R packages will be installed as dependencies:
-
-* [Rcpp](Rcpp)
-* [RcppParallel]()
 
 ### Vignettes
 
