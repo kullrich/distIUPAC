@@ -27,7 +27,7 @@ A manual how the pre-requisites needs to be installed is given at the end of thi
 
 The user needs to perform five steps:
 
-1. __`fastq`__ files, prefernetially __`QC`__ pre-processed (see [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) for one of many trimming tools available)
+1. __`fastq`__ files, preferentially __`QC`__ pre-processed (see [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) for one of many trimming tools available)
 2. reference __`fasta`__ file
 3. __`build index`__ for the reference
 4. __`map reads`__
@@ -52,7 +52,7 @@ java -jar picard.jar SortSam I=ind1.sam O=ind1.sorted.bam SO=coordinate
 
 The usere needs to perform four steps:
 
-1. __`fastq`__ files, prefernetially __`QC`__ pre-processed (see [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) for one of many trimming tools available)
+1. __`fastq`__ files, preferentially __`QC`__ pre-processed (see [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) for one of many trimming tools available)
 2. reference __`fasta`__ file
 3. __`map reads`__
 4. __`sort reads`__

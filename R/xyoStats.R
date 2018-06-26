@@ -70,9 +70,11 @@ xyoStats<-function(dna, x.pos, y.pos, o.pos, wlen=25000, wjump=25000, wtype="bp"
     dMin.xyo<-NA
     deltaMean.xyo<-NA
     deltaMin.xyo<-NA
+    RND.xyo<-NA
+    Gmin.xyo<-NA
     RNDmin.xyo<-NA
-    OUT<-list(XNAME,YNAME,ONAME,CHRNAME,START,END,dMean.xy,dSites.xy,dMin.xy,dMean.xo,dSites.xo,dMin.xo,dMean.yo,dSites.yo,dMin.yo,dMean.xyo,dSites.xyo,dMin.xyo,deltaMean.xyo,deltaMin.xyo,RNDmin.xyo)
-    names(OUT)<-c("XNAME","YNAME","ONAME","CHRNAME","START","END","dMean.xy","dSites.xy","dMin.xy","dMean.xo","dSites.xo","dMin.xo","dMean.yo","dSites.yo","dMin.yo","dMean.xyo","dSites.xyo","dMin.xyo","deltaMean.xyo","deltaMin.xyo","RNDmin.xyo")
+    OUT<-list(XNAME,YNAME,ONAME,CHRNAME,START,END,dMean.xy,dSites.xy,dMin.xy,dMean.xo,dSites.xo,dMin.xo,dMean.yo,dSites.yo,dMin.yo,dMean.xyo,dSites.xyo,dMin.xyo,deltaMean.xyo,deltaMin.xyo,RND.xyo,Gmin.xyo,RNDmin.xyo)
+    names(OUT)<-c("XNAME","YNAME","ONAME","CHRNAME","START","END","dMean.xy","dSites.xy","dMin.xy","dMean.xo","dSites.xo","dMin.xo","dMean.yo","dSites.yo","dMin.yo","dMean.xyo","dSites.xyo","dMin.xyo","deltaMean.xyo","deltaMin.xyo","RND.xyo","Gmin.xyo","RNDmin.xyo")
     OUT$START<-tmp.sw[1,j][[1]]
     OUT$END<-tmp.sw[2,j][[1]]
     tmp.seq<-subseq(dna_,OUT$START,OUT$END)
@@ -95,7 +97,9 @@ xyoStats<-function(dna, x.pos, y.pos, o.pos, wlen=25000, wjump=25000, wtype="bp"
       OUT$dMin.xyo<-min(as.dist(tmp.seq.dist$distIUPAC),na.rm=TRUE)
       OUT$deltaMean.xyo<-OUT$dMean.xy-OUT$dMean.xo
       OUT$deltaMin.xyo<-OUT$dMin.xy-OUT$dMean.xo
-      OUT$RNDmin.xyo<-OUT$dMin.xy-((OUT$dMean.xo+OUT$dMean.yo)/2)
+      OUT$RND.xyo<-OUT$dMean.xy/((OUT$dMean.xo+OUT$dMean.yo)/2)
+      OUT$Gmin.xyo<-OUT$dMin.xy/OUT$dMean.xy
+      OUT$RNDmin.xyo<-OUT$dMin.xy/((OUT$dMean.xo+OUT$dMean.yo)/2)
     }
     if(dist!="IUPAC"){
       tmp.seq.dist<-dist.dna(as.DNAbin(dnastring2apealg(tmp.seq)),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
@@ -117,7 +121,9 @@ xyoStats<-function(dna, x.pos, y.pos, o.pos, wlen=25000, wjump=25000, wtype="bp"
       OUT$dMin.xyo<-min(as.dist(tmp.seq.dist),na.rm=TRUE)
       OUT$deltaMean.xyo<-OUT$dMean.xy-OUT$dMean.xo
       OUT$deltaMin.xyo<-OUT$dMin.xy-OUT$dMean.xo
-      OUT$RNDmin.xyo<-OUT$dMin.xy-((OUT$dMean.xo+OUT$dMean.yo)/2)
+      OUT$RND.xyo<-OUT$dMean.xy/((OUT$dMean.xo+OUT$dMean.yo)/2)
+      OUT$Gmin.xyo<-OUT$dMin.xy/OUT$dMean.xy
+      OUT$RNDmin.xyo<-OUT$dMin.xy/((OUT$dMean.xo+OUT$dMean.yo)/2)
     }
     setTxtProgressBar(pb,j)
     OUT

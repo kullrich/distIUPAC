@@ -42,11 +42,11 @@ install_git("https://gwdg.gitlab.de/evolgen/distIUPAC.git", build_vignettes = TR
 
 These vignettes introduce `distIUPAC`
 
-- [distIUPAC Intro](https://github.com/kullrich/distIUPAC/tree/master/vignettes/Intro.Rmd)
-- [distIUPAC bam2IUPAC: fastq + reference >>> reference mapped bam + angsd >>> iupac fasta](https://github.com/kullrich/distIUPAC/tree/master/vignettes/bam2IUPAC.Rmd)
-- [distIUPAC population distanceStats per sliding-window: iupac fasta + pop info >>> dStats ](https://github.com/kullrich/distIUPAC/tree/master/vignettes/dStats.Rmd)
-- [distIUPAC genrate twisst input: iupac fasta >>> twisst trees](https://github.com/kullrich/distIUPAC/tree/master/vignettes/twisstTrees.Rmd)
-- [distIUPAC on GTF featues: iupac fasta + GTF >>> feature specific distances ](https://github.com/kullrich/distIUPAC/tree/master/vignettes/GTFdistances.Rmd)
+- [00. Intro](https://github.com/kullrich/distIUPAC/tree/master/vignettes/Intro.Rmd)
+- [01. bam2IUPAC: fastq + reference >>> reference mapped bam + angsd >>> iupac fasta](https://github.com/kullrich/distIUPAC/tree/master/vignettes/bam2IUPAC.Rmd)
+- [02. distStats: population distanceStats per sliding-window: iupac fasta + pop info >>> dStats ](https://github.com/kullrich/distIUPAC/tree/master/vignettes/dStats.Rmd)
+- [03. getTrees: genrate twisst input: iupac fasta >>> twisst trees](https://github.com/kullrich/distIUPAC/tree/master/vignettes/twisstTrees.Rmd)
+- [04. distFeatures: using GFF3/GTF featues: iupac fasta + GTF >>> feature specific distances ](https://github.com/kullrich/distIUPAC/tree/master/vignettes/GTFdistances.Rmd)
 
 ### Quick-guide
 
