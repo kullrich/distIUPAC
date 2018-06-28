@@ -34,9 +34,9 @@ Rcpp::List distIUPAC( Rcpp::StringVector myvector ) {
   colnames(sitesMatrix) = myvectornames;
   rownames(sitesMatrix) = myvectornames;
   int nsites = myvector[1].size();
-  for( int i=0; i < n - 1; i++ ){
+  for( int i=0; i < n; i++ ){
     sitesMatrix(i,i) = nsites;
-    for( int j=1; j < n; j++ ){
+    for( int j=i; j < n; j++ ){
       sitesMatrix(j,j) = nsites;
       double eqnum = 0;
       int ij_n = nsites;
@@ -52,11 +52,11 @@ Rcpp::List distIUPAC( Rcpp::StringVector myvector ) {
         } else {
           ij_n = ij_n -1;
         };
-        distMatrix(i,j) = eqnum / ij_n;
-        distMatrix(j,i) = eqnum / ij_n;
-        sitesMatrix(i,j) = ij_n;
-        sitesMatrix(j,i) = ij_n;
       }
+      distMatrix(i,j) = eqnum / ij_n;
+      distMatrix(j,i) = eqnum / ij_n;
+      sitesMatrix(i,j) = ij_n;
+      sitesMatrix(j,i) = ij_n;
     }
   }
   return Rcpp::List::create(Rcpp::Named("distIUPAC") = distMatrix, Rcpp::Named("sitesUsed") = sitesMatrix);
