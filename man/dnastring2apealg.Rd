@@ -2,7 +2,7 @@
 % Please edit documentation in R/dnastring2apealg.R
 \name{dnastring2apealg}
 \alias{dnastring2apealg}
-\title{dnastring2aperalg}
+\title{dnastring2apealg}
 \usage{
 dnastring2apealg(dna)
 }

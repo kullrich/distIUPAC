@@ -13,7 +13,7 @@ This function creates a \code{scoreMatrix} object to be used with the \code{dist
 MyScoreMatrix <- scoreMatrix()
 MyScoreMatrix["A","R"] <- 0.5
 data("MySequences", package = "distIUPAC")
-distIUPACmatrix(as.charachter(MySequences), MyScoreMatrix)
+distIUPACmatrix(as.character(MySequences), MyScoreMatrix)
 }
 \seealso{
 \link[distIUPAC]{distIUPACmatrix}, \link[ape]{dist.dna}

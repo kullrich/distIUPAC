@@ -14,11 +14,11 @@ This function calculates IUPAC distances on \code{Biostrings} \code{DNAStringSet
 \examples{
 data("MySequences", package = "distIUPAC")
 MyScoreMatrix<-scoreMatrix()
-distIUPACmatrix(as.character(MySequences), MyScoreMatrix)
+distIUPACmatrix(as.character(MySequences[1:10]), MyScoreMatrix)
 MyScoreMatrix["A","R"] <- 10.0
-distIUPACmatrix(as.character(MySequences), MyScoreMatrix)
+distIUPACmatrix(as.character(MySequences[1:10]), MyScoreMatrix)
 MyScoreMatrix["A","R"] <- 0.5
-distIUPACmatrix(as.character(MySequences), MyScoreMatrix)
+distIUPACmatrix(as.character(MySequences[1:10]), MyScoreMatrix)
 }
 \author{
 Kristian K Ullrich

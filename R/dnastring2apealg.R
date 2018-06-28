@@ -1,4 +1,4 @@
-#' @title dnastring2aperalg
+#' @title dnastring2apealg
 #' @name dnastring2apealg
 #' @description This function transforms a \code{DNAStringSet} object from the \code{Biostrings} package into an \code{alignment} class of the \code{ape} package.
 #' @import Biostrings

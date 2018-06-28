@@ -12,7 +12,7 @@ This function calculates IUPAC distances on \code{Biostrings} \code{DNAStringSet
 }
 \examples{
 data("MySequences", package = "distIUPAC")
-distIUPAC(as.character(MySequences))
+distIUPAC(as.character(MySequences[1:10]))
 }
 \author{
 Kristian K Ullrich

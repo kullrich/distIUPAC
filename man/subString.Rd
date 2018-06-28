@@ -20,7 +20,7 @@ This function gets a subsequence from a \code{DNAString}, \code{RNAString}, \cod
 data("MySequences", package = "distIUPAC")
 myStart<-c(1,3)
 myEnd<-c(2,4)
-mySubSequence <- subString(MySequence, myStart, myEnd)
+mySubSequence <- subString(MySequences, myStart, myEnd)
 }
 \seealso{
 \link[XVector]{subseq}
