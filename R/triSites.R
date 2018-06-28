@@ -30,7 +30,7 @@ triSites<-function(dna,x.pos=NULL,wlen=25000,threads=1,pB=TRUE){
   if(!is.null(x.pos)){dna_<-dna[x.pos]}
   tmp.sw<-swgen(wlen=wlen,wjump=wlen,start.by=1,end.by=unique(width(dna)))
   if(pB){
-    pb<-txtProgressBar(min=1,max=dim(tmp.sw)[2],initial=1,style=3)
+    pb<-txtProgressBar(min=0,max=dim(tmp.sw)[2],initial=0,style=3)
   }
   j<-NULL
   registerDoMC(threads)

@@ -39,7 +39,7 @@ xStats<-function(dna, x.pos=NULL, wlen=25000, wjump=25000, wtype="bp", dist="IUP
     tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=1,end.by=unique(width(dna)))
   }
   j<-NULL
-  pb<-txtProgressBar(min=1,max=dim(tmp.sw)[2],initial=1,style=3)
+  pb<-txtProgressBar(min=0,max=dim(tmp.sw)[2],initial=0,style=3)
   registerDoMC(threads)
   OUT<-foreach(j=1:dim(tmp.sw)[2], .combine=rbind) %dopar% {
     XNAME<-x.name
