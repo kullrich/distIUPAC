@@ -1,7 +1,7 @@
 #' @title getTrees
 #' @name getTrees
 #' @description This function returns nieghbor-joining (\link[ape]{njs} or \link[ape]{bionjs})
-#' trees based on \code{distIUPAC} based distances rooted to a specific indibidual.
+#' trees based on \code{distIUPAC} based distances rooted to a specific individual.
 #' @import Biostrings
 #' @import ape
 #' @import doMC
@@ -11,6 +11,8 @@
 #' @param r.pos root position, needs to be within x.pos
 #' @param wlen sliding windows length
 #' @param wjump sliding windows jump
+#' @param start.by optional start position
+#' @param end.by optional end position
 #' @param wtype sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}
 #' @param dist distance to use
 #' @param model tree model to use either \link[ape]{njs} or \link[ape]{bionjs}
@@ -30,8 +32,10 @@
 #' wlen = 10000, wjump = 10000, x.name = "all", r.name = "Rnor", threads = 1, plot = TRUE)
 #' @export getTrees
 #' @author Kristian K Ullrich
-getTrees<-function(dna, x.pos=NULL, r.pos=1, wlen=25000, wjump=25000, wtype="bp", dist="IUPAC", model="bionjs", threads=1, x.name="x", r.name="r", chr.name="chr", plot=FALSE){
+getTrees<-function(dna, x.pos=NULL, r.pos=1, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", model="bionjs", threads=1, x.name="x", r.name="r", chr.name="chr", plot=FALSE){
   options(scipen=22)
+  if(is.null(start.by)){start.by<-1}
+  if(is.null(end.by)){end.by<-unique(width(dna))}
   if(!r.pos%in%x.pos){x.pos<-c(x.pos,r.pos)}
   if(length(x.pos)<3){stop("needs at least 3 sequences to calculate tree")}
   if(!model%in%c("njs","bionjs")){stop("model needs to be either njs or bionjs")}
@@ -40,15 +44,15 @@ getTrees<-function(dna, x.pos=NULL, r.pos=1, wlen=25000, wjump=25000, wtype="bp"
   x.pos_<-seq(1,length(x.pos))
   r.pos_<-which(r.pos==x.pos)
   if(wtype=="bp"){
-    tmp.sw<-swgen(wlen=wlen,wjump=wjump,start.by=1,end.by=unique(width(dna)))
+    tmp.sw<-swgen(wlen=wlen,wjump=wjump,start.by=start.by,end.by=end.by)
   }
   if(wtype=="biSites"){
     tmp.POS<-biSites(dna_,x.pos_,threads=threads,pB=FALSE)
-    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=1,end.by=unique(width(dna)))
+    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=start.by,end.by=end.by)
   }
   if(wtype=="triSites"){
     tmp.POS<-triSites(dna_,x.pos_,threads=threads,pB=FALSE)
-    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=1,end.by=unique(width(dna)))
+    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=start.by,end.by=end.by)
   }
   j<-NULL
   pb<-txtProgressBar(min=0,max=dim(tmp.sw)[2],initial=0,style=3)
@@ -83,7 +87,7 @@ getTrees<-function(dna, x.pos=NULL, r.pos=1, wlen=25000, wjump=25000, wtype="bp"
         error = function(err){return(paste0("ERROR: ",err))})
       }
       if(class(tmp.seq.tree)!="phylo"){
-        OUT$comment.x<-tmp.seq.tree
+        OUT$comment.x<-gsub("\n","",tmp.seq.tree)
       }
       if(class(tmp.seq.tree)=="phylo"){
         OUT$tree.x<-write.tree(root(tmp.seq.tree,r.pos_))
@@ -108,7 +112,7 @@ getTrees<-function(dna, x.pos=NULL, r.pos=1, wlen=25000, wjump=25000, wtype="bp"
         error = function(err){return(paste0("ERROR:  ",err))})
       }
       if(class(tmp.seq.tree)!="phylo"){
-        OUT$comment.x<-tmp.seq.tree
+        OUT$comment.x<-gsub("\n","",tmp.seq.tree)
       }
       if(class(tmp.seq.tree)=="phylo"){
         OUT$tree.x<-write.tree(root(tmp.seq.tree,r.pos_))

@@ -11,8 +11,8 @@
 #' @export swgen
 #' @author Kristian K Ullrich
 swgen<-function(wlen=1000,wjump=100,start.by=1,end.by=1000){
-  if(end.by<=start.by){
-    stop("end.by <= start.by")
+  if(end.by<start.by){
+    stop("end.by < start.by")
   }
   start.seq<-seq(start.by, end.by, by = wjump)
   if((start.by + wlen - 1)>end.by){

@@ -9,6 +9,8 @@
 #' @param dna \code{DNAStringSet}
 #' @param x.pos population X positions
 #' @param wlen sliding window length
+#' @param start.by optional start position
+#' @param end.by optional end position
 #' @param threads number of parallel threads
 #' @param pB specifies if progress should be shown as a progress bar
 #' @examples
@@ -22,13 +24,15 @@
 #' as.matrix(MySequences[CAS.pos])[,head(CAS.biSites)]
 #' @export biSites
 #' @author Kristian K Ullrich
-biSites<-function(dna, x.pos=NULL, wlen=25000, threads=1, pB=TRUE){
+biSites<-function(dna, x.pos=NULL, wlen=25000, start.by=NULL, end.by=NULL, threads=1, pB=TRUE){
   IUPAC_CODE_MAP_LIST<-list(c("A"),c("C"),c("G"),c("T"),c("A","C"),c("A","G"),c("A","T"),c("C","G"),c("C","T"),c("G","T"),c("A","C","G"),c("A","C","T"),c("A","G","T"),c("C","G","T"),c(),c(),c(),c())
   names(IUPAC_CODE_MAP_LIST)<-c("A","C","G","T","M","R","W","S","Y","K","V","H","D","B","N","-","+",".")
   options(scipen=22)
   if(is.null(x.pos)){dna_<-dna}
   if(!is.null(x.pos)){dna_<-dna[x.pos]}
-  tmp.sw<-swgen(wlen=wlen,wjump=wlen,start.by=1,end.by=unique(width(dna)))
+  if(is.null(start.by)){start.by<-1}
+  if(is.null(end.by)){end.by<-unique(width(dna))}
+  tmp.sw<-swgen(wlen=wlen,wjump=wlen,start.by=start.by,end.by=end.by)
   if(pB){
     pb<-txtProgressBar(min=0,max=dim(tmp.sw)[2],initial=0,style=3)  
   }

@@ -12,6 +12,8 @@
 #' @param o.pos population O positions
 #' @param wlen sliding windows length
 #' @param wjump sliding windows jump
+#' @param start.by optional start position
+#' @param end.by optional end position
 #' @param wtype sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}
 #' @param dist distance to use
 #' @param threads number of parallel threads
@@ -25,26 +27,28 @@
 #' AFG.pos<-82:87
 #' SPRE.pos<-106:113
 #' AFG.SPRE.CAS.xyoStats<-xyoStats(MySequences, x.pos = AFG.pos, y.pos = SPRE.pos, o.pos = CAS.pos,
-#' threads = 4, x.name = "AFG", y.name = "SPRE", o.name = "CAS")
+#' threads = 2, x.name = "AFG", y.name = "SPRE", o.name = "CAS")
 #' AFG.SPRE.CAS.xyoStats
 #' @export xyoStats
 #' @author Kristian K Ullrich
-xyoStats<-function(dna, x.pos, y.pos, o.pos, wlen=25000, wjump=25000, wtype="bp", dist="IUPAC", threads=1, x.name="x", y.name="y", o.name="o", chr.name="chr"){
+xyoStats<-function(dna, x.pos, y.pos, o.pos, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", threads=1, x.name="x", y.name="y", o.name="o", chr.name="chr"){
   options(scipen=22)
+  if(is.null(start.by)){start.by<-1}
+  if(is.null(end.by)){end.by<-unique(width(dna))}
   dna_<-dna[c(x.pos,y.pos,o.pos)]
   x.pos_<-seq(1,length(x.pos))
   y.pos_<-seq(length(x.pos_)+1,length(x.pos_)+length(y.pos))
   o.pos_<-seq(length(x.pos_)+length(y.pos_)+1,length(x.pos_)+length(y.pos_)+length(o.pos))
   if(wtype=="bp"){
-    tmp.sw<-swgen(wlen=wlen,wjump=wjump,start.by=1,end.by=unique(width(dna)))  
+    tmp.sw<-swgen(wlen=wlen,wjump=wjump,start.by=start.by,end.by=end.by)
   }
   if(wtype=="biSites"){
     tmp.POS<-biSites(dna_,c(x.pos_,y.pos_),threads=threads,pB=FALSE)
-    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=1,end.by=unique(width(dna)))
+    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=start.by,end.by=end.by)
   }
   if(wtype=="triSites"){
     tmp.POS<-triSites(dna_,c(x.pos_,y.pos_),threads=threads,pB=FALSE)
-    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=1,end.by=unique(width(dna)))
+    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=start.by,end.by=end.by)
   }
   j<-NULL
   pb<-txtProgressBar(min=0,max=dim(tmp.sw)[2],initial=0,style=3)

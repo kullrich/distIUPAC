@@ -10,6 +10,8 @@
 #' @param x.pos population X positions
 #' @param wlen sliding windows length
 #' @param wjump sliding windows jump
+#' @param start.by optional start position
+#' @param end.by optional end position
 #' @param wtype sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}
 #' @param dist distance to use
 #' @param threads number of parallel threads
@@ -18,25 +20,27 @@
 #' @examples
 #' data("MySequences", package = "distIUPAC")
 #' CAS.pos<-5:34
-#' CAS.xStats<-xStats(MySequences, x.pos = CAS.pos, x.name = "CAS")
+#' CAS.xStats<-xStats(MySequences, x.pos = CAS.pos, x.name = "CAS", threads = 2)
 #' CAS.xStats
 #' @export xStats
 #' @author Kristian K Ullrich
-xStats<-function(dna, x.pos=NULL, wlen=25000, wjump=25000, wtype="bp", dist="IUPAC", threads=1, x.name="x", chr.name="chr"){
+xStats<-function(dna, x.pos=NULL, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", threads=1, x.name="x", chr.name="chr"){
   options(scipen=22)
+  if(is.null(start.by)){start.by<-1}
+  if(is.null(end.by)){end.by<-unique(width(dna))}
   if(is.null(x.pos)){dna_<-dna}
   if(!is.null(x.pos)){dna_<-dna[x.pos]}
   x.pos_<-seq(1,length(x.pos))
   if(wtype=="bp"){
-    tmp.sw<-swgen(wlen=wlen,wjump=wjump,start.by=1,end.by=unique(width(dna)))  
+    tmp.sw<-swgen(wlen=wlen,wjump=wjump,start.by=start.by,end.by=end.by)
   }
   if(wtype=="biSites"){
     tmp.POS<-biSites(dna_,x.pos_,threads=threads,pB=FALSE)
-    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=1,end.by=unique(width(dna)))
+    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=start.by,end.by=end.by)
   }
   if(wtype=="triSites"){
     tmp.POS<-triSites(dna_,x.pos_,threads=threads,pB=FALSE)
-    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=1,end.by=unique(width(dna)))
+    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=start.by,end.by=end.by)
   }
   j<-NULL
   pb<-txtProgressBar(min=0,max=dim(tmp.sw)[2],initial=0,style=3)
