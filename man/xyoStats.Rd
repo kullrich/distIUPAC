@@ -5,8 +5,9 @@
 \title{xyoStats}
 \usage{
 xyoStats(dna, x.pos, y.pos, o.pos, wlen = 25000, wjump = 25000,
-  wtype = "bp", dist = "IUPAC", threads = 1, x.name = "x",
-  y.name = "y", o.name = "o", chr.name = "chr")
+  start.by = NULL, end.by = NULL, wtype = "bp", dist = "IUPAC",
+  threads = 1, x.name = "x", y.name = "y", o.name = "o",
+  chr.name = "chr")
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
@@ -20,6 +21,10 @@ xyoStats(dna, x.pos, y.pos, o.pos, wlen = 25000, wjump = 25000,
 \item{wlen}{sliding windows length}
 
 \item{wjump}{sliding windows jump}
+
+\item{start.by}{optional start position}
+
+\item{end.by}{optional end position}
 
 \item{wtype}{sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}}
 
@@ -45,7 +50,7 @@ CAS.pos<-5:34
 AFG.pos<-82:87
 SPRE.pos<-106:113
 AFG.SPRE.CAS.xyoStats<-xyoStats(MySequences, x.pos = AFG.pos, y.pos = SPRE.pos, o.pos = CAS.pos,
-threads = 4, x.name = "AFG", y.name = "SPRE", o.name = "CAS")
+threads = 2, x.name = "AFG", y.name = "SPRE", o.name = "CAS")
 AFG.SPRE.CAS.xyoStats
 }
 \author{

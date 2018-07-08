@@ -5,8 +5,9 @@
 \title{getTrees}
 \usage{
 getTrees(dna, x.pos = NULL, r.pos = 1, wlen = 25000, wjump = 25000,
-  wtype = "bp", dist = "IUPAC", model = "bionjs", threads = 1,
-  x.name = "x", r.name = "r", chr.name = "chr", plot = FALSE)
+  start.by = NULL, end.by = NULL, wtype = "bp", dist = "IUPAC",
+  model = "bionjs", threads = 1, x.name = "x", r.name = "r",
+  chr.name = "chr", plot = FALSE)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
@@ -18,6 +19,10 @@ getTrees(dna, x.pos = NULL, r.pos = 1, wlen = 25000, wjump = 25000,
 \item{wlen}{sliding windows length}
 
 \item{wjump}{sliding windows jump}
+
+\item{start.by}{optional start position}
+
+\item{end.by}{optional end position}
 
 \item{wtype}{sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}}
 
@@ -37,7 +42,7 @@ getTrees(dna, x.pos = NULL, r.pos = 1, wlen = 25000, wjump = 25000,
 }
 \description{
 This function returns nieghbor-joining (\link[ape]{njs} or \link[ape]{bionjs})
-trees based on \code{distIUPAC} based distances rooted to a specific indibidual.
+trees based on \code{distIUPAC} based distances rooted to a specific individual.
 }
 \examples{
 data("MySequences", package = "distIUPAC")

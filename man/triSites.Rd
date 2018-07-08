@@ -4,7 +4,8 @@
 \alias{triSites}
 \title{triSites}
 \usage{
-triSites(dna, x.pos = NULL, wlen = 25000, threads = 1, pB = TRUE)
+triSites(dna, x.pos = NULL, wlen = 25000, start.by = NULL,
+  end.by = NULL, threads = 1, pB = TRUE)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
@@ -12,6 +13,10 @@ triSites(dna, x.pos = NULL, wlen = 25000, threads = 1, pB = TRUE)
 \item{x.pos}{population X positions}
 
 \item{wlen}{sliding window length}
+
+\item{start.by}{optional start position}
+
+\item{end.by}{optional end position}
 
 \item{threads}{number of parallel threads}
 

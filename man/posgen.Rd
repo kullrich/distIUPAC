@@ -4,16 +4,16 @@
 \alias{posgen}
 \title{posgen}
 \usage{
-posgen(pos, wlen = 50, start.by = 1, end.by = 1000)
+posgen(pos, wlen = 50, start.by = NULL, end.by = NULL)
 }
 \arguments{
 \item{pos}{position vector}
 
 \item{wlen}{number of positions per window}
 
-\item{start.by}{start position}
+\item{start.by}{optional start position}
 
-\item{end.by}{end position}
+\item{end.by}{optional end position}
 }
 \description{
 This function constructs a sliding window matrix based on a SNP position vector

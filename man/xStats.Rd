@@ -4,8 +4,9 @@
 \alias{xStats}
 \title{xStats}
 \usage{
-xStats(dna, x.pos = NULL, wlen = 25000, wjump = 25000, wtype = "bp",
-  dist = "IUPAC", threads = 1, x.name = "x", chr.name = "chr")
+xStats(dna, x.pos = NULL, wlen = 25000, wjump = 25000, start.by = NULL,
+  end.by = NULL, wtype = "bp", dist = "IUPAC", threads = 1,
+  x.name = "x", chr.name = "chr")
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
@@ -15,6 +16,10 @@ xStats(dna, x.pos = NULL, wlen = 25000, wjump = 25000, wtype = "bp",
 \item{wlen}{sliding windows length}
 
 \item{wjump}{sliding windows jump}
+
+\item{start.by}{optional start position}
+
+\item{end.by}{optional end position}
 
 \item{wtype}{sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}}
 
@@ -33,7 +38,7 @@ This function calculates \code{distIUPAC} based distances within one population
 \examples{
 data("MySequences", package = "distIUPAC")
 CAS.pos<-5:34
-CAS.xStats<-xStats(MySequences, x.pos = CAS.pos, x.name = "CAS")
+CAS.xStats<-xStats(MySequences, x.pos = CAS.pos, x.name = "CAS", threads = 2)
 CAS.xStats
 }
 \author{

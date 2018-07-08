@@ -4,8 +4,9 @@
 \alias{xyMultiStats}
 \title{xyMultiStats}
 \usage{
-xyMultiStats(dna, list.pos, wlen = 25000, wjump = 25000, wtype = "bp",
-  dist = "IUPAC", threads = 1, chr.name = "chr")
+xyMultiStats(dna, list.pos, wlen = 25000, wjump = 25000, start.by = NULL,
+  end.by = NULL, wtype = "bp", dist = "IUPAC", threads = 1,
+  chr.name = "chr")
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
@@ -15,6 +16,10 @@ xyMultiStats(dna, list.pos, wlen = 25000, wjump = 25000, wtype = "bp",
 \item{wlen}{sliding windows length}
 
 \item{wjump}{sliding windows jump}
+
+\item{start.by}{optional start position}
+
+\item{end.by}{optional end position}
 
 \item{wtype}{sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}}
 
@@ -34,13 +39,13 @@ CAS.pos<-5:34
 AFG.pos<-82:87
 SPRE.pos<-106:113
 pop.list<-list(CAS.pos, AFG.pos, SPRE.pos)
-names(pop.list)<-c("AFG", "CAS", "SPRE")
+names(pop.list)<-c("CAS", "AFG", "SPRE")
 #sliding windows based on base-pair length
-CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, list.pos = pop.list, threads = 4)
+CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, list.pos = pop.list, threads = 2)
 CAS.AFG.SPRE.xyMultiStats
 #sliding windows based on biSites
 CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, list.pos = pop.list,
-wtype = "biSites", wlen = 50, threads = 4)
+wtype = "biSites", wlen = 50, threads = 2)
 CAS.AFG.SPRE.xyMultiStats
 }
 \author{

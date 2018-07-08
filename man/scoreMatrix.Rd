@@ -10,10 +10,12 @@ scoreMatrix()
 This function creates a \code{scoreMatrix} object to be used with the \code{distIUPACmatrix} function.
 }
 \examples{
-MyScoreMatrix <- scoreMatrix()
-MyScoreMatrix["A","R"] <- 0.5
 data("MySequences", package = "distIUPAC")
-distIUPACmatrix(as.character(MySequences), MyScoreMatrix)
+MyScoreMatrix <- scoreMatrix()
+MyScoreMatrix["A","R"] <- 10.0
+distIUPACmatrix(as.character(MySequences[1:10]), MyScoreMatrix)
+MyScoreMatrix["A","R"] <- 0.5
+distIUPACmatrix(as.character(MySequences[1:10]), MyScoreMatrix)
 }
 \seealso{
 \link[distIUPAC]{distIUPACmatrix}, \link[ape]{dist.dna}

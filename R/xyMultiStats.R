@@ -22,7 +22,7 @@
 #' AFG.pos<-82:87
 #' SPRE.pos<-106:113
 #' pop.list<-list(CAS.pos, AFG.pos, SPRE.pos)
-#' names(pop.list)<-c("AFG", "CAS", "SPRE")
+#' names(pop.list)<-c("CAS", "AFG", "SPRE")
 #' #sliding windows based on base-pair length
 #' CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, list.pos = pop.list, threads = 2)
 #' CAS.AFG.SPRE.xyMultiStats

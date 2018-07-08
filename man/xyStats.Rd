@@ -4,9 +4,9 @@
 \alias{xyStats}
 \title{xyStats}
 \usage{
-xyStats(dna, x.pos, y.pos, wlen = 25000, wjump = 25000, wtype = "bp",
-  dist = "IUPAC", threads = 1, x.name = "x", y.name = "y",
-  chr.name = "chr")
+xyStats(dna, x.pos, y.pos, wlen = 25000, wjump = 25000, start.by = NULL,
+  end.by = NULL, wtype = "bp", dist = "IUPAC", threads = 1,
+  x.name = "x", y.name = "y", chr.name = "chr")
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
@@ -18,6 +18,10 @@ xyStats(dna, x.pos, y.pos, wlen = 25000, wjump = 25000, wtype = "bp",
 \item{wlen}{sliding windows length}
 
 \item{wjump}{sliding windows jump}
+
+\item{start.by}{optional start position}
+
+\item{end.by}{optional end position}
 
 \item{wtype}{sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}}
 
@@ -41,11 +45,11 @@ CAS.pos<-5:34
 AFG.pos<-82:87
 #sliding windows based on base-pair length
 CAS.AFG.xyStats<-xyStats(MySequences, x.pos = CAS.pos, y.pos = AFG.pos,
-x.name = "CAS", y.name = "AFG", threads = 4)
+x.name = "CAS", y.name = "AFG", threads = 2)
 CAS.AFG.xyStats
 #sliding windows based on biSites
 CAS.AFG.xyStats<-xyStats(MySequences, x.pos = CAS.pos, y.pos = AFG.pos,
-wlen = 50, wtype = "biSites", x.name = "CAS", y.name = "AFG", threads = 4)
+wlen = 50, wtype = "biSites", x.name = "CAS", y.name = "AFG", threads = 2)
 CAS.AFG.xyStats
 }
 \author{
