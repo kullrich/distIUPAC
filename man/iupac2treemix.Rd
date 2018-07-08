@@ -5,7 +5,7 @@
 \title{iupac2treemix}
 \usage{
 iupac2treemix(dna, list.pos, wlen = 25000, start.by = NULL, end.by = NULL,
-  threads = 1)
+  threads = 1, pB = TRUE)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
@@ -19,6 +19,8 @@ iupac2treemix(dna, list.pos, wlen = 25000, start.by = NULL, end.by = NULL,
 \item{end.by}{optional end position}
 
 \item{threads}{number of parallel threads}
+
+\item{pB}{specifies if progress should be shown as a progress bar}
 }
 \description{
 This function returns biallelic sites as treemix-like output.
@@ -30,8 +32,7 @@ AFG.pos<-82:87
 SPRE.pos<-106:113
 pop.list<-list(CAS.pos, AFG.pos, SPRE.pos)
 names(pop.list)<-c("CAS", "AFG", "SPRE")
-CAS.AFG.SPRE.treemix<-iupac2treemix(MySequences, list.pos = pop.list,
-wlen = 500, threads = 2)
+CAS.AFG.SPRE.treemix<-iupac2treemix(MySequences, list.pos = pop.list, threads = 2)
 head(CAS.AFG.SPRE.treemix)
 }
 \author{
