@@ -42,8 +42,8 @@ iupac2treemix<-function(dna, list.pos, wlen=25000, start.by=NULL, end.by=NULL, t
       cur_<-list.pos_[i]+1
     }
     if(i!=1){
-      pos_<-append(pos_,list(seq(from=cur_,to=cur_+list.pos_[i])))
-      cur_<-cur_+list.pos_[i]+1
+      pos_<-append(pos_,list(seq(from=cur_,to=cur_+list.pos_[i]-1)))
+      cur_<-cur_+list.pos_[i]
     }
   }
   names(pos_)<-names(list.pos)
@@ -62,7 +62,12 @@ iupac2treemix<-function(dna, list.pos, wlen=25000, start.by=NULL, end.by=NULL, t
     OUT$START<-tmp.sw[1,j][[1]]
     OUT$END<-tmp.sw[2,j][[1]]
     tmp.seq<-subseq(dna_,OUT$START,OUT$END)
-    tmp.seq.cM<-apply(consensusMatrix(tmp.seq),1,function(x) ifelse(x>0,1,0))
+    if(unoque(width(tmp.seq))==1){
+      tmp.seq.cM<-t(as.matrix(apply(consensusMatrix(tmp.seq),1,function(x) ifelse(x>0,1,0))))
+    }
+    if(unoque(width(tmp.seq))!=1){
+      tmp.seq.cM<-apply(consensusMatrix(tmp.seq),1,function(x) ifelse(x>0,1,0))
+    }
     tmp.biPOS<-OUT$START-1+which(apply(tmp.seq.cM,1,function(x) length(unique(unlist(unique(IUPAC_CODE_MAP_LIST[names(x[x==1])])))))==2)
     if(length(tmp.biPOS)==0){return(NULL)}
     tmp.biPOS_<-which(apply(tmp.seq.cM,1,function(x) length(unique(unlist(unique(IUPAC_CODE_MAP_LIST[names(x[x==1])])))))==2)
