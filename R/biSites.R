@@ -48,7 +48,7 @@ biSites<-function(dna, x.pos=NULL, wlen=25000, start.by=NULL, end.by=NULL, threa
     OUT$END<-tmp.sw[2,j][[1]]
     tmp.seq<-subseq(dna_,OUT$START,OUT$END)
     if(unique(width(tmp.seq))==1){
-      tmp.seq.cM<-t(as.matrix(apply(consensusMatrix(tmp.seq),1,function(x) ifelse(x>0,1,0))
+      tmp.seq.cM<-t(as.matrix(apply(consensusMatrix(tmp.seq),1,function(x) ifelse(x>0,1,0))))
     }
     if(unique(width(tmp.seq))!=1){
       tmp.seq.cM<-apply(consensusMatrix(tmp.seq),1,function(x) ifelse(x>0,1,0))
