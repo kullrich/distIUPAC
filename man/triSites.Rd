@@ -4,13 +4,15 @@
 \alias{triSites}
 \title{triSites}
 \usage{
-triSites(dna, x.pos = NULL, wlen = 25000, start.by = NULL,
-  end.by = NULL, threads = 1, pB = TRUE)
+triSites(dna, x.pos = NULL, min.ind = 0, wlen = 25000,
+  start.by = NULL, end.by = NULL, threads = 1, pB = TRUE)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
 
 \item{x.pos}{population X positions}
+
+\item{min.ind}{minimum number of individuals without gaps ("-", "+", ".") or without missing sites ("N"), set to size of population ("length(x.pos)") to mask global deletion sites}
 
 \item{wlen}{sliding window length}
 
@@ -30,11 +32,15 @@ This function returns tri-allelic site positions given a dna object
 data("MySequences", package = "distIUPAC")
 #consider all sequences
 MySequences.triSites<-triSites(MySequences)
-as.matrix(MySequences)[,head(MySequences.triSites)]
+as.matrix(MySequences)[,head(MySequences.triSites$triPOS)]
 #consider only a subset of all sequences
 CAS.pos<-5:34
 CAS.triSites<-triSites(MySequences, x.pos = CAS.pos)
-as.matrix(MySequences[CAS.pos])[,head(CAS.triSites)]
+as.matrix(MySequences[CAS.pos])[,head(CAS.triSites$triPOS)]
+#consider only sites were 15 individuals have no gaps or missing sites
+CAS.triSites.minInd.15<-triSites(MySequences, x.pos = CAS.pos, min.ind = 15)
+as.matrix(MySequences[CAS.pos])[,head(CAS.triSites.minInd.15$triPOS)]
+as.matrix(MySequences[CAS.pos])[,head(CAS.triSites.minInd.15$triPOSmasked)]
 }
 \author{
 Kristian K Ullrich

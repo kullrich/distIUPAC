@@ -4,9 +4,10 @@
 \alias{xyStats}
 \title{xyStats}
 \usage{
-xyStats(dna, x.pos, y.pos, wlen = 25000, wjump = 25000, start.by = NULL,
-  end.by = NULL, wtype = "bp", dist = "IUPAC", threads = 1,
-  x.name = "x", y.name = "y", chr.name = "chr")
+xyStats(dna, x.pos, y.pos, wlen = 25000, wjump = 25000,
+  start.by = NULL, end.by = NULL, wtype = "bp", dist = "IUPAC",
+  global.deletion = FALSE, threads = 1, x.name = "x", y.name = "y",
+  chr.name = "chr")
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
@@ -26,6 +27,8 @@ xyStats(dna, x.pos, y.pos, wlen = 25000, wjump = 25000, start.by = NULL,
 \item{wtype}{sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}}
 
 \item{dist}{distance to use}
+
+\item{global.deletion}{a logical indicating whether to delete the sites with missing data in a global way (default is to delete in a pairwise way)}
 
 \item{threads}{number of parallel threads}
 

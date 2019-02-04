@@ -6,8 +6,8 @@
 \usage{
 getTrees(dna, x.pos = NULL, r.pos = 1, wlen = 25000, wjump = 25000,
   start.by = NULL, end.by = NULL, wtype = "bp", dist = "IUPAC",
-  model = "bionjs", threads = 1, x.name = "x", r.name = "r",
-  chr.name = "chr", plot = FALSE)
+  global.deletion = FALSE, model = "bionjs", threads = 1,
+  x.name = "x", r.name = "r", chr.name = "chr", plot = FALSE)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
@@ -27,6 +27,8 @@ getTrees(dna, x.pos = NULL, r.pos = 1, wlen = 25000, wjump = 25000,
 \item{wtype}{sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}}
 
 \item{dist}{distance to use}
+
+\item{global.deletion}{a logical indicating whether to delete the sites with missing data in a global way (default is to delete in a pairwise way)}
 
 \item{model}{tree model to use either \link[ape]{njs} or \link[ape]{bionjs}}
 

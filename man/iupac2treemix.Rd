@@ -4,8 +4,8 @@
 \alias{iupac2treemix}
 \title{iupac2treemix}
 \usage{
-iupac2treemix(dna, list.pos, wlen = 25000, start.by = NULL, end.by = NULL,
-  threads = 1, pB = TRUE)
+iupac2treemix(dna, list.pos, wlen = 25000, start.by = NULL,
+  end.by = NULL, threads = 1, pB = TRUE)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}

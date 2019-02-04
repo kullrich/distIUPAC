@@ -2,6 +2,7 @@
 #' @name globalDeletion
 #' @description This function returns a \code{DNAStringSet} reduced by all sites containing any gaps ("-", "+", ".") or missing ("N") sites
 #' @import Biostrings
+#' @import ape
 #' @param dna \code{DNAStringSet}
 #' @examples
 #' data("MySequences", package = "distIUPAC")

@@ -4,13 +4,15 @@
 \alias{biSites}
 \title{biSites}
 \usage{
-biSites(dna, x.pos = NULL, wlen = 25000, start.by = NULL, end.by = NULL,
-  threads = 1, pB = TRUE)
+biSites(dna, x.pos = NULL, min.ind = 0, wlen = 25000,
+  start.by = NULL, end.by = NULL, threads = 1, pB = TRUE)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
 
 \item{x.pos}{population X positions}
+
+\item{min.ind}{minimum number of individuals without gaps ("-", "+", ".") or without missing sites ("N"), set to size of population ("length(x.pos)") to mask global deletion sites}
 
 \item{wlen}{sliding window length}
 
@@ -34,7 +36,11 @@ as.matrix(MySequences)[,head(MySequences.biSites)]
 #consider only a subset of all sequences
 CAS.pos<-5:34
 CAS.biSites<-biSites(MySequences, x.pos = CAS.pos)
-as.matrix(MySequences[CAS.pos])[,head(CAS.biSites)]
+as.matrix(MySequences[CAS.pos])[,head(CAS.biSites$biPOS)]
+#consider only sites were 15 individuals have no gaps or missing sites
+CAS.biSites.minInd.15<-biSites(MySequences, x.pos = CAS.pos, min.ind = 15)
+as.matrix(MySequences[CAS.pos])[,head(CAS.biSites.minInd.15$biPOS)]
+as.matrix(MySequences[CAS.pos])[,head(CAS.biSites.minInd.15$biPOSmasked)]
 }
 \author{
 Kristian K Ullrich

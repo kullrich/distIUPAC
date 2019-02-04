@@ -6,8 +6,11 @@
 #' @import ape
 #' @import doMC
 #' @import foreach
+#' @importFrom stats as.dist, sd
+#' @importFrom utils combn, read.table, setTxtProgressBar, txtProgressBar
 #' @param dna \code{DNAStringSet}
 #' @param x.pos population X positions
+#' @param min.ind minimum number of individuals without gaps ("-", "+", ".") or without missing sites ("N"), set to size of population ("length(x.pos)") to mask global deletion sites
 #' @param wlen sliding window length
 #' @param start.by optional start position
 #' @param end.by optional end position
@@ -17,14 +20,18 @@
 #' data("MySequences", package = "distIUPAC")
 #' #consider all sequences
 #' MySequences.triSites<-triSites(MySequences)
-#' as.matrix(MySequences)[,head(MySequences.triSites)]
+#' as.matrix(MySequences)[,head(MySequences.triSites$triPOS)]
 #' #consider only a subset of all sequences
 #' CAS.pos<-5:34
 #' CAS.triSites<-triSites(MySequences, x.pos = CAS.pos)
-#' as.matrix(MySequences[CAS.pos])[,head(CAS.triSites)]
+#' as.matrix(MySequences[CAS.pos])[,head(CAS.triSites$triPOS)]
+#' #consider only sites were 15 individuals have no gaps or missing sites
+#' CAS.triSites.minInd.15<-triSites(MySequences, x.pos = CAS.pos, min.ind = 15)
+#' as.matrix(MySequences[CAS.pos])[,head(CAS.triSites.minInd.15$triPOS)]
+#' as.matrix(MySequences[CAS.pos])[,head(CAS.triSites.minInd.15$triPOSmasked)]
 #' @export triSites
 #' @author Kristian K Ullrich
-triSites<-function(dna, x.pos=NULL, wlen=25000, start.by=NULL, end.by=NULL, threads=1, pB=TRUE){
+triSites<-function(dna, x.pos=NULL, min.ind=0, wlen=25000, start.by=NULL, end.by=NULL, threads=1, pB=TRUE){
   IUPAC_CODE_MAP_LIST<-list(c("A"),c("C"),c("G"),c("T"),c("A","C"),c("A","G"),c("A","T"),c("C","G"),c("C","T"),c("G","T"),c("A","C","G"),c("A","C","T"),c("A","G","T"),c("C","G","T"),c(),c(),c(),c())
   names(IUPAC_CODE_MAP_LIST)<-c("A","C","G","T","M","R","W","S","Y","K","V","H","D","B","N","-","+",".")
   options(scipen=22)
@@ -38,25 +45,38 @@ triSites<-function(dna, x.pos=NULL, wlen=25000, start.by=NULL, end.by=NULL, thre
   }
   j<-NULL
   registerDoMC(threads)
-  OUT<-foreach(j=1:dim(tmp.sw)[2], .combine=c) %dopar% {
-    START<-NA
-    END<-NA
+  OUT<-foreach(j=1:dim(tmp.sw)[2], .combine=rbind) %dopar% {
+    START<-tmp.sw[1,j][[1]]
+    END<-tmp.sw[2,j][[1]]
+    triPOSall<-NA
     triPOS<-NA
-    OUT<-list(START,END,triPOS)
-    names(OUT)<-c("START","END","triPOS")
-    OUT$START<-tmp.sw[1,j][[1]]
-    OUT$END<-tmp.sw[2,j][[1]]
-    tmp.seq<-subseq(dna_,OUT$START,OUT$END)
-    tmp.seq.cM<-apply(consensusMatrix(tmp.seq),1,function(x) ifelse(x>0,1,0))
-    triPOS<-OUT$START-1+which(apply(tmp.seq.cM,1,function(x) length(unique(unlist(unique(IUPAC_CODE_MAP_LIST[names(x[x==1])])))))==3)
+    triPOSmasked<-NA
+    minIndPOS<-NA
+    tmp.seq<-subseq(dna_,START,END)
+    cM<-consensusMatrix(tmp.seq)
+    minIndPOS<-START-1+which(!apply(cM,2,function(x) sum(x[1:14]))>=min.ind)
+    if(unique(width(tmp.seq))==1){
+      tmp.seq.cM<-t(as.matrix(apply(cM,1,function(x) ifelse(x>0,1,0))))
+    }
+    if(unique(width(tmp.seq))!=1){
+      tmp.seq.cM<-apply(cM,1,function(x) ifelse(x>0,1,0))
+    }
+    triPOSall<-START-1+which(apply(tmp.seq.cM,1,function(x) length(unique(unlist(unique(IUPAC_CODE_MAP_LIST[names(x[x==1])])))))==3)
+    triPOS<-triPOSall[which(!triPOSall%in%minIndPOS)]
+    triPOSmasked<-triPOSall[which(triPOSall%in%minIndPOS)]
     if(pB){
       setTxtProgressBar(pb,j)
     }
-    triPOS
+    list(triPOS,triPOSmasked,minIndPOS)
   }
   if(pB){
     setTxtProgressBar(pb,dim(tmp.sw)[2])
     close(pb)  
   }
+  OUT<-list(unlist(OUT[,1]),unlist(OUT[,2]),unlist(OUT[,3]))
+  names(OUT)<-c("triPOS","triPOSmasked","minIndPOS")
+  names(OUT$triPOS)<-NULL
+  names(OUT$triPOSmasked)<-NULL
+  names(OUT$minIndPOS)<-NULL
   return(OUT)
 }

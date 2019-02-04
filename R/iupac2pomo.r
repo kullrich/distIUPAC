@@ -5,6 +5,8 @@
 #' @import ape
 #' @import parallel
 #' @import foreach
+#' @importFrom stats as.dist, sd
+#' @importFrom utils combn, read.table, setTxtProgressBar, txtProgressBar
 #' @param dna \code{DNAStringSet}
 #' @param list.pos population positions list
 #' @param chr set chromosome name

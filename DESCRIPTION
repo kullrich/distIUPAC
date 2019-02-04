@@ -15,13 +15,13 @@ Imports:
  foreach (>= 1.4.4),
  doMC (>= 1.3.5)
 Depends:
- R (>= 2.10),
+ R (>= 3.5.1),
  Biostrings (>= 2.40.2),
  ape (>= 5.0)
 LinkingTo: Rcpp
-Suggests: knitr, rmarkdown
+Suggests: knitr, rmarkdown, devtools
 VignetteBuilder: knitr
 NeedsCompilation: yes
 URL: https://github.com/kullrich/distIUPAC
 BugReports: https://github.com/kullrich/distIUPAC/issues
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
