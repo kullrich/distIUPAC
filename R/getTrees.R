@@ -15,6 +15,7 @@
 #' @param end.by optional end position
 #' @param wtype sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}
 #' @param dist distance to use
+#' @param global.deletion a logical indicating whether to delete the sites with missing data in a global way (default is to delete in a pairwise way)
 #' @param model tree model to use either \link[ape]{njs} or \link[ape]{bionjs}
 #' @param threads number of parallel threads
 #' @param x.name population X name
@@ -32,7 +33,7 @@
 #' wlen = 10000, wjump = 10000, x.name = "all", r.name = "Rnor", threads = 1, plot = TRUE)
 #' @export getTrees
 #' @author Kristian K Ullrich
-getTrees<-function(dna, x.pos=NULL, r.pos=1, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", model="bionjs", threads=1, x.name="x", r.name="r", chr.name="chr", plot=FALSE){
+getTrees<-function(dna, x.pos=NULL, r.pos=1, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=FALSE, model="bionjs", threads=1, x.name="x", r.name="r", chr.name="chr", plot=FALSE){
   options(scipen=22)
   if(is.null(start.by)){start.by<-1}
   if(is.null(end.by)){end.by<-unique(width(dna))}
@@ -74,6 +75,9 @@ getTrees<-function(dna, x.pos=NULL, r.pos=1, wlen=25000, wjump=25000, start.by=N
     OUT$START<-tmp.sw[1,j][[1]]
     OUT$END<-tmp.sw[2,j][[1]]
     tmp.seq<-subseq(dna_,OUT$START,OUT$END)
+    if(global.deletion){
+      tmp.seq<-globalDeletion(tmp.seq)
+    }
     if(dist=="IUPAC"){
       tmp.seq.dist<-distIUPAC(as.character(tmp.seq))
       OUT$dSites.x<-mean(as.dist(tmp.seq.dist$sitesUsed),na.rm=TRUE)
@@ -99,7 +103,7 @@ getTrees<-function(dna, x.pos=NULL, r.pos=1, wlen=25000, wjump=25000, start.by=N
       }
     }
     if(dist!="IUPAC"){
-      tmp.seq.dist<-dist.dna(as.DNAbin(tmp.seq),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
+      tmp.seq.dist<-dist.dna(as.DNAbin.DNAMultipleAlignment(tmp.seq),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
       tmp.seq.sites<-pairwiseDeletion(as.character(tmp.seq))$sitesUsed
       OUT$dSites.x<-mean(as.dist(tmp.seq.sites),na.rm=TRUE)
       OUT$dNA.x<-length(which(is.na(as.dist(tmp.seq.dist))))/length(as.dist(tmp.seq.dist))

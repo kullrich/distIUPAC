@@ -14,6 +14,7 @@
 #' @param end.by optional end position
 #' @param wtype sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}
 #' @param dist distance to use
+#' @param global.deletion a logical indicating whether to delete the sites with missing data in a global way (default is to delete in a pairwise way)
 #' @param threads number of parallel threads
 #' @param chr.name chromosome name
 #' @examples
@@ -32,7 +33,7 @@
 #' CAS.AFG.SPRE.xyMultiStats
 #' @export xyMultiStats
 #' @author Kristian K Ullrich
-xyMultiStats<-function(dna, list.pos, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", threads=1, chr.name="chr"){
+xyMultiStats<-function(dna, list.pos, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=FALSE, threads=1, chr.name="chr"){
   options(scipen=22)
   if(is.null(start.by)){start.by<-1}
   if(is.null(end.by)){end.by<-unique(width(dna))}
@@ -92,6 +93,9 @@ xyMultiStats<-function(dna, list.pos, wlen=25000, wjump=25000, start.by=NULL, en
       OUT$START<-tmp.sw[1,j][[1]]
       OUT$END<-tmp.sw[2,j][[1]]
       tmp.seq<-subseq(dna_,OUT$START,OUT$END)
+      if(global.deletion){
+        tmp.seq<-globalDeletion(tmp.seq)
+      }
       if(dist=="IUPAC"){
         tmp.seq.dist<-distIUPAC(as.character(tmp.seq))
         OUT$dMean.x<-mean(as.dist(tmp.seq.dist$distIUPAC[x.pos_,x.pos_]),na.rm=TRUE)
@@ -115,7 +119,7 @@ xyMultiStats<-function(dna, list.pos, wlen=25000, wjump=25000, start.by=NULL, en
         OUT$dRelative.xy<-OUT$dMean.xy - OUT$dSweighted.xy
       }
       if(dist!="IUPAC"){
-        tmp.seq.dist<-dist.dna(as.DNAbin(tmp.seq),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
+        tmp.seq.dist<-dist.dna(as.DNAbin.DNAMultipleAlignment(tmp.seq),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
         tmp.seq.sites<-pairwiseDeletion(as.character(tmp.seq))$sitesUsed
         OUT$dMean.x<-mean(as.dist(tmp.seq.dist[x.pos_,x.pos_]),na.rm=TRUE)
         OUT$dSd.x<-sd(as.dist(tmp.seq.dist[x.pos_,x.pos_]),na.rm=TRUE)
