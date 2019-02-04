@@ -69,7 +69,7 @@ xStats<-function(dna, x.pos=NULL, wlen=25000, wjump=25000, start.by=NULL, end.by
       OUT$dMax.x<-max(as.dist(tmp.seq.dist$distIUPAC),na.rm=TRUE)
     }
     if(dist!="IUPAC"){
-      tmp.seq.dist<-dist.dna(as.DNAbin(dnastring2apealg(tmp.seq)),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
+      tmp.seq.dist<-dist.dna(as.DNAbin(tmp.seq),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
       tmp.seq.sites<-pairwiseDeletion(as.character(tmp.seq))$sitesUsed
       OUT$dMean.x<-mean(as.dist(tmp.seq.dist),na.rm=TRUE)
       OUT$dSd.x<-sd(as.dist(tmp.seq.dist),na.rm=TRUE)

@@ -99,7 +99,7 @@ getTrees<-function(dna, x.pos=NULL, r.pos=1, wlen=25000, wjump=25000, start.by=N
       }
     }
     if(dist!="IUPAC"){
-      tmp.seq.dist<-dist.dna(as.DNAbin(dnastring2apealg(tmp.seq)),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
+      tmp.seq.dist<-dist.dna(as.DNAbin(tmp.seq),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
       tmp.seq.sites<-pairwiseDeletion(as.character(tmp.seq))$sitesUsed
       OUT$dSites.x<-mean(as.dist(tmp.seq.sites),na.rm=TRUE)
       OUT$dNA.x<-length(which(is.na(as.dist(tmp.seq.dist))))/length(as.dist(tmp.seq.dist))
