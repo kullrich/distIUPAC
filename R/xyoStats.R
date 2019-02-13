@@ -47,11 +47,11 @@ xyoStats<-function(dna, x.pos, y.pos, o.pos, wlen=25000, wjump=25000, start.by=N
   }
   if(wtype=="biSites"){
     tmp.POS<-biSites(dna_,c(x.pos_,y.pos_),threads=threads,pB=FALSE)
-    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=start.by,end.by=end.by)
+    tmp.sw<-posgen(tmp.POS$biPOS,wlen=wlen,start.by=start.by,end.by=end.by)
   }
   if(wtype=="triSites"){
     tmp.POS<-triSites(dna_,c(x.pos_,y.pos_),threads=threads,pB=FALSE)
-    tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=start.by,end.by=end.by)
+    tmp.sw<-posgen(tmp.POS$triPOS,wlen=wlen,start.by=start.by,end.by=end.by)
   }
   j<-NULL
   pb<-txtProgressBar(min=0,max=dim(tmp.sw)[2],initial=0,style=3)
