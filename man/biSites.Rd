@@ -32,7 +32,7 @@ This function returns bi-allelic site positions given a dna object
 data("MySequences", package = "distIUPAC")
 #consider all sequences
 MySequences.biSites<-biSites(MySequences)
-as.matrix(MySequences)[,head(MySequences.biSites)]
+as.matrix(MySequences)[,head(MySequences.biSites$biPOS)]
 #consider only a subset of all sequences
 CAS.pos<-5:34
 CAS.biSites<-biSites(MySequences, x.pos = CAS.pos)

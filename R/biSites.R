@@ -6,8 +6,8 @@
 #' @import ape
 #' @import doMC
 #' @import foreach
-#' @importFrom stats as.dist, sd
-#' @importFrom utils combn, read.table, setTxtProgressBar, txtProgressBar
+#' @importFrom stats as.dist sd
+#' @importFrom utils combn read.table setTxtProgressBar txtProgressBar
 #' @param dna \code{DNAStringSet}
 #' @param x.pos population X positions
 #' @param min.ind minimum number of individuals without gaps ("-", "+", ".") or without missing sites ("N"), set to size of population ("length(x.pos)") to mask global deletion sites
@@ -20,7 +20,7 @@
 #' data("MySequences", package = "distIUPAC")
 #' #consider all sequences
 #' MySequences.biSites<-biSites(MySequences)
-#' as.matrix(MySequences)[,head(MySequences.biSites)]
+#' as.matrix(MySequences)[,head(MySequences.biSites$biPOS)]
 #' #consider only a subset of all sequences
 #' CAS.pos<-5:34
 #' CAS.biSites<-biSites(MySequences, x.pos = CAS.pos)

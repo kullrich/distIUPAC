@@ -2,6 +2,8 @@
 #include <string.h>
 using namespace Rcpp;
 
+//' @useDynLib distIUPAC, .registration = TRUE
+//' @importFrom Rcpp evalCpp
 //' @export pairwiseDeletion
 //' @author Kristian K Ullrich
 // [[Rcpp::export]]

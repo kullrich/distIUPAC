@@ -6,8 +6,8 @@
 #' @import ape
 #' @import doMC
 #' @import foreach
-#' @importFrom stats as.dist, sd
-#' @importFrom utils combn, read.table, setTxtProgressBar, txtProgressBar
+#' @importFrom stats as.dist sd
+#' @importFrom utils combn read.table setTxtProgressBar txtProgressBar
 #' @param dna \code{DNAStringSet}
 #' @param x.pos population X positions
 #' @param r.pos root position, needs to be within x.pos

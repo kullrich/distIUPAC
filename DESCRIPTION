@@ -15,11 +15,11 @@ Imports:
  foreach (>= 1.4.4),
  doMC (>= 1.3.5)
 Depends:
- R (>= 3.5.1),
+ R (>= 3.5.0),
  Biostrings (>= 2.40.2),
  ape (>= 5.0)
 LinkingTo: Rcpp
-Suggests: knitr, rmarkdown, devtools
+Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: yes
 URL: https://github.com/kullrich/distIUPAC

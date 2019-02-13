@@ -1,7 +1,10 @@
+
 #include <Rcpp.h>
 #include <string.h>
 using namespace Rcpp;
 
+//' @useDynLib distIUPAC, .registration = TRUE
+//' @importFrom Rcpp evalCpp
 //' @export distIUPACmatrix
 //' @author Kristian K Ullrich
 // [[Rcpp::export]]
