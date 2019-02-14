@@ -4,10 +4,11 @@
 \alias{getTrees}
 \title{getTrees}
 \usage{
-getTrees(dna, x.pos = NULL, r.pos = 1, wlen = 25000, wjump = 25000,
-  start.by = NULL, end.by = NULL, wtype = "bp", dist = "IUPAC",
-  global.deletion = FALSE, model = "bionjs", threads = 1,
-  x.name = "x", r.name = "r", chr.name = "chr", plot = FALSE)
+getTrees(dna, x.pos = NULL, r.pos = 1, resolve.root = TRUE,
+  wlen = 25000, wjump = 25000, start.by = NULL, end.by = NULL,
+  wtype = "bp", dist = "IUPAC", global.deletion = FALSE,
+  model = "bionjs", threads = 1, x.name = "x", r.name = "r",
+  chr.name = "chr", plot = FALSE)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
@@ -15,6 +16,8 @@ getTrees(dna, x.pos = NULL, r.pos = 1, wlen = 25000, wjump = 25000,
 \item{x.pos}{population X positions}
 
 \item{r.pos}{root position, needs to be within x.pos}
+
+\item{resolve.root}{adds a zero-length branch below the MRCA of the ingroup \link[ape]{root}}
 
 \item{wlen}{sliding windows length}
 

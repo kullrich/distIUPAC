@@ -11,6 +11,7 @@
 #' @param dna \code{DNAStringSet}
 #' @param x.pos population X positions
 #' @param r.pos root position, needs to be within x.pos
+#' @param resolve.root adds a zero-length branch below the MRCA of the ingroup \link[ape]{root}
 #' @param wlen sliding windows length
 #' @param wjump sliding windows jump
 #' @param start.by optional start position
@@ -35,7 +36,7 @@
 #' wlen = 10000, wjump = 10000, x.name = "all", r.name = "Rnor", threads = 1, plot = TRUE)
 #' @export getTrees
 #' @author Kristian K Ullrich
-getTrees<-function(dna, x.pos=NULL, r.pos=1, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=FALSE, model="bionjs", threads=1, x.name="x", r.name="r", chr.name="chr", plot=FALSE){
+getTrees<-function(dna, x.pos=NULL, r.pos=1, resolve.root = TRUE, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=FALSE, model="bionjs", threads=1, x.name="x", r.name="r", chr.name="chr", plot=FALSE){
   options(scipen=22)
   if(is.null(start.by)){start.by<-1}
   if(is.null(end.by)){end.by<-unique(width(dna))}
@@ -100,12 +101,12 @@ getTrees<-function(dna, x.pos=NULL, r.pos=1, wlen=25000, wjump=25000, start.by=N
         OUT$comment.x<-gsub("\n","",tmp.seq.tree)
       }
       if(class(tmp.seq.tree)=="phylo"){
-        OUT$tree.x<-write.tree(root(tmp.seq.tree,r.pos_))
-        if(plot){plot(root(tmp.seq.tree,r.pos_),main=paste0(OUT$XNAME," ",OUT$RNAME,"\n",OUT$CHRNAME,"-",OUT$START,"-",OUT$END))}
+        OUT$tree.x<-write.tree(root(tmp.seq.tree,r.pos_,resolve.root=resolve.root))
+        if(plot){plot(root(tmp.seq.tree,r.pos_,resolve.root=resolve.root),main=paste0(OUT$XNAME," ",OUT$RNAME,"\n",OUT$CHRNAME,"-",OUT$START,"-",OUT$END))}
         OUT$treelength.x<-sum(tmp.seq.tree$edge.length)
         tmp.seq.tree.topo<-tmp.seq.tree
         tmp.seq.tree.topo$edge.length<-NULL
-        OUT$topo.x<-write.tree(root(tmp.seq.tree.topo,r.pos_))
+        OUT$topo.x<-write.tree(root(tmp.seq.tree.topo,r.pos_,resolve.root=resolve.root))
       }
     }
     if(dist!="IUPAC"){
@@ -125,12 +126,12 @@ getTrees<-function(dna, x.pos=NULL, r.pos=1, wlen=25000, wjump=25000, start.by=N
         OUT$comment.x<-gsub("\n","",tmp.seq.tree)
       }
       if(class(tmp.seq.tree)=="phylo"){
-        OUT$tree.x<-write.tree(root(tmp.seq.tree,r.pos_))
-        if(plot){plot(root(tmp.seq.tree,r.pos_),main=paste0(OUT$XNAME," ",OUT$RNAME,"\n",OUT$CHRNAME,"-",OUT$START,"-",OUT$END))}
+        OUT$tree.x<-write.tree(root(tmp.seq.tree,r.pos_,resolve.root=resolve.root))
+        if(plot){plot(root(tmp.seq.tree,r.pos_,resolve.root=resolve.root),main=paste0(OUT$XNAME," ",OUT$RNAME,"\n",OUT$CHRNAME,"-",OUT$START,"-",OUT$END))}
         OUT$treelength.x<-sum(tmp.seq.tree$edge.length)
         tmp.seq.tree.topo<-tmp.seq.tree
         tmp.seq.tree.topo$edge.length<-NULL
-        OUT$topo.x<-write.tree(root(tmp.seq.tree.topo,r.pos_))
+        OUT$topo.x<-write.tree(root(tmp.seq.tree.topo,r.pos_,resolve.root=resolve.root))
       }
     }
     setTxtProgressBar(pb,j)
