@@ -31,9 +31,14 @@ xStats<-function(dna, x.pos=NULL, wlen=25000, wjump=25000, start.by=NULL, end.by
   options(scipen=22)
   if(is.null(start.by)){start.by<-1}
   if(is.null(end.by)){end.by<-unique(width(dna))}
-  if(is.null(x.pos)){dna_<-dna}
-  if(!is.null(x.pos)){dna_<-dna[x.pos]}
-  x.pos_<-seq(1,length(x.pos))
+  if(is.null(x.pos)){
+    dna_<-dna
+    x.pos_<-seq(1,length(dna))
+  }
+  if(!is.null(x.pos)){
+    dna_<-dna[x.pos]
+    x.pos_<-seq(1,length(x.pos))
+  }
   if(wtype=="bp"){
     tmp.sw<-swgen(wlen=wlen,wjump=wjump,start.by=start.by,end.by=end.by)
   }

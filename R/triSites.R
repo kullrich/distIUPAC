@@ -35,8 +35,14 @@ triSites<-function(dna, x.pos=NULL, min.ind=0, wlen=25000, start.by=NULL, end.by
   IUPAC_CODE_MAP_LIST<-list(c("A"),c("C"),c("G"),c("T"),c("A","C"),c("A","G"),c("A","T"),c("C","G"),c("C","T"),c("G","T"),c("A","C","G"),c("A","C","T"),c("A","G","T"),c("C","G","T"),c(),c(),c(),c())
   names(IUPAC_CODE_MAP_LIST)<-c("A","C","G","T","M","R","W","S","Y","K","V","H","D","B","N","-","+",".")
   options(scipen=22)
-  if(is.null(x.pos)){dna_<-dna}
-  if(!is.null(x.pos)){dna_<-dna[x.pos]}
+  if(is.null(x.pos)){
+    dna_<-dna
+    x.pos_<-seq(1,length(dna))
+  }
+  if(!is.null(x.pos)){
+    dna_<-dna[x.pos]
+    x.pos_<-seq(1,length(x.pos))
+  }
   if(is.null(start.by)){start.by<-1}
   if(is.null(end.by)){end.by<-unique(width(dna))}
   tmp.sw<-swgen(wlen=wlen,wjump=wlen,start.by=start.by,end.by=end.by)
