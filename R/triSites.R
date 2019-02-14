@@ -45,6 +45,8 @@ triSites<-function(dna, x.pos=NULL, min.ind=0, wlen=25000, start.by=NULL, end.by
   }
   if(is.null(start.by)){start.by<-1}
   if(is.null(end.by)){end.by<-unique(width(dna))}
+  if(start.by>unique(width(dna))){stop("start.by needs to be equal or smaller than dna length")}
+  if(end.by>unique(width(dna))){stop("end.by needs to be equal or smaller than dna length")}
   tmp.sw<-swgen(wlen=wlen,wjump=wlen,start.by=start.by,end.by=end.by)
   if(pB){
     pb<-txtProgressBar(min=0,max=dim(tmp.sw)[2],initial=0,style=3)

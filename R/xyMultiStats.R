@@ -39,6 +39,8 @@ xyMultiStats<-function(dna, list.pos, wlen=25000, wjump=25000, start.by=NULL, en
   options(scipen=22)
   if(is.null(start.by)){start.by<-1}
   if(is.null(end.by)){end.by<-unique(width(dna))}
+  if(start.by>unique(width(dna))){stop("start.by needs to be equal or smaller than dna length")}
+  if(end.by>unique(width(dna))){stop("end.by needs to be equal or smaller than dna length")}
   if(is.null(names(list.pos))){names(list.pos)<-seq(1,length(list.pos))}
   pop.comb<-combn(length(list.pos),2)
   COMBOUT<-vector("list",length=dim(pop.comb)[2])

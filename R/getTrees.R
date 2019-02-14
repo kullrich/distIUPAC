@@ -39,6 +39,8 @@ getTrees<-function(dna, x.pos=NULL, r.pos=1, wlen=25000, wjump=25000, start.by=N
   options(scipen=22)
   if(is.null(start.by)){start.by<-1}
   if(is.null(end.by)){end.by<-unique(width(dna))}
+  if(start.by>unique(width(dna))){stop("start.by needs to be equal or smaller than dna length")}
+  if(end.by>unique(width(dna))){stop("end.by needs to be equal or smaller than dna length")}
   if(!r.pos%in%x.pos){x.pos<-c(x.pos,r.pos)}
   if(length(x.pos)<3){stop("needs at least 3 sequences to calculate tree")}
   if(!model%in%c("njs","bionjs")){stop("model needs to be either njs or bionjs")}

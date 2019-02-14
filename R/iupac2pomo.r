@@ -71,6 +71,8 @@ iupac2pomo<-function(dna, list.pos, chr="1", wlen=25000, start.by=NULL, end.by=N
   if(is.null(names(list.pos))){names(list.pos)<-seq(1,length(list.pos))}
   if(is.null(start.by)){start.by<-1}
   if(is.null(end.by)){end.by<-unique(width(dna))}
+  if(start.by>unique(width(dna))){stop("start.by needs to be equal or smaller than dna length")}
+  if(end.by>unique(width(dna))){stop("end.by needs to be equal or smaller than dna length")}
   dna_<-dna[unlist(list.pos)]
   list.pos_<-unlist(lapply(list.pos,length))
   cur_<-1

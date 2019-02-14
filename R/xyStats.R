@@ -40,6 +40,8 @@ xyStats<-function(dna, x.pos, y.pos, wlen=25000, wjump=25000, start.by=NULL, end
   options(scipen=22)
   if(is.null(start.by)){start.by<-1}
   if(is.null(end.by)){end.by<-unique(width(dna))}
+  if(start.by>unique(width(dna))){stop("start.by needs to be equal or smaller than dna length")}
+  if(end.by>unique(width(dna))){stop("end.by needs to be equal or smaller than dna length")}
   dna_<-dna[c(x.pos,y.pos)]
   x.pos_<-seq(1,length(x.pos))
   y.pos_<-seq(length(x.pos_)+1,length(x.pos_)+length(y.pos))
