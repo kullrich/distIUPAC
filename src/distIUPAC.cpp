@@ -37,9 +37,7 @@ Rcpp::List distIUPAC( Rcpp::StringVector myvector ) {
   rownames(sitesMatrix) = myvectornames;
   int nsites = myvector[1].size();
   for( int i=0; i < n; i++ ){
-    sitesMatrix(i,i) = nsites;
     for( int j=i; j < n; j++ ){
-      sitesMatrix(j,j) = nsites;
       double eqnum = 0;
       int ij_n = nsites;
       for( int s=0; s < nsites; s++){
