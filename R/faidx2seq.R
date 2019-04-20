@@ -3,6 +3,7 @@
 #' @description This function returns a region of a bgzipped and samtools indexed fasta alignment
 #' file using \code{samtools}
 #' @import Biostrings
+#' @import magrittr
 #' @param fasta fasta file which needs to be indexed by 'samtools faidx'
 #' @param start region start
 #' @param end region end
@@ -26,7 +27,7 @@ faidx2seq<-function(fasta, start=NULL, end=NULL, format="dna", samtools="samtool
   if(end<start){stop("end smaller than start")}
   tmpfile<-tempfile()
   for(i in samples){
-    system(paste0(samtools," faidx ",fasta," ",i,":",start,"-",end," >> ",tmpfile))
+    sprintf("%s faidx %s %s:%s-%s >> %s", samtools, fasta, i, start, end, tmpfile) %>% system()
   }
   if(format=="dna"){
     out<-readDNAStringSet(tmpfile)
