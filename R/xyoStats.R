@@ -114,7 +114,7 @@ xyoStats<-function(dna, x.pos, y.pos, o.pos, wlen=25000, wjump=25000, start.by=N
       OUT$RNDmin.xyo<-OUT$dMin.xy/((OUT$dMean.xo+OUT$dMean.yo)/2)
     }
     if(dist!="IUPAC"){
-      tmp.seq.dist<-dist.dna(as.DNAbin.DNAMultipleAlignment(tmp.seq),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
+      tmp.seq.dist<-dist.dna(as.DNAbin(DNAMultipleAlignment(tmp.seq)),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
       tmp.seq.sites<-pairwiseDeletion(as.character(tmp.seq))$sitesUsed
       OUT$dMean.xy<-mean(tmp.seq.dist[x.pos_,y.pos_],na.rm=TRUE)
       OUT$dSites.xy<-mean(tmp.seq.sites[x.pos_,y.pos_],na.rm=TRUE)

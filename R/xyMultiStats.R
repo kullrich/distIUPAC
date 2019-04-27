@@ -123,7 +123,7 @@ xyMultiStats<-function(dna, list.pos, wlen=25000, wjump=25000, start.by=NULL, en
         OUT$dRelative.xy<-OUT$dMean.xy - OUT$dSweighted.xy
       }
       if(dist!="IUPAC"){
-        tmp.seq.dist<-dist.dna(as.DNAbin.DNAMultipleAlignment(tmp.seq),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
+        tmp.seq.dist<-dist.dna(as.DNAbin(DNAMultipleAlignment(tmp.seq)),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
         tmp.seq.sites<-pairwiseDeletion(as.character(tmp.seq))$sitesUsed
         OUT$dMean.x<-mean(as.dist(tmp.seq.dist[x.pos_,x.pos_]),na.rm=TRUE)
         OUT$dSd.x<-sd(as.dist(tmp.seq.dist[x.pos_,x.pos_]),na.rm=TRUE)
