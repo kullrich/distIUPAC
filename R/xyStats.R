@@ -22,6 +22,7 @@
 #' @param x.name population X name
 #' @param y.name population Y name
 #' @param chr.name chromosome name
+#' @param pB specifies if progress should be shown as a progress bar
 #' @examples
 #' data("MySequences", package = "distIUPAC")
 #' CAS.pos<-5:34
@@ -36,7 +37,7 @@
 #' CAS.AFG.xyStats
 #' @export xyStats
 #' @author Kristian K Ullrich
-xyStats<-function(dna, x.pos, y.pos, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=FALSE, threads=1, x.name="x", y.name="y", chr.name="chr"){
+xyStats<-function(dna, x.pos, y.pos, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=FALSE, threads=1, x.name="x", y.name="y", chr.name="chr", pB=TRUE){
   options(scipen=22)
   if(is.null(start.by)){start.by<-1}
   if(is.null(end.by)){end.by<-unique(width(dna))}
@@ -57,7 +58,9 @@ xyStats<-function(dna, x.pos, y.pos, wlen=25000, wjump=25000, start.by=NULL, end
     tmp.sw<-posgen(tmp.POS$triPOS,wlen=wlen,start.by=start.by,end.by=end.by)
   }
   j<-NULL
-  pb<-txtProgressBar(min=0,max=dim(tmp.sw)[2],initial=0,style=3)
+  if(pB){
+    pb<-txtProgressBar(min=0,max=dim(tmp.sw)[2],initial=0,style=3)
+  }
   registerDoMC(threads)
   OUT<-foreach(j=1:dim(tmp.sw)[2], .combine=rbind) %dopar% {
     XNAME<-x.name
@@ -137,10 +140,14 @@ xyStats<-function(dna, x.pos, y.pos, wlen=25000, wjump=25000, start.by=NULL, end
       OUT$Fst.xy<-(OUT$dTotal.xy - OUT$dSweighted.xy) / OUT$dTotal.xy
       OUT$dRelative.xy<-OUT$dMean.xy - OUT$dSweighted.xy
     }
-    setTxtProgressBar(pb,j)
+    if(pB){
+      setTxtProgressBar(pb,j)
+    }
     OUT
   }
-  setTxtProgressBar(pb,dim(tmp.sw)[2])
-  close(pb)
+  if(pB){
+    setTxtProgressBar(pb,dim(tmp.sw)[2])
+    close(pb)
+  }
   return(OUT)
 }
