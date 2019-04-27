@@ -17,7 +17,8 @@ Imports:
 Depends:
  R (>= 3.5.0),
  Biostrings (>= 2.40.2),
- ape (>= 5.0)
+ ape (>= 5.0),
+ magrittr
 LinkingTo: Rcpp
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
