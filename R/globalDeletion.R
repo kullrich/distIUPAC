@@ -13,5 +13,8 @@
 globalDeletion<-function(dna){
   cM<-consensusMatrix(dna)
   globalDeletionSites<-which(apply(cM,2,function(x) sum(x[15:18])>=1))
-  return(dnabin2dnastring(as.DNAbin.DNAMultipleAlignment(dna)[,-globalDeletionSites]))
+  if(length(globalDeletionSites)==0){
+    return(dna)
+  }
+  return(dnabin2dnastring(as.DNAbin(DNAMultipleAlignment(dna))[,-globalDeletionSites]))
 }
