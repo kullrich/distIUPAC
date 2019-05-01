@@ -2,7 +2,7 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #' @useDynLib distIUPAC, .registration = TRUE
-#' @importFrom Rcpp evalCpp
+#' @import Rcpp
 #' @export distIUPAC
 #' @author Kristian K Ullrich
 distIUPAC <- function(myvector) {
@@ -10,7 +10,7 @@ distIUPAC <- function(myvector) {
 }
 
 #' @useDynLib distIUPAC, .registration = TRUE
-#' @importFrom Rcpp evalCpp
+#' @import Rcpp
 #' @export distIUPACmatrix
 #' @author Kristian K Ullrich
 distIUPACmatrix <- function(myvector, scoreMatrix) {
@@ -23,5 +23,48 @@ distIUPACmatrix <- function(myvector, scoreMatrix) {
 #' @author Kristian K Ullrich
 pairwiseDeletion <- function(myvector) {
     .Call(`_distIUPAC_pairwiseDeletion`, myvector)
+}
+
+#' @useDynLib distIUPAC, .registration = TRUE
+#' @import Rcpp
+#' @import RcppThread
+#' @export rcpp_distIUPAC
+#' @author Kristian K Ullrich
+rcpp_distIUPAC <- function(myvector, n_cores = 1L) {
+    .Call(`_distIUPAC_rcpp_distIUPAC`, myvector, n_cores)
+}
+
+#' @useDynLib distIUPAC, .registration = TRUE
+#' @importFrom Rcpp evalCpp
+#' @export rcpp_distIUPAC_ab
+#' @author Kristian K Ullrich
+rcpp_distIUPAC_ab <- function(a, b, nsites) {
+    .Call(`_distIUPAC_rcpp_distIUPAC_ab`, a, b, nsites)
+}
+
+#' @useDynLib distIUPAC, .registration = TRUE
+#' @import Rcpp
+#' @import RcppThread
+#' @export rcpp_distIUPACmatrix
+#' @author Kristian K Ullrich
+rcpp_distIUPACmatrix <- function(myvector, scoreMatrix, n_cores = 1L) {
+    .Call(`_distIUPAC_rcpp_distIUPACmatrix`, myvector, scoreMatrix, n_cores)
+}
+
+#' @useDynLib distIUPAC, .registration = TRUE
+#' @importFrom Rcpp evalCpp
+#' @export rcpp_distIUPACmatrix_ab
+#' @author Kristian K Ullrich
+rcpp_distIUPACmatrix_ab <- function(a, b, nsites, scoreMatrix) {
+    .Call(`_distIUPAC_rcpp_distIUPACmatrix_ab`, a, b, nsites, scoreMatrix)
+}
+
+#' @useDynLib distIUPAC, .registration = TRUE
+#' @import Rcpp
+#' @import RcppThread
+#' @export rcpp_pairwiseDeletion
+#' @author Kristian K Ullrich
+rcpp_pairwiseDeletion <- function(myvector, n_cores = 1L) {
+    .Call(`_distIUPAC_rcpp_pairwiseDeletion`, myvector, n_cores)
 }
 

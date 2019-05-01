@@ -39,11 +39,80 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rcpp_distIUPAC
+Rcpp::List rcpp_distIUPAC(Rcpp::StringVector myvector, int n_cores);
+RcppExport SEXP _distIUPAC_rcpp_distIUPAC(SEXP myvectorSEXP, SEXP n_coresSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::StringVector >::type myvector(myvectorSEXP);
+    Rcpp::traits::input_parameter< int >::type n_cores(n_coresSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_distIUPAC(myvector, n_cores));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rcpp_distIUPAC_ab
+Rcpp::NumericVector rcpp_distIUPAC_ab(std::string a, std::string b, int nsites);
+RcppExport SEXP _distIUPAC_rcpp_distIUPAC_ab(SEXP aSEXP, SEXP bSEXP, SEXP nsitesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type a(aSEXP);
+    Rcpp::traits::input_parameter< std::string >::type b(bSEXP);
+    Rcpp::traits::input_parameter< int >::type nsites(nsitesSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_distIUPAC_ab(a, b, nsites));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rcpp_distIUPACmatrix
+Rcpp::List rcpp_distIUPACmatrix(Rcpp::StringVector myvector, Rcpp::NumericMatrix scoreMatrix, int n_cores);
+RcppExport SEXP _distIUPAC_rcpp_distIUPACmatrix(SEXP myvectorSEXP, SEXP scoreMatrixSEXP, SEXP n_coresSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::StringVector >::type myvector(myvectorSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type scoreMatrix(scoreMatrixSEXP);
+    Rcpp::traits::input_parameter< int >::type n_cores(n_coresSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_distIUPACmatrix(myvector, scoreMatrix, n_cores));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rcpp_distIUPACmatrix_ab
+Rcpp::NumericVector rcpp_distIUPACmatrix_ab(std::string a, std::string b, int nsites, Rcpp::NumericMatrix scoreMatrix);
+RcppExport SEXP _distIUPAC_rcpp_distIUPACmatrix_ab(SEXP aSEXP, SEXP bSEXP, SEXP nsitesSEXP, SEXP scoreMatrixSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type a(aSEXP);
+    Rcpp::traits::input_parameter< std::string >::type b(bSEXP);
+    Rcpp::traits::input_parameter< int >::type nsites(nsitesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type scoreMatrix(scoreMatrixSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_distIUPACmatrix_ab(a, b, nsites, scoreMatrix));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rcpp_pairwiseDeletion
+Rcpp::List rcpp_pairwiseDeletion(Rcpp::StringVector myvector, int n_cores);
+RcppExport SEXP _distIUPAC_rcpp_pairwiseDeletion(SEXP myvectorSEXP, SEXP n_coresSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::StringVector >::type myvector(myvectorSEXP);
+    Rcpp::traits::input_parameter< int >::type n_cores(n_coresSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_pairwiseDeletion(myvector, n_cores));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_distIUPAC_distIUPAC", (DL_FUNC) &_distIUPAC_distIUPAC, 1},
     {"_distIUPAC_distIUPACmatrix", (DL_FUNC) &_distIUPAC_distIUPACmatrix, 2},
     {"_distIUPAC_pairwiseDeletion", (DL_FUNC) &_distIUPAC_pairwiseDeletion, 1},
+    {"_distIUPAC_rcpp_distIUPAC", (DL_FUNC) &_distIUPAC_rcpp_distIUPAC, 2},
+    {"_distIUPAC_rcpp_distIUPAC_ab", (DL_FUNC) &_distIUPAC_rcpp_distIUPAC_ab, 3},
+    {"_distIUPAC_rcpp_distIUPACmatrix", (DL_FUNC) &_distIUPAC_rcpp_distIUPACmatrix, 3},
+    {"_distIUPAC_rcpp_distIUPACmatrix_ab", (DL_FUNC) &_distIUPAC_rcpp_distIUPACmatrix_ab, 4},
+    {"_distIUPAC_rcpp_pairwiseDeletion", (DL_FUNC) &_distIUPAC_rcpp_pairwiseDeletion, 2},
     {NULL, NULL, 0}
 };
 

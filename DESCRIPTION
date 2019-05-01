@@ -8,18 +8,19 @@ Description: The package distIUPAC calculates IUPAC distances on Biostrings DNAS
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+SystemRequirements: C++11
 Imports:
- devtools (>= 1.13.5),
- Rcpp (>= 0.12.15),
- RcppParallel (>= 4.4.0),
- foreach (>= 1.4.4),
- doMC (>= 1.3.5)
+ devtools (>= 1.13.5)
 Depends:
  R (>= 3.5.0),
+ Rcpp (>= 0.12.15),
+ RcppThread (>= 0.5.3),
  Biostrings (>= 2.40.2),
  ape (>= 5.0),
+ foreach (>= 1.4.4),
+ doMC (>= 1.3.5),
  magrittr
-LinkingTo: Rcpp
+LinkingTo: Rcpp, RcppThread
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: yes
