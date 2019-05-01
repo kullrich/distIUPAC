@@ -4,10 +4,23 @@
 \alias{globalDeletion}
 \title{globalDeletion}
 \usage{
-globalDeletion(dna)
+globalDeletion(dna, x.pos = NULL, wlen = 100000, start.by = NULL,
+  end.by = NULL, threads = 1, pB = TRUE)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
+
+\item{x.pos}{population X positions}
+
+\item{wlen}{sliding window length}
+
+\item{start.by}{optional start position}
+
+\item{end.by}{optional end position}
+
+\item{threads}{number of parallel threads}
+
+\item{pB}{specifies if progress should be shown as a progress bar}
 }
 \description{
 This function returns a \code{DNAStringSet} reduced by all sites containing any gaps ("-", "+", ".") or missing ("N") sites
