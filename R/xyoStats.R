@@ -2,6 +2,12 @@
 #' @name xyoStats
 #' @description This function calculates \code{distIUPAC} based distances comparing two populations
 #' (x: receiver; y: donor) with an outgroup population (o: outgroup).
+#' In the four-taxon scenario (((P1,P2),P3),O) with geneflow from P3>>P2, the populations should be defined
+#' for RND, Gmin and RNDmin statistics as follows [x:P2 y:P3 o:O] and the populations should be defined
+#' for deltaMean and deltaMin statistics as follows [x:P2 y:P3 o:P1].
+#' Accordingly in the four-taxon scenario (((P1,P2),P3),O) with geneflow from P2>>P3, the populations should be defined
+#' for RND, Gmin and RNDmin statistics as follows [x:P3 y:P2 o:O] and the populations should be defined
+#' for deltaMean and deltaMin statistics as follows [x:P3 y:P2 o:P1].
 #' @import Biostrings
 #' @import ape
 #' @import doMC
@@ -9,16 +15,16 @@
 #' @importFrom stats as.dist sd
 #' @importFrom utils combn read.table setTxtProgressBar txtProgressBar
 #' @param dna \code{DNAStringSet}
-#' @param x.pos population X positions
-#' @param y.pos population Y positions
-#' @param o.pos population O positions
+#' @param x.pos population X positions [P2 population in the four-taxon scenario (((P1,P2),P3),O) with geneflow from P3>>P2]
+#' @param y.pos population Y positions [P3 population in the four-taxon scenario (((P1,P2),P3),O) with geneflow from P3>>P2]
+#' @param o.pos population O positions [P1 or O population in the four-taxon scenario (((P1,P2),P3),O) with geneflow from P3>>P2]
 #' @param wlen sliding windows length
 #' @param wjump sliding windows jump
 #' @param start.by optional start position
 #' @param end.by optional end position
 #' @param wtype sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}
 #' @param dist distance to use
-#' @param global.deletion a logical indicating whether to delete the sites with missing data in a global way (default is to delete in a pairwise way)
+#' @param global.deletion a logical indicating whether to delete the sites with missing data in a global or pairwise way (default is to delete in a global way)
 #' @param threads number of parallel threads
 #' @param x.name population X name
 #' @param y.name population Y name
@@ -35,7 +41,7 @@
 #' AFG.SPRE.CAS.xyoStats
 #' @export xyoStats
 #' @author Kristian K Ullrich
-xyoStats<-function(dna, x.pos, y.pos, o.pos, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=FALSE, threads=1, x.name="x", y.name="y", o.name="o", chr.name="chr", pB=TRUE){
+xyoStats<-function(dna, x.pos, y.pos, o.pos, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=TRUE, threads=1, x.name="x", y.name="y", o.name="o", chr.name="chr", pB=TRUE){
   options(scipen=22)
   if(is.null(start.by)){start.by<-1}
   if(is.null(end.by)){end.by<-unique(width(dna))}
@@ -107,9 +113,9 @@ xyoStats<-function(dna, x.pos, y.pos, o.pos, wlen=25000, wjump=25000, start.by=N
       OUT$dMean.xy<-mean(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=TRUE)
       OUT$dSites.xy<-mean(tmp.seq.dist$sitesUsed[x.pos_,y.pos_],na.rm=TRUE)
       OUT$dMin.xy<-min(tmp.seq.dist$distIUPAC[x.pos_,y.pos_],na.rm=TRUE)
-      OUT$dMean.xyo<-mean(as.dist(tmp.seq.dist$distIUPAC),na.rm=TRUE)
-      OUT$dSites.xyo<-mean(as.dist(tmp.seq.dist$sitesUsed),na.rm=TRUE)
-      OUT$dMin.xyo<-min(as.dist(tmp.seq.dist$distIUPAC),na.rm=TRUE)
+      OUT$dMean.xyo<-mean(c(tmp.seq.dist$distIUPAC[x.pos_,c(y.pos_,o.pos_)],tmp.seq.dist$distIUPAC[y.pos_,o.pos_]),na.rm=TRUE)
+      OUT$dSites.xyo<-mean(c(tmp.seq.dist$sitesUsed[x.pos_,c(y.pos_,o.pos_)],tmp.seq.dist$sitesUsed[y.pos_,o.pos_]),na.rm=TRUE)
+      OUT$dMin.xyo<-min(c(tmp.seq.dist$distIUPAC[x.pos_,c(y.pos_,o.pos_)],tmp.seq.dist$distIUPAC[y.pos_,o.pos_]),na.rm=TRUE)
       OUT$deltaMean.xyo<-OUT$dMean.xy-OUT$dMean.xo
       OUT$deltaMin.xyo<-OUT$dMin.xy-OUT$dMean.xo
       OUT$RND.xyo<-OUT$dMean.xy/((OUT$dMean.xo+OUT$dMean.yo)/2)
@@ -131,9 +137,9 @@ xyoStats<-function(dna, x.pos, y.pos, o.pos, wlen=25000, wjump=25000, start.by=N
       OUT$dMean.xy<-mean(tmp.seq.dist[x.pos_,y.pos_],na.rm=TRUE)
       OUT$dSites.xy<-mean(tmp.seq.sites[x.pos_,y.pos_],na.rm=TRUE)
       OUT$dMin.xy<-min(tmp.seq.dist[x.pos_,y.pos_],na.rm=TRUE)
-      OUT$dMean.xyo<-mean(as.dist(tmp.seq.dist),na.rm=TRUE)
-      OUT$dSites.xyo<-mean(as.dist(tmp.seq.sites),na.rm=TRUE)
-      OUT$dMin.xyo<-min(as.dist(tmp.seq.dist),na.rm=TRUE)
+      OUT$dMean.xyo<-mean(c(tmp.seq.dist[x.pos_,c(y.pos_,o.pos_)],tmp.seq.dist[y.pos_,o.pos_]),na.rm=TRUE)
+      OUT$dSites.xyo<-mean(c(tmp.seq.sites[x.pos_,c(y.pos_,o.pos_)],tmp.seq.sites[y.pos_,o.pos_]),na.rm=TRUE)
+      OUT$dMin.xyo<-min(c(tmp.seq.dist[x.pos_,c(y.pos_,o.pos_)],tmp.seq.dist[y.pos_,o.pos_]),na.rm=TRUE)
       OUT$deltaMean.xyo<-OUT$dMean.xy-OUT$dMean.xo
       OUT$deltaMin.xyo<-OUT$dMin.xy-OUT$dMean.xo
       OUT$RND.xyo<-OUT$dMean.xy/((OUT$dMean.xo+OUT$dMean.yo)/2)

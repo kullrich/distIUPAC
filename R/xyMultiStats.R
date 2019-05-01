@@ -16,7 +16,7 @@
 #' @param end.by optional end position
 #' @param wtype sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}
 #' @param dist distance to use
-#' @param global.deletion a logical indicating whether to delete the sites with missing data in a global way (default is to delete in a pairwise way)
+#' @param global.deletion a logical indicating whether to delete the sites with missing data in a global or pairwise way (default is to delete in a global way)
 #' @param threads number of parallel threads
 #' @param chr.name chromosome name
 #' @examples
@@ -35,7 +35,7 @@
 #' CAS.AFG.SPRE.xyMultiStats
 #' @export xyMultiStats
 #' @author Kristian K Ullrich
-xyMultiStats<-function(dna, list.pos, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=FALSE, threads=1, chr.name="chr"){
+xyMultiStats<-function(dna, list.pos, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=TRUE, threads=1, chr.name="chr"){
   options(scipen=22)
   if(is.null(start.by)){start.by<-1}
   if(is.null(end.by)){end.by<-unique(width(dna))}
@@ -65,7 +65,9 @@ xyMultiStats<-function(dna, list.pos, wlen=25000, wjump=25000, start.by=NULL, en
       tmp.sw<-posgen(tmp.POS$triPOS,wlen=wlen,start.by=start.by,end.by=end.by)
     }
     j<-NULL
-    pb<-txtProgressBar(min=0,max=dim(tmp.sw)[2],initial=0,style=3)
+    if(pB){
+      pb<-txtProgressBar(min=0,max=dim(tmp.sw)[2],initial=0,style=3)
+    }
     registerDoMC(threads)
     OUT<-foreach(j=1:dim(tmp.sw)[2], .combine=rbind) %dopar% {
       XNAME<-x.name
@@ -145,11 +147,15 @@ xyMultiStats<-function(dna, list.pos, wlen=25000, wjump=25000, start.by=NULL, en
         OUT$Fst.xy<-(OUT$dTotal.xy - OUT$dSweighted.xy) / OUT$dTotal.xy
         OUT$dRelative.xy<-OUT$dMean.xy - OUT$dSweighted.xy
       }
-      setTxtProgressBar(pb,j)
+      if(pB){
+        setTxtProgressBar(pb,j)
+      }
       OUT
     }
-    setTxtProgressBar(pb,dim(tmp.sw)[2])
-    close(pb)
+    if(pB){
+      setTxtProgressBar(pb,dim(tmp.sw)[2])
+      close(pb)
+    }
     COMBOUT[c.idx]<-list(OUT)
   }
   return(COMBOUT)

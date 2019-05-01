@@ -18,7 +18,7 @@ distIUPACmatrix <- function(myvector, scoreMatrix) {
 }
 
 #' @useDynLib distIUPAC, .registration = TRUE
-#' @importFrom Rcpp evalCpp
+#' @import Rcpp
 #' @export pairwiseDeletion
 #' @author Kristian K Ullrich
 pairwiseDeletion <- function(myvector) {

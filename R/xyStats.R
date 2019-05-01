@@ -17,7 +17,7 @@
 #' @param end.by optional end position
 #' @param wtype sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}
 #' @param dist distance to use
-#' @param global.deletion a logical indicating whether to delete the sites with missing data in a global way (default is to delete in a pairwise way)
+#' @param global.deletion a logical indicating whether to delete the sites with missing data in a global or pairwise way (default is to delete in a global way)
 #' @param threads number of parallel threads
 #' @param x.name population X name
 #' @param y.name population Y name
@@ -37,7 +37,7 @@
 #' CAS.AFG.xyStats
 #' @export xyStats
 #' @author Kristian K Ullrich
-xyStats<-function(dna, x.pos, y.pos, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=FALSE, threads=1, x.name="x", y.name="y", chr.name="chr", pB=TRUE){
+xyStats<-function(dna, x.pos, y.pos, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=TRUE, threads=1, x.name="x", y.name="y", chr.name="chr", pB=TRUE){
   options(scipen=22)
   if(is.null(start.by)){start.by<-1}
   if(is.null(end.by)){end.by<-unique(width(dna))}
