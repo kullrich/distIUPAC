@@ -4,12 +4,12 @@
 using namespace Rcpp;
 
 //' @useDynLib distIUPAC, .registration = TRUE
-//' @importFrom Rcpp evalCpp
+//' @import Rcpp
 //' @export distIUPACmatrix
 //' @author Kristian K Ullrich
 // [[Rcpp::export]]
 Rcpp::List distIUPACmatrix( Rcpp::StringVector myvector, Rcpp::NumericMatrix scoreMatrix ) {
-  std::map<std::string, double> iupac_dist;
+  std::unordered_map<std::string, double> iupac_dist;
   int nCols = scoreMatrix.ncol();
   int nRows = scoreMatrix.nrow();
   CharacterVector Colnames = colnames(scoreMatrix);

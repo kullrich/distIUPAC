@@ -3,12 +3,12 @@
 using namespace Rcpp;
 
 //' @useDynLib distIUPAC, .registration = TRUE
-//' @importFrom Rcpp evalCpp
+//' @import Rcpp
 //' @export pairwiseDeletion
 //' @author Kristian K Ullrich
 // [[Rcpp::export]]
 Rcpp::List pairwiseDeletion( Rcpp::StringVector myvector ) {
-  std::map<std::string, double> iupac_dist;
+  std::unordered_map<std::string, double> iupac_dist;
   iupac_dist["AA"]=0.0;iupac_dist["AC"]=1.0;iupac_dist["AG"]=1.0;iupac_dist["AT"]=1.0;iupac_dist["AR"]=-1.0;iupac_dist["AY"]=-1.0;iupac_dist["AS"]=-1.0;iupac_dist["AW"]=-1.0;iupac_dist["AK"]=-1.0;iupac_dist["AM"]=-1.0;iupac_dist["AB"]=-1.0;iupac_dist["AD"]=-1.0;iupac_dist["AH"]=-1.0;iupac_dist["AV"]=-1.0;iupac_dist["A."]=-1.0;iupac_dist["A-"]=-1.0;iupac_dist["AN"]=-1.0;iupac_dist["AX"]=-1.0;
   iupac_dist["CA"]=1.0;iupac_dist["CC"]=0.0;iupac_dist["CG"]=1.0;iupac_dist["CT"]=1.0;iupac_dist["CR"]=-1.0;iupac_dist["CY"]=-1.0;iupac_dist["CS"]=-1.0;iupac_dist["CW"]=-1.0;iupac_dist["CK"]=-1.0;iupac_dist["CM"]=-1.0;iupac_dist["CB"]=-1.0;iupac_dist["CD"]=-1.0;iupac_dist["CH"]=-1.0;iupac_dist["CV"]=-1.0;iupac_dist["C."]=-1.0;iupac_dist["C-"]=-1.0;iupac_dist["CN"]=-1.0;iupac_dist["CX"]=-1.0;
   iupac_dist["GA"]=1.0;iupac_dist["GC"]=1.0;iupac_dist["GG"]=0.0;iupac_dist["GT"]=1.0;iupac_dist["GR"]=-1.0;iupac_dist["GY"]=-1.0;iupac_dist["GS"]=-1.0;iupac_dist["GW"]=-1.0;iupac_dist["GK"]=-1.0;iupac_dist["GM"]=-1.0;iupac_dist["GB"]=-1.0;iupac_dist["GD"]=-1.0;iupac_dist["GH"]=-1.0;iupac_dist["GV"]=-1.0;iupac_dist["G."]=-1.0;iupac_dist["G-"]=-1.0;iupac_dist["GN"]=-1.0;iupac_dist["GX"]=-1.0;
