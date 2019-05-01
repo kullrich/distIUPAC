@@ -26,8 +26,8 @@ faidx2seq<-function(fasta, start=NULL, end=NULL, format="dna", samtools="samtool
   if(is.null(end)){end<-len}
   if(end<start){stop("end smaller than start")}
   tmpfile<-tempfile()
-  for(i in samples){
-    sprintf("%s faidx %s %s:%s-%s >> %s", samtools, fasta, i, start, end, tmpfile) %>% system()
+  for(s in samples){
+    sprintf("%s faidx %s %s:%s-%s >> %s", samtools, fasta, s, start, end, tmpfile) %>% system()
   }
   if(format=="dna"){
     out<-readDNAStringSet(tmpfile)
