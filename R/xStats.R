@@ -16,10 +16,11 @@
 #' @param end.by optional end position
 #' @param wtype sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}
 #' @param dist distance to use
-#' @param global.deletion a logical indicating whether to delete the sites with missing data in a global way (default is to delete in a pairwise way)
+#' @param global.deletion a logical indicating whether to delete the sites with missing data in a global or pairwise way (default is to delete in a global way)
 #' @param threads number of parallel threads
 #' @param x.name population X name
 #' @param chr.name chromosome name
+#' @param pB specifies if progress should be shown as a progress bar
 #' @examples
 #' data("MySequences", package = "distIUPAC")
 #' CAS.pos<-5:34
@@ -27,7 +28,7 @@
 #' CAS.xStats
 #' @export xStats
 #' @author Kristian K Ullrich
-xStats<-function(dna, x.pos=NULL, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=FALSE, threads=1, x.name="x", chr.name="chr"){
+xStats<-function(dna, x.pos=NULL, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=TRUE, threads=1, x.name="x", chr.name="chr", pB=TRUE){
   options(scipen=22)
   if(is.null(start.by)){start.by<-1}
   if(is.null(end.by)){end.by<-unique(width(dna))}
@@ -50,7 +51,9 @@ xStats<-function(dna, x.pos=NULL, wlen=25000, wjump=25000, start.by=NULL, end.by
     tmp.sw<-posgen(tmp.POS$triPOS,wlen=wlen,start.by=start.by,end.by=end.by)
   }
   j<-NULL
-  pb<-txtProgressBar(min=0,max=dim(tmp.sw)[2],initial=0,style=3)
+  if(pB){
+    pb<-txtProgressBar(min=0,max=dim(tmp.sw)[2],initial=0,style=3)
+  }
   registerDoMC(threads)
   OUT<-foreach(j=1:dim(tmp.sw)[2], .combine=rbind) %dopar% {
     XNAME<-x.name
@@ -87,10 +90,34 @@ xStats<-function(dna, x.pos=NULL, wlen=25000, wjump=25000, start.by=NULL, end.by
       OUT$dMin.x<-min(as.dist(tmp.seq.dist),na.rm=TRUE)
       OUT$dMax.x<-max(as.dist(tmp.seq.dist),na.rm=TRUE)
     }
-    setTxtProgressBar(pb,j)
+    if(pB){
+      setTxtProgressBar(pb,j)
+    }
     OUT
   }
-  setTxtProgressBar(pb,dim(tmp.sw)[2])
-  close(pb)
+  if(pB){
+    setTxtProgressBar(pb,dim(tmp.sw)[2])
+    close(pb)
+  }
+  return(OUT)
+}
+distIUPAC2xStats<-function( seq.distIUPAC, x.name="x", x.pos=NULL){
+  options(scipen=22)
+  if(is.null(x.pos)){
+    x.pos<-1:dim(seq.distIUPAC$distIUPAC)[1]
+  }
+  XNAME<-x.name
+  dMean.x<-NA
+  dSd.x<-NA
+  dSites.x<-NA
+  dMin.x<-NA
+  dMax.x<-NA
+  OUT<-list(XNAME,dMean.x,dSd.x,dSites.x,dMin.x,dMax.x)
+  names(OUT)<-c("XNAME","dMean.x","dSd.x","dSites.x","dMin.x","dMax.x")
+  OUT$dMean.x<-mean(as.dist(seq.distIUPAC$distIUPAC[x.pos,x.pos]),na.rm=TRUE)
+  OUT$dSd.x<-sd(as.dist(seq.distIUPAC$distIUPAC[x.pos,x.pos]),na.rm=TRUE)
+  OUT$dSites.x<-mean(as.dist(seq.distIUPAC$sitesUsed[x.pos,x.pos]),na.rm=TRUE)
+  OUT$dMin.x<-min(as.dist(seq.distIUPAC$distIUPAC[x.pos,x.pos]),na.rm=TRUE)
+  OUT$dMax.x<-max(as.dist(seq.distIUPAC$distIUPAC[x.pos,x.pos]),na.rm=TRUE)
   return(OUT)
 }
