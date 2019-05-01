@@ -6,7 +6,7 @@
 \usage{
 xyMultiStats(dna, list.pos, wlen = 25000, wjump = 25000,
   start.by = NULL, end.by = NULL, wtype = "bp", dist = "IUPAC",
-  global.deletion = FALSE, threads = 1, chr.name = "chr")
+  global.deletion = TRUE, threads = 1, chr.name = "chr")
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
@@ -25,7 +25,7 @@ xyMultiStats(dna, list.pos, wlen = 25000, wjump = 25000,
 
 \item{dist}{distance to use}
 
-\item{global.deletion}{a logical indicating whether to delete the sites with missing data in a global way (default is to delete in a pairwise way)}
+\item{global.deletion}{a logical indicating whether to delete the sites with missing data in a global or pairwise way (default is to delete in a global way)}
 
 \item{threads}{number of parallel threads}
 

@@ -6,17 +6,17 @@
 \usage{
 xyoStats(dna, x.pos, y.pos, o.pos, wlen = 25000, wjump = 25000,
   start.by = NULL, end.by = NULL, wtype = "bp", dist = "IUPAC",
-  global.deletion = FALSE, threads = 1, x.name = "x", y.name = "y",
-  o.name = "o", chr.name = "chr")
+  global.deletion = TRUE, threads = 1, x.name = "x", y.name = "y",
+  o.name = "o", chr.name = "chr", pB = TRUE)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
 
-\item{x.pos}{population X positions}
+\item{x.pos}{population X positions [P2 population in the four-taxon scenario (((P1,P2),P3),O) with geneflow from P3>>P2]}
 
-\item{y.pos}{population Y positions}
+\item{y.pos}{population Y positions [P3 population in the four-taxon scenario (((P1,P2),P3),O) with geneflow from P3>>P2]}
 
-\item{o.pos}{population O positions}
+\item{o.pos}{population O positions [P1 or O population in the four-taxon scenario (((P1,P2),P3),O) with geneflow from P3>>P2]}
 
 \item{wlen}{sliding windows length}
 
@@ -30,7 +30,7 @@ xyoStats(dna, x.pos, y.pos, o.pos, wlen = 25000, wjump = 25000,
 
 \item{dist}{distance to use}
 
-\item{global.deletion}{a logical indicating whether to delete the sites with missing data in a global way (default is to delete in a pairwise way)}
+\item{global.deletion}{a logical indicating whether to delete the sites with missing data in a global or pairwise way (default is to delete in a global way)}
 
 \item{threads}{number of parallel threads}
 
@@ -41,10 +41,18 @@ xyoStats(dna, x.pos, y.pos, o.pos, wlen = 25000, wjump = 25000,
 \item{o.name}{population O name}
 
 \item{chr.name}{chromosome name}
+
+\item{pB}{specifies if progress should be shown as a progress bar}
 }
 \description{
 This function calculates \code{distIUPAC} based distances comparing two populations
 (x: receiver; y: donor) with an outgroup population (o: outgroup).
+In the four-taxon scenario (((P1,P2),P3),O) with geneflow from P3>>P2, the populations should be defined
+for RND, Gmin and RNDmin statistics as follows [x:P2 y:P3 o:O] and the populations should be defined
+for deltaMean and deltaMin statistics as follows [x:P2 y:P3 o:P1].
+Accordingly in the four-taxon scenario (((P1,P2),P3),O) with geneflow from P2>>P3, the populations should be defined
+for RND, Gmin and RNDmin statistics as follows [x:P3 y:P2 o:O] and the populations should be defined
+for deltaMean and deltaMin statistics as follows [x:P3 y:P2 o:P1].
 }
 \examples{
 data("MySequences", package = "distIUPAC")
