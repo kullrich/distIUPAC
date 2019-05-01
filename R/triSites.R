@@ -78,7 +78,9 @@ triSites<-function(dna, x.pos=NULL, min.ind=0, wlen=25000, start.by=NULL, end.by
     setTxtProgressBar(pb,dim(tmp.sw)[2])
     close(pb)  
   }
-  OUT<-list(unlist(OUT[,1]),unlist(OUT[,2]),unlist(OUT[,3]))
+  if(is.matrix(OUT)){
+    OUT<-list(unlist(OUT[,1]),unlist(OUT[,2]),unlist(OUT[,3]))  
+  }
   names(OUT)<-c("triPOS","triPOSmasked","minIndPOS")
   names(OUT$triPOS)<-NULL
   names(OUT$triPOSmasked)<-NULL
