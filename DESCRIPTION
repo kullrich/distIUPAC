@@ -19,7 +19,8 @@ Depends:
  ape (>= 5.0),
  foreach (>= 1.4.4),
  doMC (>= 1.3.5),
- magrittr
+ magrittr (>= 1.5),
+ rlist (>= 0.4.6.1)
 LinkingTo: Rcpp, RcppThread
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr

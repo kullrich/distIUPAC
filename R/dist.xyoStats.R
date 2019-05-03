@@ -1,19 +1,19 @@
-#' @title dist.xyoStats
-#' @name dist.xyoStats
+#' @title dist.xyiStats
+#' @name dist.xyiStats
 #' @description This function calculates \code{distIUPAC} based distances comparing two populations
-#' (x: receiver; y: donor) with an outgroup population (o: outgroup).
+#' (x: receiver; y: donor) with an ingroup population (i: ingroup).
 #' In a four-taxon scenario (((P1,P2),P3),O) with geneflow from P3>>P2, the populations should be defined
-#' for RND, Gmin and RNDmin statistics as follows [x:P2 y:P3 o:O].
+#' for RND, Gmin and RNDmin statistics as follows [x:P2 y:P3 i:O].
 #' Accordingly in the four-taxon scenario (((P1,P2),P3),O) with geneflow from P2>>P3, the populations should be defined
-#' for RND, Gmin and RNDmin statistics as follows [x:P3 y:P2 o:O].
+#' for RND, Gmin and RNDmin statistics as follows [x:P3 y:P2 i:O].
 #' @importFrom stats as.dist sd
 #' @param dIUPAC \code{distIUPAC} distance matrix including \code{sitesUsed} matrix
 #' @param x.pos population X positions
 #' @param y.pos population Y positions
-#' @param o.pos population O positions
+#' @param i.pos population I positions
 #' @param x.name population X name
 #' @param y.name population Y name
-#' @param o.name population O name
+#' @param i.name population I name
 #' @examples
 #' data("MySequences", package = "distIUPAC")
 #' CAS.pos<-5:34
@@ -89,6 +89,8 @@ dist.xyoStats<-function( dIUPAC, x.pos, y.pos, o.pos, x.name="x", y.name="y", o.
   dMin.xyo<-NA
   dMax.xyo<-NA
   dTotal.xyo<-NA
+  deltaMean.xyo<-NA
+  deltaMin.xyo<-NA
   RND.xyo<-NA
   Gmin.xyo<-NA
   RNDmin.xyo<-NA
@@ -103,6 +105,7 @@ dist.xyoStats<-function( dIUPAC, x.pos, y.pos, o.pos, x.name="x", y.name="y", o.
     dMean.yo,dSd.yo,dSites.yo,dMin.yo,dMax.yo,
     dTotal.yo,dSweighted.yo,Fst.yo,dRelative.yo,
     dMean.xyo,dSd.xyo,dSites.xyo,dMin.xyo,dMax.xyo,dTotal.xyo,
+    deltaMean.xyo,deltaMin.xyo,
     RND.xyo,Gmin.xyo,RNDmin.xyo)
   names(OUT)<-c("XNAME","YNAME","ONAME",
     "dMean.x","dSd.x","dSites.x","dMin.x","dMax.x",
@@ -115,6 +118,7 @@ dist.xyoStats<-function( dIUPAC, x.pos, y.pos, o.pos, x.name="x", y.name="y", o.
     "dMean.yo","dSd.yo","dSites.yo","dMin.yo","dMax.yo",
     "dTotal.yo","dSweighted.yo","Fst.yo","dRelative.yo",
     "dMean.xyo","dSd.xyo","dSites.xyo","dMin.xyo","dMax.xyo","dTotal.xyo",
+    "deltaMean.xyo","deltaMin.xyo",
     "RND.xyo","Gmin.xyo","RNDmin.xyo")
   OUT$dMean.x<-mean(as.dist(dIUPAC$distIUPAC[x.pos,x.pos]),na.rm=TRUE)
   OUT$dSd.x<-sd(as.dist(dIUPAC$distIUPAC[x.pos,x.pos]),na.rm=TRUE)
@@ -126,11 +130,11 @@ dist.xyoStats<-function( dIUPAC, x.pos, y.pos, o.pos, x.name="x", y.name="y", o.
   OUT$dSites.y<-mean(as.dist(dIUPAC$sitesUsed[y.pos,y.pos]),na.rm=TRUE)
   OUT$dMin.y<-min(as.dist(dIUPAC$distIUPAC[y.pos,y.pos]),na.rm=TRUE)
   OUT$dMax.y<-max(as.dist(dIUPAC$distIUPAC[y.pos,y.pos]),na.rm=TRUE)
-  OUT$dMean.o<-mean(as.dist(dIUPAC$distIUPAC[y.pos,y.pos]),na.rm=TRUE)
-  OUT$dSd.o<-sd(as.dist(dIUPAC$distIUPAC[y.pos,y.pos]),na.rm=TRUE)
-  OUT$dSites.o<-mean(as.dist(dIUPAC$sitesUsed[y.pos,y.pos]),na.rm=TRUE)
-  OUT$dMin.o<-min(as.dist(dIUPAC$distIUPAC[y.pos,y.pos]),na.rm=TRUE)
-  OUT$dMax.o<-max(as.dist(dIUPAC$distIUPAC[y.pos,y.pos]),na.rm=TRUE)
+  OUT$dMean.o<-mean(as.dist(dIUPAC$distIUPAC[o.pos,o.pos]),na.rm=TRUE)
+  OUT$dSd.o<-sd(as.dist(dIUPAC$distIUPAC[o.pos,o.pos]),na.rm=TRUE)
+  OUT$dSites.o<-mean(as.dist(dIUPAC$sitesUsed[o.pos,o.pos]),na.rm=TRUE)
+  OUT$dMin.o<-min(as.dist(dIUPAC$distIUPAC[o.pos,o.pos]),na.rm=TRUE)
+  OUT$dMax.o<-max(as.dist(dIUPAC$distIUPAC[o.pos,o.pos]),na.rm=TRUE)
   OUT$dMean.xy<-mean(dIUPAC$distIUPAC[x.pos,y.pos],na.rm=TRUE)
   OUT$dSd.xy<-sd(dIUPAC$distIUPAC[x.pos,y.pos],na.rm=TRUE)
   OUT$dSites.xy<-mean(dIUPAC$sitesUsed[x.pos,y.pos],na.rm=TRUE)
@@ -164,6 +168,8 @@ dist.xyoStats<-function( dIUPAC, x.pos, y.pos, o.pos, x.name="x", y.name="y", o.
   OUT$dMin.xyo<-min(c(dIUPAC$distIUPAC[x.pos,c(y.pos,o.pos)],dIUPAC$distIUPAC[y.pos,o.pos]),na.rm=TRUE)
   OUT$dMax.xyo<-max(c(dIUPAC$distIUPAC[x.pos,c(y.pos,o.pos)],dIUPAC$distIUPAC[y.pos,o.pos]),na.rm=TRUE)
   OUT$dTotal.xyo<-mean(as.dist(dIUPAC$distIUPAC[c(x.pos,y.pos,o.pos),c(x.pos,y.pos,o.pos)]),na.rm=TRUE)
+  OUT$deltaMean.xyo<-OUT$dMean.xy-OUT$dMean.xo
+  OUT$deltaMin.xyo<-OUT$dMin.xy-OUT$dMean.xo
   OUT$RND.xyo<-OUT$dMean.xy/((OUT$dMean.xo+OUT$dMean.yo)/2)
   OUT$Gmin.xyo<-OUT$dMin.xy/OUT$dMean.xy
   OUT$RNDmin.xyo<-OUT$dMin.xy/((OUT$dMean.xo+OUT$dMean.yo)/2)
