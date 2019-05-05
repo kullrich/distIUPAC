@@ -1,7 +1,7 @@
 Package: distIUPAC
 Type: Package
 Title: calculates IUPAC distances on Biostrings DNAStringSet and BStringSet objects
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: person(c("Kristian K","Ullrich"), role = c("aut", "cre"), email = c("ullrich@evolbio.mpg.de"), comment = c(ORCID = "https://orcid.org/0000-0003-4308-9626"))
 Maintainer: Kristian K Ullrich <ullrich@evolbio.mpg.de>
 Description: The package distIUPAC calculates IUPAC distances on Biostrings DNAStringSet and BStringSet objects. Further sliding window analyses can be applied to get dXY-stats like deltaMean, RNDmin or ABBA-BABA statistics. Sliding window analysis can either be performed on base-pair windows (e.g. 1,000, 100,000, ...) specifiying a window length and a window jump or based on SNP positions along the analyzed sequence alignment (e.g. bi-allelic or tri-allelic sites).

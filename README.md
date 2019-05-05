@@ -25,10 +25,12 @@ Second install additional packages from cran [CRAN](https://cran.r-project.org/w
 ```
 install.packages("devtools")
 install.packages("Rcpp")
-install.packages("RcppParallel")
+install.packages("RcppThread")
 install.packages("ape")
 install.packages("foreach")
 install.packages("doMC")
+install.packages("magrittr")
+install.packages("rlist")
 ```
 
 Third install `distIUPAC` package from [github](https://github.com/kullrich) or [gwdg gitlab](https://gwdg.gitlab.de) using the [devtools](https://cran.r-project.org/web/packages/devtools/index.html) package.
