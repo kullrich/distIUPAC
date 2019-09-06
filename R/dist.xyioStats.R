@@ -8,12 +8,9 @@
 #' as follows [x:P2 y:P3 i:P1 o:P4].
 #' Accordingly in the four-taxon scenario (((P1,P2),P3),O) with geneflow from
 #' P2>>P3, the populations should be defined for deltaMean and deltaMin
-#' statistics as follows [x:P3 y:P2 i:P1 o:P4]. Optional, ABBA-BABA statisctis
-#' can be calculated concordantly on the four-taxon scenario
-#' (((P1:i,P2:x),P3:y),O:o).
+#' statistics as follows [x:P3 y:P2 i:P1 o:P4].
 #' @importFrom stats as.dist sd setNames
-#' @param dIUPAC \code{distIUPAC} distance matrix including
-#' \code{sitesUsed} matrix [mandatory]
+#' @param tmpSEQ \code{DNAStringSet} [mandatory]
 #' @param x.pos population X positions [mandatory]
 #' @param y.pos population Y positions [mandatory]
 #' @param i.pos population I positions [mandatory]
@@ -22,6 +19,10 @@
 #' @param y.name population Y name [default: "y"]
 #' @param i.name population I name [default: "i"]
 #' @param o.name population I name [default: "o"]
+#' @param dist distance to use [default: IUPAC] or choose one model as in
+#' \link[ape]{dist.dna} [default: "IUPAC"]
+#' @param ncores number of parallel cores to process pairwise distance
+#' calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC} [default: 1]
 #' @seealso \code{\link[distIUPAC]{xyioStats}},
 #' \code{\link[distIUPAC]{distIUPAC}}, \code{\link[distIUPAC]{rcpp_distIUPAC}}
 #' @examples

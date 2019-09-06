@@ -3,10 +3,13 @@
 #' @description This function calculates \code{distIUPAC} based distances
 #' within one population (x: receiver; x: donor).
 #' @importFrom stats as.dist sd setNames
-#' @param dIUPAC \code{distIUPAC} distance matrix including
-#' \code{sitesUsed} matrix [mandatory]
+#' @param tmpSEQ \code{DNAStringSet} [mandatory]
 #' @param x.pos population X positions [default: NULL]
 #' @param x.name population X name [default: "x"]
+#' @param dist distance to use [default: IUPAC] or choose one model as in
+#' \link[ape]{dist.dna} [default: "IUPAC"]
+#' @param ncores number of parallel cores to process pairwise distance
+#' calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC} [default: 1]
 #' @seealso \code{\link[distIUPAC]{xStats}},
 #' \code{\link[distIUPAC]{distIUPAC}},
 #' \code{\link[distIUPAC]{rcpp_distIUPAC}}

@@ -13,7 +13,7 @@
 #' @param dna \code{DNAStringSet}
 #' @param FUN the function to be applied [default: NULL]
 #' see e.g. \link[distIUPAC]{dist.xStats}, \link[distIUPAC]{dist.xyStats},
-#' \link[distIUPAC]{dist.xyoStats}
+#' \link[distIUPAC]{dist.xyoStats}, \link[distIUPAC]{dist.xyioStats}
 #' @param chr.name chromosome name [default: "chr"]
 #' @param wlen sliding windows length [default: 25000]
 #' @param wjump sliding windows jump [default: 25000]
