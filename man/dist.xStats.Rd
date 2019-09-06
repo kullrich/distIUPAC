@@ -8,12 +8,17 @@ dist.xStats(tmpSEQ, x.pos = NULL, x.name = "x", dist = "IUPAC",
   ncores = 1)
 }
 \arguments{
+\item{tmpSEQ}{\code{DNAStringSet} [mandatory]}
+
 \item{x.pos}{population X positions [default: NULL]}
 
 \item{x.name}{population X name [default: "x"]}
 
-\item{dIUPAC}{\code{distIUPAC} distance matrix including
-\code{sitesUsed} matrix [mandatory]}
+\item{dist}{distance to use [default: IUPAC] or choose one model as in
+\link[ape]{dist.dna} [default: "IUPAC"]}
+
+\item{ncores}{number of parallel cores to process pairwise distance
+calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC} [default: 1]}
 }
 \description{
 This function calculates \code{distIUPAC} based distances

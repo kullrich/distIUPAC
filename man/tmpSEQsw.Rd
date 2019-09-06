@@ -13,7 +13,7 @@ tmpSEQsw(dna, FUN = NULL, chr.name = "chr", wlen = 25000,
 
 \item{FUN}{the function to be applied [default: NULL]
 see e.g. \link[distIUPAC]{dist.xStats}, \link[distIUPAC]{dist.xyStats},
-\link[distIUPAC]{dist.xyoStats}}
+\link[distIUPAC]{dist.xyoStats}, \link[distIUPAC]{dist.xyioStats}}
 
 \item{chr.name}{chromosome name [default: "chr"]}
 

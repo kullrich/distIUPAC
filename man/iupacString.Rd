@@ -4,11 +4,16 @@
 \alias{iupacString}
 \title{iupacString}
 \usage{
-iupacString(dna, name = "iupacString", wlen = 25000, start.by = 1,
-  end.by = NULL, threads = 1, pB = TRUE)
+iupacString(dna, x.pos = 1, y.pos = 2, name = "iupacString",
+  wlen = 25000, start.by = 1, end.by = NULL, threads = 1,
+  pB = FALSE)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet} of length 2 [mandatory]}
+
+\item{x.pos}{population X positions [default: 1]}
+
+\item{y.pos}{population X positions [default: 2]}
 
 \item{wlen}{sliding window length [default: 25000]}
 
@@ -20,16 +25,14 @@ iupacString(dna, name = "iupacString", wlen = 25000, start.by = 1,
 
 \item{pB}{specifies if progress should be shown as a progress bar
 [default: TRUE]}
-
-\item{x.pos}{population X positions [default: NULL]}
-
-\item{min.ind}{minimum number of individuals without gaps ("-", "+", ".")
-or without missing sites ("N"), set to size of population ("length(x.pos)")
-to mask global deletion sites [default: 0]}
 }
 \description{
 This function returns a \code{IUPAC} sequence based on a
 \code{Biostrings} objects
+}
+\examples{
+data("MySequences", package = "distIUPAC")
+iupacString(MySequences, x.pos=5, y.pos=6)
 }
 \seealso{
 \code{\link[distIUPAC]{triSites}},

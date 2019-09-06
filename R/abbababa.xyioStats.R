@@ -62,23 +62,13 @@
 #' ##compare results
 #' rbind(CAS_AFG_IRA_APO.pairwiseDeletion.xyiStats,
 #'   CAS_AFG_IRA_APO.globalDeletion.xyiStats)
-#' @export dist.xyioStats
+#' @export abbababa.xyioStats
 #' @author Kristian K Ullrich
-#dist.xyioStats<-function(dIUPAC, x.pos, y.pos, i.pos, o.pos,
-#  x.name="x", y.name="y", i.name="i", o.name="o"){
-dist.xyioStats<-function(tmpSEQ, x.pos, y.pos, i.pos, o.pos,
+abbababa.xyioStats<-function(tmpSEQ, x.pos, y.pos, i.pos, o.pos,
+  x.freq=1.0, y.freq=1.0, i.freq=1.0, o.freq=1.0,
   x.name="x", y.name="y", i.name="i", o.name="o", dist="IUPAC", ncores=1){
     options(scipen=22)
-    if(dist=="IUPAC"){
-        dIUPAC<-rcpp_distIUPAC(as.character(tmpSEQ), ncores=ncores)
-    }
-    if(dist!="IUPAC"){
-        dIUPAC<-setNames( list(
-          dist.dna(as.DNAbin(DNAMultipleAlignment(tmpSEQ)),
-            model=dist, as.matrix=TRUE, pairwise.deletion=TRUE),
-          pairwiseDeletion(as.character(tmpSEQ))$sitesUsed
-          ), c("distIUPAC", "sitesUsed") )
-    }
+    
     XNAME<-x.name
     YNAME<-y.name
     INAME<-i.name

@@ -8,10 +8,8 @@
 #' @importFrom stats as.dist sd
 #' @importFrom utils combn read.table setTxtProgressBar txtProgressBar
 #' @param dna \code{DNAStringSet} of length 2 [mandatory]
-#' @param x.pos population X positions [default: NULL]
-#' @param min.ind minimum number of individuals without gaps ("-", "+", ".")
-#' or without missing sites ("N"), set to size of population ("length(x.pos)")
-#' to mask global deletion sites [default: 0]
+#' @param x.pos population X positions [default: 1]
+#' @param y.pos population X positions [default: 2]
 #' @param wlen sliding window length [default: 25000]
 #' @param start.by optional start position [default: 1]
 #' @param end.by optional end position [default: NULL]
@@ -20,39 +18,27 @@
 #'   [default: TRUE]
 #' @seealso \code{\link[distIUPAC]{triSites}},
 #' \code{\link[distIUPAC]{biSites}}
+#' @examples
+#' data("MySequences", package = "distIUPAC")
+#' iupacString(MySequences, x.pos=5, y.pos=6)
 #' @export iupacString
 #' @author Kristian K Ullrich
-iupacString<-function(dna, name="iupacString", wlen=25000, start.by=1,
-  end.by=NULL, threads=1, pB=TRUE){
+iupacString<-function(dna, x.pos=1, y.pos=2, name="iupacString",
+  wlen=25000, start.by=1, end.by=NULL, threads=1, pB=FALSE){
     options(scipen=22)
-    if(length(dna)!=2){stop("dna needs to be of length 2")}
-    if(is.null(end.by)){end.by<-unique(width(dna))}
-    if(start.by>unique(width(dna))){stop("start.by needs to be equal or
-      smaller than dna length")}
-    if(end.by>unique(width(dna))){stop("end.by needs to be equal or
-      smallerthan dna length")}
-    tmp.sw<-swgen(wlen=wlen, wjump=wlen, start.by=start.by, end.by=end.by)
-    if(pB){
-        pb<-txtProgressBar(min=0, max=ncol(tmp.sw), initial=0, style=3)
-    }
-    j<-NULL
-    registerDoMC(threads)
-    OUT<-foreach(j=seq(from=1, to=ncol(tmp.sw)), .combine=c) %dopar% {
-        START<-tmp.sw[1, j][[1]]
-        END<-tmp.sw[2, j][[1]]
-        tmp.seq<-subseq(dna, START, END)
-        iString<-rcpp_iupacString_ab(as.character(tmp.seq[1]),
-          as.character(tmp.seq[2]), END-START+1, name)
-        if(pB){
-            setTxtProgressBar(pb, j)
-        }
-        list(iString)
-    }
-    if(pB){
-        setTxtProgressBar(pb, ncol(tmp.sw))
-        close(pb)    
-    }
-    OUT<-DNAStringSet(paste(OUT, collapse=""))
-    names(OUT)<-name
-    return(OUT)
+    dna_<-dna[c(x.pos, y.pos)]
+    if(length(dna_)!=2){stop("dna needs to be of length 2")}
+    OUT<-tmpSEQsw(dna_,
+      FUN=function(x) {
+          x.len<-unique(width(x))
+          list(
+            rcpp_iupacString_ab(as.character(x[1]), as.character(x[2]),
+              x.len, "iupacString")
+          )
+      }, chr.name="chr", wlen=wlen, wjump=wlen,
+      start.by=start.by, end.by=end.by, wtype="bp",
+      global.deletion=FALSE, threads=threads, pB=pB)
+    OUT.seq<-DNAStringSet(paste0(OUT[,4],collapse = ""))
+    names(OUT.seq)<-name
+    return(OUT.seq)
 }
