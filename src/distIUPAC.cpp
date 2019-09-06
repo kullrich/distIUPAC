@@ -7,7 +7,7 @@ using namespace Rcpp;
 //' @export distIUPAC
 //' @author Kristian K Ullrich
 // [[Rcpp::export]]
-Rcpp::List distIUPAC( Rcpp::StringVector myvector ) {
+Rcpp::List distIUPAC( Rcpp::StringVector dnavector ) {
   std::unordered_map<std::string, double> iupac_dist;
   iupac_dist["AA"]=0.0;iupac_dist["AC"]=1.0;iupac_dist["AG"]=1.0;iupac_dist["AT"]=1.0;iupac_dist["AR"]=0.5;iupac_dist["AY"]=1.0;iupac_dist["AS"]=1.0;iupac_dist["AW"]=0.5;iupac_dist["AK"]=1.0;iupac_dist["AM"]=0.5;iupac_dist["AB"]=-1.0;iupac_dist["AD"]=-1.0;iupac_dist["AH"]=-1.0;iupac_dist["AV"]=-1.0;iupac_dist["A."]=-1.0;iupac_dist["A-"]=-1.0;iupac_dist["AN"]=-1.0;iupac_dist["AX"]=-1.0;
   iupac_dist["CA"]=1.0;iupac_dist["CC"]=0.0;iupac_dist["CG"]=1.0;iupac_dist["CT"]=1.0;iupac_dist["CR"]=1.0;iupac_dist["CY"]=0.5;iupac_dist["CS"]=0.5;iupac_dist["CW"]=1.0;iupac_dist["CK"]=1.0;iupac_dist["CM"]=0.5;iupac_dist["CB"]=-1.0;iupac_dist["CD"]=-1.0;iupac_dist["CH"]=-1.0;iupac_dist["CV"]=-1.0;iupac_dist["C."]=-1.0;iupac_dist["C-"]=-1.0;iupac_dist["CN"]=-1.0;iupac_dist["CX"]=-1.0;
@@ -27,15 +27,15 @@ Rcpp::List distIUPAC( Rcpp::StringVector myvector ) {
   iupac_dist["-A"]=-1.0;iupac_dist["-C"]=-1.0;iupac_dist["-G"]=-1.0;iupac_dist["-T"]=-1.0;iupac_dist["-R"]=-1.0;iupac_dist["-Y"]=-1.0;iupac_dist["-S"]=-1.0;iupac_dist["-W"]=-1.0;iupac_dist["-K"]=-1.0;iupac_dist["-M"]=-1.0;iupac_dist["-B"]=-1.0;iupac_dist["-D"]=-1.0;iupac_dist["-H"]=-1.0;iupac_dist["-V"]=-1.0;iupac_dist["-."]=-1.0;iupac_dist["--"]=-1.0;iupac_dist["-N"]=-1.0;iupac_dist["-X"]=-1.0;
   iupac_dist["NA"]=-1.0;iupac_dist["NC"]=-1.0;iupac_dist["NG"]=-1.0;iupac_dist["NT"]=-1.0;iupac_dist["NR"]=-1.0;iupac_dist["NY"]=-1.0;iupac_dist["NS"]=-1.0;iupac_dist["NW"]=-1.0;iupac_dist["NK"]=-1.0;iupac_dist["NM"]=-1.0;iupac_dist["NB"]=-1.0;iupac_dist["ND"]=-1.0;iupac_dist["NH"]=-1.0;iupac_dist["NV"]=-1.0;iupac_dist["N."]=-1.0;iupac_dist["N-"]=-1.0;iupac_dist["NN"]=-1.0;iupac_dist["NX"]=-1.0;
   iupac_dist["XA"]=-1.0;iupac_dist["XC"]=-1.0;iupac_dist["XG"]=-1.0;iupac_dist["XT"]=-1.0;iupac_dist["XR"]=-1.0;iupac_dist["XY"]=-1.0;iupac_dist["XS"]=-1.0;iupac_dist["XW"]=-1.0;iupac_dist["XK"]=-1.0;iupac_dist["XM"]=-1.0;iupac_dist["XB"]=-1.0;iupac_dist["XD"]=-1.0;iupac_dist["XH"]=-1.0;iupac_dist["XV"]=-1.0;iupac_dist["X."]=-1.0;iupac_dist["X-"]=-1.0;iupac_dist["XN"]=-1.0;iupac_dist["XX"]=-1.0;
-  int n = myvector.size();
+  int n = dnavector.size();
   Rcpp::NumericMatrix distMatrix(n, n);
-  CharacterVector myvectornames = myvector.attr("names");
-  colnames(distMatrix) = myvectornames;
-  rownames(distMatrix) = myvectornames;
+  CharacterVector dnavectornames = dnavector.attr("names");
+  colnames(distMatrix) = dnavectornames;
+  rownames(distMatrix) = dnavectornames;
   Rcpp::NumericMatrix sitesMatrix(n, n);
-  colnames(sitesMatrix) = myvectornames;
-  rownames(sitesMatrix) = myvectornames;
-  int nsites = myvector[1].size();
+  colnames(sitesMatrix) = dnavectornames;
+  rownames(sitesMatrix) = dnavectornames;
+  int nsites = dnavector[1].size();
   for( int i=0; i < n; i++ ){
     for( int j=i; j < n; j++ ){
       double eqnum = 0;
@@ -43,8 +43,8 @@ Rcpp::List distIUPAC( Rcpp::StringVector myvector ) {
       for( int s=0; s < nsites; s++){
         std::string is;
         std::string js;
-        is = myvector[i][s];
-        js = myvector[j][s];
+        is = dnavector[i][s];
+        js = dnavector[j][s];
         double ij_dist;
         ij_dist = iupac_dist[is+js];
         if(ij_dist >= 0.0){

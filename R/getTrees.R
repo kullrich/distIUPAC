@@ -36,7 +36,7 @@
 #' wlen = 10000, wjump = 10000, x.name = "all", r.name = "Rnor", threads = 1, plot = TRUE)
 #' @export getTrees
 #' @author Kristian K Ullrich
-getTrees<-function(dna, x.pos=NULL, r.pos=1, resolve.root = TRUE, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=FALSE, model="bionjs", threads=1, x.name="x", r.name="r", chr.name="chr", plot=FALSE){
+getTrees<-function(dna, x.pos=NULL, r.pos=1, resolve.root=TRUE, wlen=25000, wjump=25000, start.by=NULL, end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=FALSE, model="bionjs", threads=1, x.name="x", r.name="r", chr.name="chr", plot=FALSE){
   options(scipen=22)
   if(is.null(start.by)){start.by<-1}
   if(is.null(end.by)){end.by<-unique(width(dna))}
@@ -55,11 +55,11 @@ getTrees<-function(dna, x.pos=NULL, r.pos=1, resolve.root = TRUE, wlen=25000, wj
     tmp.sw<-swgen(wlen=wlen,wjump=wjump,start.by=start.by,end.by=end.by)
   }
   if(wtype=="biSites"){
-    tmp.POS<-biSites(dna_,x.pos_,threads=threads,pB=FALSE)
+    tmp.POS<-biSites(dna_,x.pos_,threads=threads,pB=FALSE)$biPOS
     tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=start.by,end.by=end.by)
   }
   if(wtype=="triSites"){
-    tmp.POS<-triSites(dna_,x.pos_,threads=threads,pB=FALSE)
+    tmp.POS<-triSites(dna_,x.pos_,threads=threads,pB=FALSE)$triPOS
     tmp.sw<-posgen(tmp.POS,wlen=wlen,start.by=start.by,end.by=end.by)
   }
   j<-NULL
@@ -110,7 +110,7 @@ getTrees<-function(dna, x.pos=NULL, r.pos=1, resolve.root = TRUE, wlen=25000, wj
       }
     }
     if(dist!="IUPAC"){
-      tmp.seq.dist<-dist.dna(as.DNAbin.DNAMultipleAlignment(tmp.seq),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
+      tmp.seq.dist<-dist.dna(as.DNAbin(DNAMultipleAlignment(tmp.seq)),model=dist,as.matrix=TRUE,pairwise.deletion=TRUE)
       tmp.seq.sites<-pairwiseDeletion(as.character(tmp.seq))$sitesUsed
       OUT$dSites.x<-mean(as.dist(tmp.seq.sites),na.rm=TRUE)
       OUT$dNA.x<-length(which(is.na(as.dist(tmp.seq.dist))))/length(as.dist(tmp.seq.dist))

@@ -4,57 +4,65 @@
 \alias{xyStats}
 \title{xyStats}
 \usage{
-xyStats(dna, x.pos, y.pos, wlen = 25000, wjump = 25000,
-  start.by = NULL, end.by = NULL, wtype = "bp", dist = "IUPAC",
-  global.deletion = TRUE, threads = 1, x.name = "x", y.name = "y",
-  chr.name = "chr", pB = TRUE)
+xyStats(dna, x.pos, y.pos, x.name = "x", y.name = "y",
+  chr.name = "chr", wlen = 25000, wjump = 25000, start.by = 1,
+  end.by = NULL, wtype = "bp", dist = "IUPAC",
+  global.deletion = TRUE, threads = 1, ncores = 1, pB = FALSE)
 }
 \arguments{
-\item{dna}{\code{DNAStringSet}}
+\item{dna}{\code{DNAStringSet} [mandatory]}
 
-\item{x.pos}{population X positions}
+\item{x.pos}{population X positions [mandatory]}
 
-\item{y.pos}{population Y positions}
+\item{y.pos}{population Y positions [mandatory]}
 
-\item{wlen}{sliding windows length}
+\item{x.name}{population X name [default: "x"]}
 
-\item{wjump}{sliding windows jump}
+\item{y.name}{population Y name [default: "y"]}
 
-\item{start.by}{optional start position}
+\item{chr.name}{chromosome name [default: "chr"]}
 
-\item{end.by}{optional end position}
+\item{wlen}{sliding windows length [default: 25000]}
 
-\item{wtype}{sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}}
+\item{wjump}{sliding windows jump [default: 25000]}
 
-\item{dist}{distance to use}
+\item{start.by}{optional start position [default: 1]}
 
-\item{global.deletion}{a logical indicating whether to delete the sites with missing data in a global or pairwise way (default is to delete in a global way)}
+\item{end.by}{optional end position [default: NULL]}
 
-\item{threads}{number of parallel threads}
+\item{wtype}{sliding windows type to use \code{bp}, \code{biSites}
+or \code{triSites} [default: "bp"]}
 
-\item{x.name}{population X name}
+\item{dist}{distance to use [default: "IUPAC"]}
 
-\item{y.name}{population Y name}
+\item{global.deletion}{a logical indicating whether to delete the sites
+with missing data in a global or pairwise way (default is to delete in a
+global way) [default: TRUE]}
 
-\item{chr.name}{chromosome name}
+\item{threads}{number of parallel threads [default: 1]}
 
-\item{pB}{specifies if progress should be shown as a progress bar}
+\item{ncores}{number of parallel cores to process pairwise distance
+calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC}}
+
+\item{pB}{specifies if progress should be shown as a progress bar
+[default: FALSE]}
 }
 \description{
-This function calculates \code{distIUPAC} based distances comparing two populations 
-(x: receiver; y: donor).
+This function calculates \code{distIUPAC} based distances
+comparing two populations (x: receiver and y: donor).
 }
 \examples{
-data("MySequences", package = "distIUPAC")
+##load sequence data
+data("MySequences", package="distIUPAC")
 CAS.pos<-5:34
 AFG.pos<-82:87
-#sliding windows based on base-pair length
-CAS.AFG.xyStats<-xyStats(MySequences, x.pos = CAS.pos, y.pos = AFG.pos,
-x.name = "CAS", y.name = "AFG", threads = 2)
+##sliding windows based on base-pair length
+CAS.AFG.xyStats<-xyStats(MySequences, x.pos=CAS.pos, y.pos=AFG.pos,
+x.name="CAS", y.name="AFG", threads=2)
 CAS.AFG.xyStats
-#sliding windows based on biSites
-CAS.AFG.xyStats<-xyStats(MySequences, x.pos = CAS.pos, y.pos = AFG.pos,
-wlen = 50, wtype = "biSites", x.name = "CAS", y.name = "AFG", threads = 2)
+##sliding windows based on biSites
+CAS.AFG.xyStats<-xyStats(MySequences, x.pos=CAS.pos, y.pos=AFG.pos,
+wlen=50, wtype="biSites", x.name="CAS", y.name="AFG", threads=2)
 CAS.AFG.xyStats
 }
 \author{

@@ -4,31 +4,32 @@
 \alias{faidx2seq}
 \title{faidx2seq}
 \usage{
-faidx2seq(fasta, start = NULL, end = NULL, format = "dna",
+faidx2seq(fasta, start = 1, end = NULL, format = "dna",
   samtools = "samtools")
 }
 \arguments{
 \item{fasta}{fasta file which needs to be indexed by 'samtools faidx'}
 
-\item{start}{region start}
+\item{start}{region start [default: 1]}
 
-\item{end}{region end}
+\item{end}{region end [default: NULL]}
 
-\item{format}{either \code{dna} or \code{aa}}
+\item{format}{either \code{dna} or \code{aa} [default: "dna"]}
 
-\item{samtools}{path to samtools executable}
+\item{samtools}{path to samtools executable [default: "samtools"]}
 }
 \description{
-This function returns a region of a bgzipped and samtools indexed fasta alignment
-file using \code{samtools}
+This function returns a region of a bgzipped and samtools
+indexed fasta alignment file using \code{samtools}
 }
 \examples{
-fasta.gz.file<-system.file("extdata", "example.fasta.gz", package="distIUPAC")
-#complete alignment
+fasta.gz.file<-system.file("extdata", "example.fasta.gz", 
+  package="distIUPAC")
+##complete alignment
 dna<-faidx2seq(fasta.gz.file, format="dna", samtools="samtools")
-#region from 5001 to 15000 from alignment
+##region from 5001 to 15000 from alignment
 dna.region<-faidx2seq(fasta.gz.file, start = 5001, end = 15000,
-format = "dna", samtools = "samtools")
+  format = "dna", samtools = "samtools")
 }
 \author{
 Kristian K Ullrich

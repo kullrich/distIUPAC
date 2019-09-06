@@ -4,30 +4,46 @@
 \alias{dist.xStats}
 \title{dist.xStats}
 \usage{
-dist.xStats(dIUPAC, x.pos = NULL, x.name = "x")
+dist.xStats(tmpSEQ, x.pos = NULL, x.name = "x", dist = "IUPAC",
+  ncores = 1)
 }
 \arguments{
-\item{dIUPAC}{\code{distIUPAC} distance matrix including \code{sitesUsed} matrix}
+\item{x.pos}{population X positions [default: NULL]}
 
-\item{x.pos}{population X positions}
+\item{x.name}{population X name [default: "x"]}
 
-\item{x.name}{population X name}
+\item{dIUPAC}{\code{distIUPAC} distance matrix including
+\code{sitesUsed} matrix [mandatory]}
 }
 \description{
-This function calculates \code{distIUPAC} based distances within one population
-(x: receiver; x: donor).
+This function calculates \code{distIUPAC} based distances
+within one population (x: receiver; x: donor).
 }
 \examples{
-data("MySequences", package = "distIUPAC")
+##Use the 'xStats' function to handle population assignment automatically
+
+##load sequence data
+data("MySequences", package="distIUPAC")
 CAS.pos<-5:34
-#pairwise deletion
+
+##pairwise deletion
 CAS.pairwiseDeletion.dist<-distIUPAC(as.character(MySequences[CAS.pos]))
-CAS.pairwiseDeletion.xStats<-dist.xStats(CAS.pairwiseDeletion.dist, x.name="CAS")
-#global deletion
-CAS.globalDeletion.dist<-distIUPAC(as.character(globalDeletion(MySequences[CAS.pos])))
-CAS.globalDeletion.xStats<-dist.xStats(CAS.globalDeletion.dist, x.name="CAS")
-#compare results
+CAS.pairwiseDeletion.xStats<-dist.xStats(
+  CAS.pairwiseDeletion.dist, x.name="CAS")
+
+##global deletion
+CAS.globalDeletion.dist<-distIUPAC(
+  as.character(globalDeletion(MySequences[CAS.pos])))
+CAS.globalDeletion.xStats<-dist.xStats(
+  CAS.globalDeletion.dist, x.name="CAS")
+
+##compare results
 rbind(CAS.pairwiseDeletion.xStats, CAS.globalDeletion.xStats)
+}
+\seealso{
+\code{\link[distIUPAC]{xStats}},
+\code{\link[distIUPAC]{distIUPAC}},
+\code{\link[distIUPAC]{rcpp_distIUPAC}}
 }
 \author{
 Kristian K Ullrich

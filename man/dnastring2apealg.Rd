@@ -4,18 +4,20 @@
 \alias{dnastring2apealg}
 \title{dnastring2apealg}
 \usage{
-dnastring2apealg(dna)
+dnastring2apealg(dnastring)
 }
 \arguments{
-\item{dna}{\code{DNAStringSet}}
+\item{dnastring}{\code{DNAStringSet}}
 }
 \description{
-This function transforms a \code{DNAStringSet} object from the \code{Biostrings} package into an \code{alignment} class of the \code{ape} package.
+This function transforms a \code{DNAStringSet} object from the
+\code{Biostrings} package into an \code{alignment} class of the
+\code{ape} package.
 }
 \examples{
-data("MySequences", package = "distIUPAC")
-alignment <- dnastring2apealg(MySequences)
-alignment.bin <- as.DNAbin(alignment)
+data("MySequences", package="distIUPAC")
+alignment<-dnastring2apealg(MySequences)
+alignment.bin<-ape::as.DNAbin(alignment)
 }
 \seealso{
 \link[Biostrings]{DNAStringSet}, \link[ape]{as.alignment}

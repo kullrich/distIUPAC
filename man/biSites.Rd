@@ -4,43 +4,54 @@
 \alias{biSites}
 \title{biSites}
 \usage{
-biSites(dna, x.pos = NULL, min.ind = 0, wlen = 25000,
-  start.by = NULL, end.by = NULL, threads = 1, pB = TRUE)
+biSites(dna, x.pos = NULL, min.ind = 0, wlen = 25000, start.by = 1,
+  end.by = NULL, threads = 1, pB = FALSE)
 }
 \arguments{
-\item{dna}{\code{DNAStringSet}}
+\item{dna}{\code{DNAStringSet} [mandatory]}
 
-\item{x.pos}{population X positions}
+\item{x.pos}{population X positions [default: NULL]}
 
-\item{min.ind}{minimum number of individuals without gaps ("-", "+", ".") or without missing sites ("N"), set to size of population ("length(x.pos)") to mask global deletion sites}
+\item{min.ind}{minimum number of individuals without gaps ("-", "+", ".")
+or without missing sites ("N"), set to size of population ("length(x.pos)")
+to mask global deletion sites [default: 0]}
 
-\item{wlen}{sliding window length}
+\item{wlen}{sliding window length [default: 25000]}
 
-\item{start.by}{optional start position}
+\item{start.by}{optional start position [default: 1]}
 
-\item{end.by}{optional end position}
+\item{end.by}{optional end position [default: NULL]}
 
-\item{threads}{number of parallel threads}
+\item{threads}{number of parallel threads [default: 1]}
 
-\item{pB}{specifies if progress should be shown as a progress bar}
+\item{pB}{specifies if progress should be shown as a progress bar
+[default: FALSE]}
 }
 \description{
-This function returns bi-allelic site positions given a dna object
-\code{DNAStringSet}, also with IUPAC code.
+This function returns bi-allelic site positions given a
+dna object \code{DNAStringSet}, also with IUPAC code.
 }
 \examples{
-data("MySequences", package = "distIUPAC")
-#consider all sequences
+##load sequence data
+data("MySequences", package="distIUPAC")
+
+##consider all sequences
 MySequences.biSites<-biSites(MySequences)
-as.matrix(MySequences)[,head(MySequences.biSites$biPOS)]
-#consider only a subset of all sequences
+as.matrix(MySequences)[, head(MySequences.biSites$biPOS)]
+
+##consider only a subset of all sequences
 CAS.pos<-5:34
-CAS.biSites<-biSites(MySequences, x.pos = CAS.pos)
-as.matrix(MySequences[CAS.pos])[,head(CAS.biSites$biPOS)]
-#consider only sites were 15 individuals have no gaps or missing sites
-CAS.biSites.minInd.15<-biSites(MySequences, x.pos = CAS.pos, min.ind = 15)
-as.matrix(MySequences[CAS.pos])[,head(CAS.biSites.minInd.15$biPOS)]
-as.matrix(MySequences[CAS.pos])[,head(CAS.biSites.minInd.15$biPOSmasked)]
+CAS.biSites<-biSites(MySequences, x.pos=CAS.pos)
+as.matrix(MySequences[CAS.pos])[, head(CAS.biSites$biPOS)]
+
+##consider only sites were 15 individuals have no gaps or missing sites
+CAS.biSites.minInd.15<-biSites(MySequences, x.pos=CAS.pos, min.ind=15)
+as.matrix(MySequences[CAS.pos])[, head(CAS.biSites.minInd.15$biPOS)]
+as.matrix(MySequences[CAS.pos])[, head(CAS.biSites.minInd.15$biPOSmasked)]
+}
+\seealso{
+\code{\link[distIUPAC]{triSites}},
+\code{\link[distIUPAC]{globalDeletion}}
 }
 \author{
 Kristian K Ullrich

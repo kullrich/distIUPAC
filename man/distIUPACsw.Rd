@@ -5,38 +5,69 @@
 \title{distIUPACsw}
 \usage{
 distIUPACsw(dna, FUN = NULL, chr.name = "chr", wlen = 25000,
-  wjump = 25000, start.by = NULL, end.by = NULL, wtype = "bp",
-  dist = "IUPAC", global.deletion = TRUE, threads = 1, pB = TRUE)
+  wjump = 25000, start.by = 1, end.by = NULL, wtype = "bp",
+  dist = "IUPAC", global.deletion = TRUE, threads = 1, ncores = 1,
+  pB = TRUE)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
 
-\item{FUN}{the function to be applied}
+\item{FUN}{the function to be applied [default: NULL]
+see e.g. \link[distIUPAC]{dist.xStats}, \link[distIUPAC]{dist.xyStats},
+\link[distIUPAC]{dist.xyoStats}}
 
-\item{wlen}{sliding windows length}
+\item{chr.name}{chromosome name [default: "chr"]}
 
-\item{wjump}{sliding windows jump}
+\item{wlen}{sliding windows length [default: 25000]}
 
-\item{start.by}{optional start position}
+\item{wjump}{sliding windows jump [default: 25000]}
 
-\item{end.by}{optional end position}
+\item{start.by}{optional start position [default: 1]}
 
-\item{wtype}{sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}}
+\item{end.by}{optional end position [default: NULL]
+take width of \code{DNAStringSet}}
 
-\item{dist}{distance to use}
+\item{wtype}{sliding windows type to use \code{bp}, \code{biSites}
+or \code{triSites} [default: "bp"]}
 
-\item{global.deletion}{a logical indicating whether to delete the sites with missing data in a global or pairwise way (default is to delete in a global way)}
+\item{dist}{distance to use [default: IUPAC] or choose one model as in
+\link[ape]{dist.dna} [default: "IUPAC"]}
 
-\item{threads}{number of parallel threads}
+\item{global.deletion}{a logical indicating whether to delete the sites
+with missing data in a global or pairwise way
+(default is to delete in a global way) [default: TRUE]}
 
-\item{pB}{specifies if progress should be shown as a progress bar}
+\item{threads}{number of parallel threads to process windows [default: 1]}
+
+\item{ncores}{number of parallel cores to process pairwise distance
+calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC} [default: 1]}
+
+\item{pB}{specifies if progress should be shown as a progress bar
+[default: TRUE]}
 }
 \description{
-This function calculates \code{IUPAC} distances on \code{Biostrings} \code{DNAStringSet} objects
+This function calculates \code{IUPAC} distances on
+\code{Biostrings} \code{DNAStringSet} objects
 on sliding windows which can be used to parse to further functions
 }
 \examples{
-data("MySequences", package = "distIUPAC")
+data("MySequences", package="distIUPAC")
+CAS.pos<-5:34
+CAS.dIUPAC<-distIUPACsw(MySequences[CAS.pos])
+##xStats
+CAS.xStats<-distIUPACsw(MySequences[CAS.pos], FUN=dist.xStats)
+##multiple threads to process windows
+CAS.xStats<-distIUPACsw(MySequences[CAS.pos], threads=2)
+##multiple cores to process pairwise distance calculation
+CAS.xStats<-distIUPACsw(MySequences[CAS.pos], ncores=2)
+##disbale global deletion
+CAS.pairwiseDeletion.xStats<-distIUPACsw(MySequences[CAS.pos],
+global.deletion=FALSE, FUN=dist.xStats, ncores=2)
+##using K80 distance from ape package
+distIUPACsw(MySequences[CAS.pos], dist="K80", FUN=dist.xStats)
+}
+\seealso{
+\link[distIUPAC]{distIUPAC}, \link[ape]{dist.dna}
 }
 \author{
 Kristian K Ullrich

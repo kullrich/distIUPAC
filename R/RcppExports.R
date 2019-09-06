@@ -5,24 +5,24 @@
 #' @import Rcpp
 #' @export distIUPAC
 #' @author Kristian K Ullrich
-distIUPAC <- function(myvector) {
-    .Call(`_distIUPAC_distIUPAC`, myvector)
+distIUPAC <- function(dnavector) {
+    .Call(`_distIUPAC_distIUPAC`, dnavector)
 }
 
 #' @useDynLib distIUPAC, .registration = TRUE
 #' @import Rcpp
 #' @export distIUPACmatrix
 #' @author Kristian K Ullrich
-distIUPACmatrix <- function(myvector, scoreMatrix) {
-    .Call(`_distIUPAC_distIUPACmatrix`, myvector, scoreMatrix)
+distIUPACmatrix <- function(dnavector, scoreMatrix) {
+    .Call(`_distIUPAC_distIUPACmatrix`, dnavector, scoreMatrix)
 }
 
 #' @useDynLib distIUPAC, .registration = TRUE
 #' @import Rcpp
 #' @export pairwiseDeletion
 #' @author Kristian K Ullrich
-pairwiseDeletion <- function(myvector) {
-    .Call(`_distIUPAC_pairwiseDeletion`, myvector)
+pairwiseDeletion <- function(dnavector) {
+    .Call(`_distIUPAC_pairwiseDeletion`, dnavector)
 }
 
 #' @useDynLib distIUPAC, .registration = TRUE
@@ -30,12 +30,12 @@ pairwiseDeletion <- function(myvector) {
 #' @import RcppThread
 #' @export rcpp_distIUPAC
 #' @author Kristian K Ullrich
-rcpp_distIUPAC <- function(myvector, n_cores = 1L) {
-    .Call(`_distIUPAC_rcpp_distIUPAC`, myvector, n_cores)
+rcpp_distIUPAC <- function(dnavector, ncores = 1L) {
+    .Call(`_distIUPAC_rcpp_distIUPAC`, dnavector, ncores)
 }
 
 #' @useDynLib distIUPAC, .registration = TRUE
-#' @importFrom Rcpp evalCpp
+#' @import Rcpp
 #' @export rcpp_distIUPAC_ab
 #' @author Kristian K Ullrich
 rcpp_distIUPAC_ab <- function(a, b, nsites) {
@@ -47,16 +47,24 @@ rcpp_distIUPAC_ab <- function(a, b, nsites) {
 #' @import RcppThread
 #' @export rcpp_distIUPACmatrix
 #' @author Kristian K Ullrich
-rcpp_distIUPACmatrix <- function(myvector, scoreMatrix, n_cores = 1L) {
-    .Call(`_distIUPAC_rcpp_distIUPACmatrix`, myvector, scoreMatrix, n_cores)
+rcpp_distIUPACmatrix <- function(dnavector, scoreMatrix, ncores = 1L) {
+    .Call(`_distIUPAC_rcpp_distIUPACmatrix`, dnavector, scoreMatrix, ncores)
 }
 
 #' @useDynLib distIUPAC, .registration = TRUE
-#' @importFrom Rcpp evalCpp
+#' @import Rcpp
 #' @export rcpp_distIUPACmatrix_ab
 #' @author Kristian K Ullrich
-rcpp_distIUPACmatrix_ab <- function(a, b, nsites, scoreMatrix) {
-    .Call(`_distIUPAC_rcpp_distIUPACmatrix_ab`, a, b, nsites, scoreMatrix)
+rcpp_distIUPACmatrix_ab <- function(a, b, scoreMatrix, nsites) {
+    .Call(`_distIUPAC_rcpp_distIUPACmatrix_ab`, a, b, scoreMatrix, nsites)
+}
+
+#' @useDynLib distIUPAC, .registration = TRUE
+#' @import Rcpp
+#' @export rcpp_iupacString_ab
+#' @author Kristian K Ullrich
+rcpp_iupacString_ab <- function(a, b, nsites, name = "iupacString") {
+    .Call(`_distIUPAC_rcpp_iupacString_ab`, a, b, nsites, name)
 }
 
 #' @useDynLib distIUPAC, .registration = TRUE
@@ -64,7 +72,7 @@ rcpp_distIUPACmatrix_ab <- function(a, b, nsites, scoreMatrix) {
 #' @import RcppThread
 #' @export rcpp_pairwiseDeletion
 #' @author Kristian K Ullrich
-rcpp_pairwiseDeletion <- function(myvector, n_cores = 1L) {
-    .Call(`_distIUPAC_rcpp_pairwiseDeletion`, myvector, n_cores)
+rcpp_pairwiseDeletion <- function(dnavector, ncores = 1L) {
+    .Call(`_distIUPAC_rcpp_pairwiseDeletion`, dnavector, ncores)
 }
 

@@ -2,27 +2,34 @@
 \alias{distIUPACmatrix}
 \title{distIUPACmatrix}
 \usage{
-distIUPACmatrix(myvector, scoreMatrix)
+distIUPACmatrix(dnavector, scoreMatrix)
 }\arguments{
-\item{myvector}{\code{as.character(DNAStringSet)}}
+\item{dnavector}{\code{as.character(DNAStringSet)}}
 
 \item{scoreMatrix}{\code{scoreMatrix}}
 }
 \description{
-This function calculates IUPAC distances on \code{Biostrings} \code{DNAStringSet} and \code{BStringSet} objects and a \code{scoreMatrix}.
+This function calculates scaled pairwise \code{IUPAC} distances on
+\code{Biostrings} \code{DNAStringSet} and \code{BStringSet} objects using a
+specific \code{scoreMatrix} in a sequential fashion.
 }
 \examples{
-data("MySequences", package = "distIUPAC")
+##load sequence data
+data("MySequences", package="distIUPAC")
+##load scoring matrix
 MyScoreMatrix<-scoreMatrix()
 distIUPACmatrix(as.character(MySequences[1:10]), MyScoreMatrix)
-MyScoreMatrix["A","R"] <- 10.0
-distIUPACmatrix(as.character(MySequences[1:10]), MyScoreMatrix)
-MyScoreMatrix["A","R"] <- 0.5
+##change scoring matrix
+MyScoreMatrix["A", "R"]<-10.0
+##calculate IUPAC distance with altered scoring
 distIUPACmatrix(as.character(MySequences[1:10]), MyScoreMatrix)
 }
 \author{
 Kristian K Ullrich
 }
 \seealso{
-\link[distIUPAC]{scoreMatrix}, \link[ape]{dist.dna}
+\code{\link[distIUPAC]{scoreMatrix}},
+\code{\link[distIUPAC]{rcpp_distIUPACmatrix}},
+\code{\link[distIUPAC]{rcpp_distIUPACmatrix_ab}}
+\code{\link[ape]{dist.dna}}
 }

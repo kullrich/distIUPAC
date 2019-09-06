@@ -4,25 +4,27 @@
 \alias{posgen}
 \title{posgen}
 \usage{
-posgen(pos, wlen = 50, start.by = NULL, end.by = NULL)
+posgen(pos, wlen = 50, start.by = 1, end.by = NULL)
 }
 \arguments{
 \item{pos}{position vector}
 
-\item{wlen}{number of positions per window}
+\item{wlen}{number of positions per window [default: 50]}
 
-\item{start.by}{optional start position}
+\item{start.by}{optional start position [default: 1]}
 
-\item{end.by}{optional end position}
+\item{end.by}{optional end position [default: NULL]}
 }
 \description{
-This function constructs a sliding window matrix based on a SNP position vector
+This function constructs a sliding window matrix
+based on a SNP position vector
 }
 \examples{
 sw <- posgen(seq(1, 975, by = 5), 50, 1, 1000)
 }
 \seealso{
-\link[distIUPAC]{swgen}, \link[distIUPAC]{biSites}, \link[distIUPAC]{triSites}
+\link[distIUPAC]{swgen}, \link[distIUPAC]{biSites},
+\link[distIUPAC]{triSites}
 }
 \author{
 Kristian K Ullrich

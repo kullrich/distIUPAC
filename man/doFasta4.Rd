@@ -12,29 +12,37 @@ doFasta4(bam, bam.name = "ind1",
 \arguments{
 \item{bam}{indexed bam file which needs to be indexed by 'samtools index'}
 
-\item{bam.name}{individual name}
+\item{bam.name}{individual name [default: "ind1"]}
 
-\item{angsdoption}{angsd option specified as here \href{angsd Filters}{http://www.popgen.dk/angsd/index.php/Filters},
-here \href{angsd Allele Counts}{http://www.popgen.dk/angsd/index.php/Allele_Counts} and here \href{angsd doFasta}{http://www.popgen.dk/angsd/index.php/Fasta}}
+\item{angsdoption}{angsd option specified as follows
+\href{angsd Filters}{http://www.popgen.dk/angsd/index.php/Filters},
+\href{Allele Counts}{http://www.popgen.dk/angsd/index.php/Allele_Counts}
+and \href{angsd doFasta}{http://www.popgen.dk/angsd/index.php/Fasta}
+[default: "-maxDepth 99999 -minQ 20 -minMapQ 30 -iupacRatio 0.2"]}
 
-\item{region}{region specification ('chr' entire chr; 'chr:start' region from start to end of chr; 'chr:start-stop' region from start to stop from chr)}
+\item{region}{region specification ('chr' entire chr; 'chr:start'
+region from start to end of chr; 'chr:start-stop'
+region from start to stop from chr) [default: NULL]}
 
-\item{angsd}{path to angsd executable}
+\item{angsd}{path to angsd executable [default: "angsd"]}
 
-\item{samtools}{path to samtools executable}
+\item{samtools}{path to samtools executable [default: "samtools"]}
 
-\item{system.verbose}{system verbosity output}
+\item{system.verbose}{system verbosity output [default: FALSE]}
 }
 \description{
-This function uses the \code{angsd -doFasta 4} option to obtain IUPAC coded
-fasta files from an indexed bam file and returns a \code{DNAStringSet}
+This function uses the \code{angsd -doFasta 4} option to
+obtain IUPAC coded fasta files from an indexed bam file and returns a
+\code{DNAStringSet}
 }
 \examples{
-bam.file<-system.file("extdata", "ind1.pop1.bam", package="distIUPAC")
-#complete 
-bam.iupac<-doFasta4(bam=bam.file, angsdoption="-maxDepth 99999 -minQ 20 -minMapQ 30 -iupacRatio 0.2", angsd="angsd", samtools="samtools")
-#region from 5001 to 15000 from chr1 (chr1:5001-15000)
-bam.region.iupac<-doFasta4(bam=bam.file, angsdoption="-maxDepth 99999 -minQ 20 -minMapQ 30 -iupacRatio 0.2", region="chr1:5001-15000", angsd="angsd", samtools="samtools")
+bam.url<-"http://cdna.eva.mpg.de/neandertal/altai/ModernHumans/bam/"
+bam.ind1<-"SS6004467-dedup.rg.bam"
+bam.file<-paste0(bam.url, bam.ind1)
+##region from 5001 to 15000 from chr1 (1:5001-15000)
+#bam.region.iupac<-doFasta4(bam=bam.file,
+#  angsdoption="-maxDepth 99999 -minQ 20 -minMapQ 30 -iupacRatio 0.2",
+#  region="1:5001-15000", angsd="angsd", samtools="samtools")
 }
 \author{
 Kristian K Ullrich

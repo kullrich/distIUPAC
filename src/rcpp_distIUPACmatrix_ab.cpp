@@ -1,14 +1,13 @@
-
 #include <Rcpp.h>
 #include <string.h>
 using namespace Rcpp;
 
 //' @useDynLib distIUPAC, .registration = TRUE
-//' @importFrom Rcpp evalCpp
+//' @import Rcpp
 //' @export rcpp_distIUPACmatrix_ab
 //' @author Kristian K Ullrich
 // [[Rcpp::export]]
-Rcpp::NumericVector rcpp_distIUPACmatrix_ab( std::string a, std::string b, int nsites, Rcpp::NumericMatrix scoreMatrix ) {
+Rcpp::NumericVector rcpp_distIUPACmatrix_ab( std::string a, std::string b, Rcpp::NumericMatrix scoreMatrix, int nsites ) {
   std::unordered_map<std::string, double> iupac_dist;
   int nCols = scoreMatrix.ncol();
   int nRows = scoreMatrix.nrow();

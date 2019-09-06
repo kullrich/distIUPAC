@@ -5,14 +5,16 @@
 \alias{MySequences-data}
 \alias{MySequences}
 \title{MySequences-data}
-\format{An object of class \code{DNAStringSet}; see \code{\link[Biostrings]{DNAStringSet}}.}
+\format{an object of class \code{DNAStringSet}
+see \code{\link[Biostrings]{DNAStringSet}}}
 \usage{
 data(MySequences)
 }
 \description{
-Example sequence alignment of a region from chromosome 19 of different mouse species as \code{DNAStringSet}.
+Example sequence alignment of a region from chromosome 19 of
+different mouse species as \code{DNAStringSet}.
 }
 \examples{
-data("MySequences", package = "distIUPAC")
+data("MySequences", package="distIUPAC")
 }
 \keyword{datasets}

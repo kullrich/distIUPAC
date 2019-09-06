@@ -5,45 +5,53 @@
 \title{xStats}
 \usage{
 xStats(dna, x.pos = NULL, x.name = "x", chr.name = "chr",
-  wlen = 25000, wjump = 25000, start.by = NULL, end.by = NULL,
+  wlen = 25000, wjump = 25000, start.by = 1, end.by = NULL,
   wtype = "bp", dist = "IUPAC", global.deletion = TRUE,
-  threads = 1, pB = TRUE)
+  threads = 1, ncores = 1, pB = FALSE)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
 
-\item{x.pos}{population X positions}
+\item{x.pos}{population X positions [default: NULL]
+take all sequences from \code{DNAStringSet}}
 
-\item{x.name}{population X name}
+\item{x.name}{population X name [default: "x"]}
 
-\item{chr.name}{chromosome name}
+\item{chr.name}{chromosome name [default: "chr"]}
 
-\item{wlen}{sliding windows length}
+\item{wlen}{sliding windows length  [default: 25000]}
 
-\item{wjump}{sliding windows jump}
+\item{wjump}{sliding windows jump [default: 25000]}
 
-\item{start.by}{optional start position}
+\item{start.by}{optional start position [default: 1]}
 
-\item{end.by}{optional end position}
+\item{end.by}{optional end position [default: NULL]}
 
-\item{wtype}{sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}}
+\item{wtype}{sliding windows type to use \code{bp}, \code{biSites}
+or \code{triSites}  [default: "bp"]}
 
-\item{dist}{distance to use}
+\item{dist}{distance to use [default: "IUPAC"]}
 
-\item{global.deletion}{a logical indicating whether to delete the sites with missing data in a global or pairwise way (default is to delete in a global way)}
+\item{global.deletion}{a logical indicating whether to delete the sites
+with missing data in a global [TRUE] or pairwise way [FALSE]}
 
-\item{threads}{number of parallel threads}
+\item{threads}{number of parallel threads [default: 1]}
 
-\item{pB}{specifies if progress should be shown as a progress bar}
+\item{ncores}{number of parallel cores to process pairwise distance
+calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC}}
+
+\item{pB}{specifies if progress should be shown as a progress bar
+[default: FALSE]}
 }
 \description{
-This function calculates \code{distIUPAC} based distances within one population
-(x: receiver; x: donor).
+This function calculates \code{distIUPAC} based distances
+within one population (x: receiver; x: donor) along sliding window.
 }
 \examples{
 data("MySequences", package = "distIUPAC")
 CAS.pos<-5:34
-CAS.xStats<-xStats(MySequences, x.pos = CAS.pos, x.name = "CAS", threads = 2)
+##multiple threads to process 
+CAS.xStats<-xStats(MySequences, x.pos=CAS.pos, x.name="CAS", threads=2)
 CAS.xStats
 }
 \author{

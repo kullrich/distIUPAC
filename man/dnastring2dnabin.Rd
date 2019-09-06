@@ -4,17 +4,19 @@
 \alias{dnastring2dnabin}
 \title{dnastring2dnabin}
 \usage{
-dnastring2dnabin(dna)
+dnastring2dnabin(dnastring)
 }
 \arguments{
-\item{dna}{\code{DNAStringSet}}
+\item{dnastring}{\code{DNAStringSet}}
 }
 \description{
-This function transforms a \code{DNAStringSet} object from the \code{Biostrings} package into an \code{DNAbin} class of the \code{ape} package.
+This function transforms a \code{DNAStringSet} object from the
+\code{Biostrings} package into an \code{DNAbin} class of the
+\code{ape} package.
 }
 \examples{
-data("MySequences", package = "distIUPAC")
-alignment.bin <- dnastring2dnabin(MySequences)
+data("MySequences", package="distIUPAC")
+alignment.bin<-dnastring2dnabin(MySequences)
 }
 \seealso{
 \link[Biostrings]{DNAStringSet}, \link[ape]{as.DNAbin}

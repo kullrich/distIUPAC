@@ -4,41 +4,58 @@
 \alias{dist.xyStats}
 \title{dist.xyStats}
 \usage{
-dist.xyStats(dIUPAC, x.pos, y.pos, x.name = "x", y.name = "y")
+dist.xyStats(tmpSEQ, x.pos, y.pos, x.name = "x", y.name = "y",
+  dist = "IUPAC", ncores = 1)
 }
 \arguments{
-\item{dIUPAC}{\code{distIUPAC} distance matrix including \code{sitesUsed} matrix}
+\item{x.pos}{population X positions [mandatory]}
 
-\item{x.pos}{population X positions}
+\item{y.pos}{population Y positions [mandatory]}
 
-\item{y.pos}{population Y positions}
+\item{x.name}{population X name [default: "x"]}
 
-\item{x.name}{population X name}
+\item{y.name}{population Y name [default: "y"]}
 
-\item{y.name}{population Y name}
+\item{dIUPAC}{\code{distIUPAC} distance matrix including
+\code{sitesUsed} matrix [mandatory]}
 }
 \description{
-This function calculates \code{distIUPAC} based distances comparing two populations 
-(x: receiver; y: donor).
+This function calculates \code{distIUPAC} based distances
+comparing two populations (x: receiver; y: donor).
 }
 \examples{
-data("MySequences", package = "distIUPAC")
+##Use the 'xyStats' function to handle population assignment automatically
+
+##load sequence data
+data("MySequences", package="distIUPAC")
 CAS.pos<-5:34
 AFG.pos<-82:87
-#Here, one needs to consider the changed x and y positions due to sub-sampling.
-#Use the 'xyStats' function which handles this issue automatically
-CAS.pos_<-1:length(CAS.pos)
-AFG.pos_<-(length(CAS.pos_)+1):length(c(CAS.pos,AFG.pos))
-#pairwise deletion
-CAS_AFG.pairwiseDeletion.dist<-distIUPAC(as.character(MySequences[c(CAS.pos,AFG.pos)]))
-CAS_AFG.pairwiseDeletion.xyStats<-dist.xyStats(CAS_AFG.pairwiseDeletion.dist, 
-x.pos=CAS.pos_, y.pos=AFG.pos_, x.name="CAS", y.name="AFG")
-#global deletion
-CAS_AFG.globalDeletion.dist<-distIUPAC(as.character(globalDeletion(MySequences[c(CAS.pos,AFG.pos)])))
-CAS_AFG.globalDeletion.xyStats<-dist.xyStats(CAS_AFG.globalDeletion.dist,
-x.pos=CAS.pos_, y.pos=AFG.pos_, x.name="CAS", y.name="AFG")
-#compare results
+
+##Here, one needs to consider the changed x and y positions due
+##to sub-sampling.
+CAS.pos_<-seq_along(CAS.pos)
+AFG.pos_<-seq(from=length(CAS.pos_)+1, to=length(c(CAS.pos,AFG.pos)))
+
+##pairwise deletion
+CAS_AFG.pairwiseDeletion.dist<-distIUPAC(
+  as.character(MySequences[c(CAS.pos,AFG.pos)]))
+CAS_AFG.pairwiseDeletion.xyStats<-dist.xyStats(
+  CAS_AFG.pairwiseDeletion.dist, 
+  x.pos=CAS.pos_, y.pos=AFG.pos_,
+  x.name="CAS", y.name="AFG")
+
+##global deletion
+CAS_AFG.globalDeletion.dist<-distIUPAC(
+  as.character(globalDeletion(MySequences[c(CAS.pos,AFG.pos)])))
+  CAS_AFG.globalDeletion.xyStats<-dist.xyStats(CAS_AFG.globalDeletion.dist,
+  x.pos=CAS.pos_, y.pos=AFG.pos_, x.name="CAS", y.name="AFG")
+
+##compare results
 rbind(CAS_AFG.pairwiseDeletion.xyStats, CAS_AFG.globalDeletion.xyStats)
+}
+\seealso{
+\code{\link[distIUPAC]{xyStats}},
+\code{\link[distIUPAC]{distIUPAC}}, \code{\link[distIUPAC]{rcpp_distIUPAC}}
 }
 \author{
 Kristian K Ullrich

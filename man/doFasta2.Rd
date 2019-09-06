@@ -9,31 +9,41 @@ doFasta2(bamlist, bamlist.name = "pop1",
   angsd = "angsd", samtools = "samtools", system.verbose = FALSE)
 }
 \arguments{
-\item{bamlist}{list of indexed bam files which needs to be indexed by 'samtools index'}
+\item{bamlist}{list of indexed bam files which
+needs to be indexed by 'samtools index'}
 
-\item{bamlist.name}{population name}
+\item{bamlist.name}{population name [default: "pop1"]}
 
-\item{angsdoption}{angsd option specified as here \href{angsd Filters}{http://www.popgen.dk/angsd/index.php/Filters},
-here \href{angsd Allele Counts}{http://www.popgen.dk/angsd/index.php/Allele_Counts} and here \href{angsd doFasta}{http://www.popgen.dk/angsd/index.php/Fasta}}
+\item{angsdoption}{angsd option specified as follows
+\href{angsd Filters}{http://www.popgen.dk/angsd/index.php/Filters},
+\href{Allele Counts}{http://www.popgen.dk/angsd/index.php/Allele_Counts}
+and \href{angsd doFasta}{http://www.popgen.dk/angsd/index.php/Fasta}
+[default: "-maxDepth 99999 -minQ 20 -minMapQ 30"]}
 
-\item{region}{region specification ('chr' entire chr; 'chr:start' region from start to end of chr; 'chr:start-stop' region from start to stop from chr)}
+\item{region}{region specification ('chr' entire chr; 'chr:start'
+region from start to end of chr; 'chr:start-stop'
+region from start to stop from chr) [default: NULL]}
 
-\item{angsd}{path to angsd executable}
+\item{angsd}{path to angsd executable [default: "angsd"]}
 
-\item{samtools}{path to samtools executable}
+\item{samtools}{path to samtools executable [default: "samtools"]}
 
-\item{system.verbose}{system verbosity output}
+\item{system.verbose}{system verbosity output [default: FALSE]}
 }
 \description{
-This function uses the \code{angsd -doFasta 2} option to obtain a consensus
-fasta file from an bam file list of indexed bam files and returns a \code{DNAStringSet}
+This function uses the \code{angsd -doFasta 2} option
+to obtain a consensus fasta file from a bam file list of indexed bam files
+and returns a \code{DNAStringSet}.
 }
 \examples{
-bam.list<-c(system.file("extdata", "ind1.pop1.bam", package="distIUPAC"),system.file("extdata", "ind2.pop1.bam", package="distIUPAC"))
-#complete 
-bam.consensus<-doFasta2(bamlist=bam.list, angsdoption="-maxDepth 99999 -minQ 20 -minMapQ 30", angsd="angsd", samtools="samtools")
-#region from 5001 to 15000 from chr1 (chr1:5001-15000)
-bam.region.consensus<-doFasta2(bamlist=bam.list, angsdoption="-maxDepth 99999 -minQ 20 -minMapQ 30", region="chr1:5001-15000", angsd="angsd", samtools="samtools")
+bam.url<-"http://cdna.eva.mpg.de/neandertal/altai/ModernHumans/bam/"
+bam.ind1<-"SS6004467-dedup.rg.bam"
+bam.ind2<-"SS6004468-dedup.rg.bam"
+bam.files<-c(paste0(bam.url, bam.ind1), paste0(bam.url, bam.ind2))
+##region from 5001 to 15000 from chr1 (1:5001-15000)
+#bam.region.consensus<-doFasta2(bamlist=bam.files,
+#  angsdoption="-maxDepth 99999 -minQ 20 -minMapQ 30",
+#  region="1:5001-15000", angsd="angsd", samtools="samtools")
 }
 \author{
 Kristian K Ullrich

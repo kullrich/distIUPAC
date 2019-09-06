@@ -7,10 +7,11 @@
 scoreMatrix()
 }
 \description{
-This function creates a \code{scoreMatrix} object to be used with the \code{distIUPACmatrix} function.
+This function creates a \code{scoreMatrix} object to be used
+with the \code{distIUPACmatrix} function.
 }
 \examples{
-data("MySequences", package = "distIUPAC")
+data("MySequences", package="distIUPAC")
 MyScoreMatrix <- scoreMatrix()
 MyScoreMatrix["A","R"] <- 10.0
 distIUPACmatrix(as.character(MySequences[1:10]), MyScoreMatrix)

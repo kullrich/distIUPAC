@@ -7,13 +7,13 @@
 swgen(wlen = 1000, wjump = 100, start.by = 1, end.by = 1000)
 }
 \arguments{
-\item{wlen}{window size}
+\item{wlen}{window size [default: 1000]}
 
-\item{wjump}{window jump}
+\item{wjump}{window jump [default: 1000]}
 
-\item{start.by}{start position}
+\item{start.by}{start position [default: 1]}
 
-\item{end.by}{end position}
+\item{end.by}{end position [default: 1000]}
 }
 \description{
 This function constructs a sliding window matrix

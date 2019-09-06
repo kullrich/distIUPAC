@@ -3,7 +3,7 @@
 using namespace Rcpp;
 
 //' @useDynLib distIUPAC, .registration = TRUE
-//' @importFrom Rcpp evalCpp
+//' @import Rcpp
 //' @export rcpp_distIUPAC_ab
 //' @author Kristian K Ullrich
 // [[Rcpp::export]]

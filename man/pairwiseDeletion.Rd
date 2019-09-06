@@ -2,21 +2,25 @@
 \alias{pairwiseDeletion}
 \title{pairwiseDeletion}
 \usage{
-pairwiseDeletion(myvector)
+pairwiseDeletion(dnavector)
 }
 \arguments{
-\item{myvector}{\code{as.character(DNAStringSet)}}
+\item{dnavector}{\code{as.character(DNAStringSet)}}
 }
 \description{
-This function returns the number of used sites for pairwise distance calculations obtained via \link[ape]{dist.dna}.
+This function returns the number of used sites for pairwise distance
+ calculations obtained via \code{\link[ape]{dist.dna}}.
 }
 \examples{
-data("woodmouse", , package = "ape")
+data("woodmouse", package="ape")
 pairwiseDeletion(as.character(dnabin2dnastring(woodmouse)))
 }
 \author{
 Kristian K Ullrich
 }
 \seealso{
-\link[distIUPAC]{distIUPAC}, \link[distIUPAC]{distIUPACmatrix}, \link[ape]{dist.dna}
+\code{\link[distIUPAC]{rcpp_pairwiseDeletion}},
+\code{\link[distIUPAC]{distIUPAC}},
+\code{\link[distIUPAC]{distIUPACmatrix}},
+\code{\link[ape]{dist.dna}}
 }

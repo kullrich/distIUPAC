@@ -4,46 +4,59 @@
 \alias{xyMultiStats}
 \title{xyMultiStats}
 \usage{
-xyMultiStats(dna, list.pos, wlen = 25000, wjump = 25000,
-  start.by = NULL, end.by = NULL, wtype = "bp", dist = "IUPAC",
-  global.deletion = TRUE, threads = 1, chr.name = "chr")
+xyMultiStats(dna, pop.list, chr.name = "chr", wlen = 25000,
+  wjump = 25000, start.by = 1, end.by = NULL, wtype = "bp",
+  dist = "IUPAC", global.deletion = TRUE, threads = 1, ncores = 1,
+  pB = TRUE)
 }
 \arguments{
-\item{dna}{\code{DNAStringSet}}
+\item{dna}{\code{DNAStringSet} [mandatory]}
 
-\item{list.pos}{population positions list}
+\item{pop.list}{population list with individual positions [mandatory]}
 
-\item{wlen}{sliding windows length}
+\item{chr.name}{chromosome name [default: "chr"]}
 
-\item{wjump}{sliding windows jump}
+\item{wlen}{sliding windows length [default: 25000]}
 
-\item{start.by}{optional start position}
+\item{wjump}{sliding windows jump [default: 25000]}
 
-\item{end.by}{optional end position}
+\item{start.by}{optional start position [deafult: 1]}
 
-\item{wtype}{sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}}
+\item{end.by}{optional end position [deafult: NULL]}
 
-\item{dist}{distance to use}
+\item{wtype}{sliding windows type to use \code{bp},
+\code{biSites} or \code{triSites} [default: "bp"]}
 
-\item{global.deletion}{a logical indicating whether to delete the sites with missing data in a global or pairwise way (default is to delete in a global way)}
+\item{dist}{distance to use [deafult: "IUPAC"]}
 
-\item{threads}{number of parallel threads}
+\item{global.deletion}{a logical indicating whether to delete the sites
+with missing data in a global or pairwise way (default is to delete in a
+global way) [default: TRUE]}
 
-\item{chr.name}{chromosome name}
+\item{threads}{number of parallel threads [default: 1]}
+
+\item{ncores}{number of parallel cores to process pairwise distance
+calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC}}
+
+\item{pB}{specifies if progress should be shown as a progress bar
+[default: TRUE]}
 }
 \description{
-This function calculates \code{distIUPAC} based distances comparing all
-possible pairwise population combinations.
+This function calculates \code{distIUPAC} based distances
+comparing all possible pairwise population combinations (x: receiver and
+y: donor).
 }
 \examples{
-data("MySequences", package = "distIUPAC")
+##load sequence data
+data("MySequences", package="distIUPAC")
 CAS.pos<-5:34
 AFG.pos<-82:87
 SPRE.pos<-106:113
-pop.list<-list(CAS.pos, AFG.pos, SPRE.pos)
-names(pop.list)<-c("CAS", "AFG", "SPRE")
-#sliding windows based on base-pair length
-CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, list.pos = pop.list, threads = 2)
+pop.list<-setNames(list(CAS.pos, AFG.pos, SPRE.pos), c("CAS", "AFG",
+"SPRE"))
+##sliding windows based on base-pair length
+CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, pop.list=pop.list,
+threads = 2)
 CAS.AFG.SPRE.xyMultiStats
 #sliding windows based on biSites
 CAS.AFG.SPRE.xyMultiStats<-xyMultiStats(MySequences, list.pos = pop.list,

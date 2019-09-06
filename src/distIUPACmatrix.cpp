@@ -1,4 +1,3 @@
-
 #include <Rcpp.h>
 #include <string.h>
 using namespace Rcpp;
@@ -8,7 +7,7 @@ using namespace Rcpp;
 //' @export distIUPACmatrix
 //' @author Kristian K Ullrich
 // [[Rcpp::export]]
-Rcpp::List distIUPACmatrix( Rcpp::StringVector myvector, Rcpp::NumericMatrix scoreMatrix ) {
+Rcpp::List distIUPACmatrix( Rcpp::StringVector dnavector, Rcpp::NumericMatrix scoreMatrix ) {
   std::unordered_map<std::string, double> iupac_dist;
   int nCols = scoreMatrix.ncol();
   int nRows = scoreMatrix.nrow();
@@ -23,15 +22,15 @@ Rcpp::List distIUPACmatrix( Rcpp::StringVector myvector, Rcpp::NumericMatrix sco
       iupac_dist[isName+jsName] = scoreMatrix(is,js);
     }
   }
-  int n = myvector.size();
+  int n = dnavector.size();
   Rcpp::NumericMatrix distMatrix(n, n);
-  CharacterVector myvectornames = myvector.attr("names");
-  colnames(distMatrix) = myvectornames;
-  rownames(distMatrix) = myvectornames;
+  CharacterVector dnavectornames = dnavector.attr("names");
+  colnames(distMatrix) = dnavectornames;
+  rownames(distMatrix) = dnavectornames;
   Rcpp::NumericMatrix sitesMatrix(n, n);
-  colnames(sitesMatrix) = myvectornames;
-  rownames(sitesMatrix) = myvectornames;
-  int nsites = myvector[1].size();
+  colnames(sitesMatrix) = dnavectornames;
+  rownames(sitesMatrix) = dnavectornames;
+  int nsites = dnavector[1].size();
   for( int i=0; i < n; i++ ){
     for( int j=i; j < n; j++ ){
       double eqnum = 0;
@@ -39,8 +38,8 @@ Rcpp::List distIUPACmatrix( Rcpp::StringVector myvector, Rcpp::NumericMatrix sco
       for( int s=0; s < nsites; s++){
         std::string is;
         std::string js;
-        is = myvector[i][s];
-        js = myvector[j][s];
+        is = dnavector[i][s];
+        js = dnavector[j][s];
         double ij_dist;
         ij_dist = iupac_dist[is+js];
         if(ij_dist >= 0.0){

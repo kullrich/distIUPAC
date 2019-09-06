@@ -4,33 +4,36 @@
 \alias{globalDeletion}
 \title{globalDeletion}
 \usage{
-globalDeletion(dna, x.pos = NULL, wlen = 100000, start.by = NULL,
-  end.by = NULL, threads = 1, pB = TRUE)
+globalDeletion(dna, x.pos = NULL, wlen = 50000, start.by = 1,
+  end.by = NULL, threads = 1, pB = FALSE)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
 
-\item{x.pos}{population X positions}
+\item{x.pos}{population X positions [default: NULL]}
 
-\item{wlen}{sliding window length}
+\item{wlen}{sliding window length [default: 50000]}
 
-\item{start.by}{optional start position}
+\item{start.by}{optional start position [default: 1]}
 
-\item{end.by}{optional end position}
+\item{end.by}{optional end position [default: NULL]}
 
-\item{threads}{number of parallel threads}
+\item{threads}{number of parallel threads [default: 1]}
 
-\item{pB}{specifies if progress should be shown as a progress bar}
+\item{pB}{specifies if progress should be shown as a progress bar
+[default: FALSE]}
 }
 \description{
-This function returns a \code{DNAStringSet} reduced by all sites containing any gaps ("-", "+", ".") or missing ("N") sites
+This function returns a \code{DNAStringSet} reduced by all
+sites containing any gaps ("-", "+", ".") or missing ("N") sites.
 }
 \examples{
-data("MySequences", package = "distIUPAC")
-mySubSequence <- globalDeletion(MySequences)
+data("MySequences", package="distIUPAC")
+mySubSequence<-globalDeletion(MySequences)
 }
 \seealso{
-\link[distIUPAC]{pairwiseDeletion}, \link[distIUPAC]{biSites}, \link[distIUPAC]{triSites}
+\link[distIUPAC]{pairwiseDeletion}, \link[distIUPAC]{biSites},
+\link[distIUPAC]{triSites}
 }
 \author{
 Kristian K Ullrich

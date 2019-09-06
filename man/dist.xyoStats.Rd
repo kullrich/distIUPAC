@@ -4,52 +4,75 @@
 \alias{dist.xyoStats}
 \title{dist.xyoStats}
 \usage{
-dist.xyoStats(dIUPAC, x.pos, y.pos, o.pos, x.name = "x", y.name = "y",
-  o.name = "o")
+dist.xyoStats(tmpSEQ, x.pos, y.pos, o.pos, x.name = "x", y.name = "y",
+  o.name = "o", dist = "IUPAC", ncores = 1)
 }
 \arguments{
-\item{dIUPAC}{\code{distIUPAC} distance matrix including \code{sitesUsed} matrix}
+\item{x.pos}{population X positions [mandatory]}
 
-\item{x.pos}{population X positions}
+\item{y.pos}{population Y positions [mandatory]}
 
-\item{y.pos}{population Y positions}
+\item{o.pos}{population I positions [mandatory]}
 
-\item{o.pos}{population O positions}
+\item{x.name}{population X name [default: "x"]}
 
-\item{x.name}{population X name}
+\item{y.name}{population Y name [default: "y"]}
 
-\item{y.name}{population Y name}
+\item{o.name}{population I name [default: "o"]}
 
-\item{o.name}{population O name}
+\item{dIUPAC}{\code{distIUPAC} distance matrix including
+\code{sitesUsed} matrix [mandatory]}
 }
 \description{
-This function calculates \code{distIUPAC} based distances comparing two populations
-(x: receiver; y: donor) with an outgroup population (o: outgroup).
-In a four-taxon scenario (((P1,P2),P3),O) with geneflow from P3>>P2, the populations should be defined
-for RND, Gmin and RNDmin statistics as follows [x:P2 y:P3 o:O].
-Accordingly in the four-taxon scenario (((P1,P2),P3),O) with geneflow from P2>>P3, the populations should be defined
-for RND, Gmin and RNDmin statistics as follows [x:P3 y:P2 o:O].
+This function calculates \code{distIUPAC} based distances
+comparing two populations (x: receiver; y: donor)
+with an ingroup population (i: ingroup).
+In a four-taxon scenario (((P1,P2),P3),O) with geneflow from P3>>P2,
+the populations should be defined
+for RND, Gmin and RNDmin statistics as follows [x:P2 y:P3 i:O].
+Accordingly in the four-taxon scenario (((P1,P2),P3),O) with geneflow
+from P2>>P3, the populations should be defined
+for RND, Gmin and RNDmin statistics as follows [x:P3 y:P2 i:O].
 }
 \examples{
-data("MySequences", package = "distIUPAC")
+##Use the 'xyoStats' function to handle population assignment automatically
+
+##load sequence data
+data("MySequences", package="distIUPAC")
 CAS.pos<-5:34
 AFG.pos<-82:87
 SPRE.pos<-106:113
-#Here, one needs to consider the changed x, y and o positions due to sub-sampling.
-#Use the 'xyoStats' function which handles this issue automatically
-CAS.pos_<-1:length(CAS.pos)
-AFG.pos_<-(length(CAS.pos_)+1):length(c(CAS.pos,AFG.pos))
-SPRE.pos_<-(length(c(CAS.pos,AFG.pos))+1):length(c(CAS.pos,AFG.pos,SPRE.pos))
-#pairwise deletion
-CAS_AFG_SPRE.pairwiseDeletion.dist<-distIUPAC(as.character(MySequences[c(CAS.pos,AFG.pos,SPRE.pos)]))
-CAS_AFG_SPRE.pairwiseDeletion.xyoStats<-dist.xyoStats(CAS_AFG_SPRE.pairwiseDeletion.dist, 
-x.pos=CAS.pos_, y.pos=AFG.pos_, o.pos=SPRE.pos_, x.name="CAS", y.name="AFG", o.name="SPRE")
-#global deletion
-CAS_AFG_SPRE.globalDeletion.dist<-distIUPAC(as.character(globalDeletion(MySequences[c(CAS.pos,AFG.pos,SPRE.pos)])))
-CAS_AFG_SPRE.globalDeletion.xyoStats<-dist.xyoStats(CAS_AFG_SPRE.globalDeletion.dist,
-x.pos=CAS.pos_, y.pos=AFG.pos_, o.pos=SPRE.pos_, x.name="CAS", y.name="AFG", o.name="SPRE")
-#compare results
-rbind(CAS_AFG_SPRE.pairwiseDeletion.xyoStats, CAS_AFG_SPRE.globalDeletion.xyoStats)
+
+##Here, one needs to consider the changed x, y and o positions due
+##to sub-sampling.
+CAS.pos_<-seq_along(CAS.pos)
+AFG.pos_<-seq(from=length(CAS.pos_)+1, to=length(c(CAS.pos, AFG.pos)))
+SPRE.pos_<-seq(from=length(c(CAS.pos, AFG.pos))+1,
+  to=length(c(CAS.pos, AFG.pos, SPRE.pos)))
+
+##pairwise deletion
+CAS_AFG_SPRE.pairwiseDeletion.dist<-distIUPAC(
+  as.character(MySequences[c(CAS.pos,AFG.pos,SPRE.pos)]))
+CAS_AFG_SPRE.pairwiseDeletion.xyoStats<-dist.xyoStats(
+  CAS_AFG_SPRE.pairwiseDeletion.dist, 
+  x.pos=CAS.pos_, y.pos=AFG.pos_, o.pos=SPRE.pos_,
+  x.name="CAS", y.name="AFG", o.name="SPRE")
+
+##global deletion
+CAS_AFG_SPRE.globalDeletion.dist<-distIUPAC(
+  as.character(globalDeletion(MySequences[c(CAS.pos,AFG.pos,SPRE.pos)])))
+CAS_AFG_SPRE.globalDeletion.xyoStats<-dist.xyoStats(
+  CAS_AFG_SPRE.globalDeletion.dist,
+  x.pos=CAS.pos_, y.pos=AFG.pos_, o.pos=SPRE.pos_,
+  x.name="CAS", y.name="AFG", o.name="SPRE")
+
+##compare results
+rbind(CAS_AFG_SPRE.pairwiseDeletion.xyoStats,
+  CAS_AFG_SPRE.globalDeletion.xyoStats)
+}
+\seealso{
+\code{\link[distIUPAC]{xyoStats}},
+\code{\link[distIUPAC]{distIUPAC}}, \link[distIUPAC]{rcpp_distIUPAC}
 }
 \author{
 Kristian K Ullrich
