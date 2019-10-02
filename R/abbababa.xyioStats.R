@@ -16,13 +16,13 @@
 #' @param x.name population X name [default: "x"]
 #' @param y.name population Y name [default: "y"]
 #' @param i.name population I name [default: "i"]
-#' @param o.name population I name [default: "o"]
-#' @param dist distance to use [default: IUPAC] or choose one model as in
-#' \link[ape]{dist.dna} [default: "IUPAC"]
-#' @param ncores number of parallel cores to process pairwise distance
-#' calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC} [default: 1]
+#' @param o.name population O name [default: "o"]
+#' @param x.freq minimal frequency for population X to keep site [default: 1.0]
+#' @param y.freq minimal frequency for population Y to keep site [default: 1.0]
+#' @param i.freq minimal frequency for population I to keep site [default: 1.0]
+#' @param o.freq minimal frequency for population O to keep site [default: 1.0]
 #' @seealso \code{\link[distIUPAC]{xyioStats}},
-#' \code{\link[distIUPAC]{distIUPAC}}, \code{\link[distIUPAC]{rcpp_distIUPAC}}
+#' \code{\link[distIUPAC]{diploid2haploid}}
 #' @examples
 #' ##Use the 'xyioStats' function to handle population assignment automatically
 #' 
@@ -66,500 +66,350 @@
 #' @author Kristian K Ullrich
 abbababa.xyioStats<-function(tmpSEQ, x.pos, y.pos, i.pos, o.pos,
   x.freq=1.0, y.freq=1.0, i.freq=1.0, o.freq=1.0,
-  x.name="x", y.name="y", i.name="i", o.name="o", dist="IUPAC", ncores=1){
+  x.name="x", y.name="y", i.name="i", o.name="o"){
+    calc.ABBAsum<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
+        (1 - p1dFreq) * p2dFreq * p3dFreq * (1 - p4dFreq)
+    }
+    calc.BABAsum<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
+        p1dFreq * (1 - p2dFreq) * p3dFreq * (1 - p4dFreq)
+    }
+    calc.maxABBAsumHom<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
+        (1 - p1dFreq) * p3dFreq * p3dFreq * (1 - p4dFreq)
+    }
+    calc.maxBABAsumHom<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
+        p1dFreq * (1 - p3dFreq) * p3dFreq * (1 - p4dFreq)
+    }
+    calc.maxABBAsumD<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
+        OUT<-NULL
+        foreach(i=seq_along(p1dFreq)) %do% {
+            if(p3dFreq[i] >= p2dFreq[i]){
+                OUT<-c(OUT,
+                  (1 - p1dFreq[i]) * p3dFreq[i] * p3dFreq[i] * (1 - p4dFreq[i]))
+            }
+            else{
+                OUT<-c(OUT,
+                  (1 - p1dFreq[i]) * p2dFreq[i] * p2dFreq[i] * (1 - p4dFreq[i]))
+            }
+        }
+        return(OUT)
+    }
+    calc.maxBABAsumD<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
+        OUT<-NULL
+        foreach(i=seq_along(p1dFreq)) %do% {
+            if(p3dFreq[i] >= p2dFreq[i]){
+                OUT<-c(OUT,
+                  p1dFreq[i] * (1 - p3dFreq[i]) * p3dFreq[i] * (1 - p4dFreq[i]))
+            }
+            else{
+                OUT<-c(OUT,
+                  p1dFreq[i] * (1 - p2dFreq[i]) * p2dFreq[i] * (1 - p4dFreq[i]))
+            }
+        }
+        return(OUT)
+    }
+    calc.maxABBAsumG<-function(p1dFreq, p3adFreq, p3bdFreq, p4dFreq){
+        (1 - p1dFreq) * p3adFreq * p3bdFreq * (1 - p4dFreq)
+    }
+    calc.maxBABAsumG<-function(p1dFreq, p3adFreq, p3bdFreq, p4dFreq){
+        p1dFreq * (1 - p3adFreq) * p3bdFreq * (1 - p4dFreq)
+    }
+    calc.ABBAsumG<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
+        (1 - p1dFreq) * p2dFreq * p3dFreq * (1 - p4dFreq)
+    }
+    calc.BABAsumG<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
+        p1dFreq * (1 - p2dFreq) * p3dFreq * (1 - p4dFreq)
+    }
     options(scipen=22)
-    
+    calc.real<-FALSE
+    if(length(y.pos)>1){
+        calc.real<-TRUE
+        ya.pos<-y.pos[1:floor(length(y.pos)/2)]
+        yb.pos<-y.pos[(floor(length(y.pos)/2)+1):length(y.pos)]
+    }
     XNAME<-x.name
     YNAME<-y.name
     INAME<-i.name
     ONAME<-o.name
-    #x
-    dMean.x<-NA
-    dSd.x<-NA
-    dSites.x<-NA
-    dMin.x<-NA
-    dMax.x<-NA
-    #y
-    dMean.y<-NA
-    dSd.y<-NA
-    dSites.y<-NA
-    dMin.y<-NA
-    dMax.y<-NA
-    #i
-    dMean.i<-NA
-    dSd.i<-NA
-    dSites.i<-NA
-    dMin.i<-NA
-    dMax.i<-NA
-    #o
-    dMean.o<-NA
-    dSd.o<-NA
-    dSites.o<-NA
-    dMin.o<-NA
-    dMax.o<-NA
-    #xy
-    dMean.xy<-NA
-    dMean_.xy<-NA
-    dSd.xy<-NA
-    dSites.xy<-NA
-    dMin.xy<-NA
-    dMax.xy<-NA
-    dTotal.xy<-NA
-    dSweighted.xy<-NA
-    Fst.xy<-NA
-    dRelative.xy<-NA
-    #xi
-    dMean.xi<-NA
-    dMean_.xi<-NA
-    dSd.xi<-NA
-    dSites.xi<-NA
-    dMin.xi<-NA
-    dMax.xi<-NA
-    dTotal.xi<-NA
-    dSweighted.xi<-NA
-    Fst.xi<-NA
-    dRelative.xi<-NA
-    #xo
-    dMean.xo<-NA
-    dMean_.xo<-NA
-    dSd.xo<-NA
-    dSites.xo<-NA
-    dMin.xo<-NA
-    dMax.xo<-NA
-    dTotal.xo<-NA
-    dSweighted.xo<-NA
-    Fst.xo<-NA
-    dRelative.xo<-NA
-    #yi
-    dMean.yi<-NA
-    dMean_.yi<-NA
-    dSd.yi<-NA
-    dSites.yi<-NA
-    dMin.yi<-NA
-    dMax.yi<-NA
-    dTotal.yi<-NA
-    dSweighted.yi<-NA
-    Fst.yi<-NA
-    dRelative.yi<-NA
-    #yo
-    dMean.yo<-NA
-    dMean_.yo<-NA
-    dSd.yo<-NA
-    dSites.yo<-NA
-    dMin.yo<-NA
-    dMax.yo<-NA
-    dTotal.yo<-NA
-    dSweighted.yo<-NA
-    Fst.yo<-NA
-    dRelative.yo<-NA
-    #io
-    dMean.io<-NA
-    dMean_.io<-NA
-    dSd.io<-NA
-    dSites.io<-NA
-    dMin.io<-NA
-    dMax.io<-NA
-    dTotal.io<-NA
-    dSweighted.io<-NA
-    Fst.io<-NA
-    dRelative.io<-NA
-    #xyi
-    dMean.xyi<-NA
-    dSd.xyi<-NA
-    dSites.xyi<-NA
-    dMin.xyi<-NA
-    dMax.xyi<-NA
-    dTotal.xyi<-NA
-    #xyo
-    dMean.xyo<-NA
-    dSd.xyo<-NA
-    dSites.xyo<-NA
-    dMin.xyo<-NA
-    dMax.xyo<-NA
-    dTotal.xyo<-NA
-    #yio
-    dMean.yio<-NA
-    dSd.yio<-NA
-    dSites.yio<-NA
-    dMin.yio<-NA
-    dMax.yio<-NA
-    dTotal.yio<-NA
-    #xyio
-    dMean.xyio<-NA
-    dSd.xyio<-NA
-    dSites.xyio<-NA
-    dMin.xyio<-NA
-    dMax.xyio<-NA
-    dTotal.xyio<-NA
-    #xy_xi
-    deltaMean.xy_xi<-NA
-    deltaSum.xy_xi<-NA
-    deltaRatio.xy_xi<-NA
-    deltaMean_.xy_xi<-NA
-    deltaSum_.xy_xi<-NA
-    deltaRatio_.xy_xi<-NA
-    deltaMin.xy_xi<-NA
-    deltaMinSum.xy_xi<-NA
-    deltaMinRatio.xy_xi<-NA
-    #yi_xy
-    deltaMean.yi_xy<-NA
-    deltaSum.yi_xy<-NA
-    deltaRatio.yi_xy<-NA
-    deltaMean_.yi_xy<-NA
-    deltaSum_.yi_xy<-NA
-    deltaRatio_.yi_xy<-NA
-    deltaMin.yi_xy<-NA
-    deltaMinSum.yi_xy<-NA
-    deltaMinRatio.yi_xy<-NA
-    #yi_xi
-    deltaMean.yi_xi<-NA
-    deltaSum.yi_xi<-NA
-    deltaRatio.yi_xi<-NA
-    deltaMean_.yi_xi<-NA
-    deltaSum_.yi_xi<-NA
-    deltaRatio_.yi_xi<-NA
-    deltaMin.yi_xi<-NA
-    deltaMinSum.yi_xi<-NA
-    deltaMinRatio.yi_xi<-NA
+    #freq
+    freq.x<-NA
+    freq.y<-NA
+    freq.i<-NA
+    freq.o<-NA
+    freq.x.rem<-NA
+    freq.y.rem<-NA
+    freq.i.rem<-NA
+    freq.o.rem<-NA
+    freq.all.rem<-NA
     #
-    RND.xyi<-NA
-    Gmin.xyi<-NA
-    RNDmin.xyi<-NA
+    ABBAsum<-0
+    BABAsum<-0
+    ABBAsumG<-0
+    BABAsumG<-0
+    maxABBAsumG<-0
+    maxBABAsumG<-0
+    maxABBAsumHom<-0
+    maxBABAsumHom<-0
+    maxABBAsumD<-0
+    maxBABAsumD<-0
     #
-    RND.xyo<-NA
-    Gmin.xyo<-NA
-    RNDmin.xyo<-NA
+    remcount<-0
+    remcount.x<-0
+    remcount.y<-0
+    remcount.i<-0
+    remcount.o<-0
+    monocount<-0
+    bicount<-0
+    tricount<-0
+    tetracount<-0
+    #
+    D<-NA
+    fG<-NA
+    fhom<-NA
+    fd<-NA
     OUT<-list(XNAME, YNAME, INAME, ONAME,
-      dMean.x, dSd.x, dSites.x, dMin.x, dMax.x,
-      dMean.y, dSd.y, dSites.y, dMin.y, dMax.y,
-      dMean.i, dSd.i, dSites.i, dMin.i, dMax.i,
-      dMean.o, dSd.o, dSites.o, dMin.o, dMax.o,
-      #xy
-      dMean.xy, dMean_.xy, dSd.xy, dSites.xy, dMin.xy, dMax.xy,
-      dTotal.xy, dSweighted.xy, Fst.xy, dRelative.xy,
-      #xi
-      dMean.xi, dMean_.xi, dSd.xi, dSites.xi, dMin.xi, dMax.xi,
-      dTotal.xi, dSweighted.xi, Fst.xi, dRelative.xi,
-      #xo
-      dMean.xo, dMean_.xo, dSd.xo, dSites.xo, dMin.xo, dMax.xo,
-      dTotal.xo, dSweighted.xo, Fst.xo, dRelative.xo,
-      #yi
-      dMean.yi, dMean_.yi, dSd.yi, dSites.yi, dMin.yi, dMax.yi,
-      dTotal.yi, dSweighted.yi, Fst.yi, dRelative.yi,
-      #yo
-      dMean.yo, dMean_.yo, dSd.yo, dSites.yo, dMin.yo, dMax.yo,
-      dTotal.yo, dSweighted.yo, Fst.yo, dRelative.yo,
-      #io
-      dMean.io, dMean_.io, dSd.io, dSites.io, dMin.io, dMax.io,
-      dTotal.io, dSweighted.io, Fst.io, dRelative.io,
-      #xyi
-      dMean.xyi, dSd.xyi, dSites.xyi, dMin.xyi, dMax.xyi, dTotal.xyi,
-      #xyo
-      dMean.xyo, dSd.xyo, dSites.xyo, dMin.xyo, dMax.xyo, dTotal.xyo,
-      #yio
-      dMean.yio, dSd.yio, dSites.yio, dMin.yio, dMax.yio, dTotal.yio,
-      #xyio
-      dMean.xyio, dSd.xyio, dSites.xyio, dMin.xyio, dMax.xyio, dTotal.xyio,
-      #xy_xi
-      deltaMean.xy_xi, deltaSum.xy_xi, deltaRatio.xy_xi,
-      deltaMean_.xy_xi, deltaSum_.xy_xi, deltaRatio_.xy_xi,
-      deltaMin.xy_xi, deltaMinSum.xy_xi, deltaMinRatio.xy_xi,
-      #yi_xy
-      deltaMean.yi_xy, deltaSum.yi_xy, deltaRatio.yi_xy,
-      deltaMean_.yi_xy, deltaSum_.yi_xy, deltaRatio_.yi_xy,
-      deltaMin.yi_xy, deltaMinSum.yi_xy, deltaMinRatio.yi_xy,
-      #yi_xi
-      deltaMean.yi_xi, deltaSum.yi_xi, deltaRatio.yi_xi,
-      deltaMean_.yi_xi, deltaSum_.yi_xi, deltaRatio_.yi_xi,
-      deltaMin.yi_xi, deltaMinSum.yi_xi, deltaMinRatio.yi_xi,
-      #
-      RND.xyi, Gmin.xyi, RNDmin.xyi,
-      #
-      RND.xyo, Gmin.xyo, RNDmin.xyo)
+      ABBAsum, BABAsum, ABBAsumG, BABAsumG, maxABBAsumG, maxBABAsumG,
+      maxABBAsumHom, maxBABAsumHom, maxABBAsumD, maxBABAsumD,
+      monocount, bicount, tricount, tetracount,
+      remcount, remcount.x, remcount.y, remcount.i, remcount.o,
+      D, fG, fhom, fd)
     names(OUT)<-c("XNAME", "YNAME", "INAME", "ONAME",
-      "dMean.x", "dSd.x", "dSites.x", "dMin.x", "dMax.x",
-      "dMean.y", "dSd.y", "dSites.y", "dMin.y", "dMax.y",
-      "dMean.i", "dSd.i", "dSites.i", "dMin.i", "dMax.i",
-      "dMean.o", "dSd.o", "dSites.o", "dMin.o", "dMax.o",
-      #xy
-      "dMean.xy", "dMean_.xy", "dSd.xy", "dSites.xy", "dMin.xy", "dMax.xy",
-      "dTotal.xy", "dSweighted.xy", "Fst.xy", "dRelative.xy",
-      #xi
-      "dMean.xi", "dMean_.xi", "dSd.xi", "dSites.xi", "dMin.xi", "dMax.xi",
-      "dTotal.xi", "dSweighted.xi", "Fst.xi", "dRelative.xi",
-      #xo
-      "dMean.xo", "dMean_.xo", "dSd.xo", "dSites.xo", "dMin.xo", "dMax.xo",
-      "dTotal.xo", "dSweighted.xo", "Fst.xo", "dRelative.xo",
-      #yi
-      "dMean.yi", "dMean_.yi", "dSd.yi", "dSites.yi", "dMin.yi", "dMax.yi",
-      "dTotal.yi", "dSweighted.yi", "Fst.yi", "dRelative.yi",
-      #yo
-      "dMean.yo", "dMean_.yo", "dSd.yo", "dSites.yo", "dMin.yo", "dMax.yo",
-      "dTotal.yo", "dSweighted.yo", "Fst.yo", "dRelative.yo",
-      #io
-      "dMean.io", "dMean_.io", "dSd.io", "dSites.io", "dMin.io", "dMax.io",
-      "dTotal.io", "dSweighted.io", "Fst.io", "dRelative.io",
-      #xyi
-      "dMean.xyi", "dSd.xyi", "dSites.xyi", "dMin.xyi", "dMax.xyi",
-      "dTotal.xyi",
-      #xyo
-      "dMean.xyo", "dSd.xyo", "dSites.xyo", "dMin.xyo", "dMax.xyo",
-      "dTotal.xyo",
-      #yio
-      "dMean.yio", "dSd.yio", "dSites.yio", "dMin.yio", "dMax.yio",
-      "dTotal.yio",
-      #xyio
-      "dMean.xyio", "dSd.xyio", "dSites.xyio", "dMin.xyio", "dMax.xyio",
-      "dTotal.xyio",
-      #xy_xi
-      "deltaMean.xy_xi", "deltaSum.xy_xi", "deltaRatio.xy_xi",
-      "deltaMean_.xy_xi", "deltaSum_.xy_xi", "deltaRatio_.xy_xi",
-      "deltaMin.xy_xi", "deltaMinSum.xy_xi", "deltaMinRatio.xy_xi",
-      #yi_xy
-      "deltaMean.yi_xy", "deltaSum.yi_xy", "deltaRatio.yi_xy",
-      "deltaMean_.yi_xy", "deltaSum_.yi_xy", "deltaRatio_.yi_xy",
-      "deltaMin.yi_xy", "deltaMinSum.yi_xy", "deltaMinRatio.yi_xy",
-      #yi_xi
-      "deltaMean.yi_xi", "deltaSum.yi_xi", "deltaRatio.yi_xi",
-      "deltaMean_.yi_xi", "deltaSum_.yi_xi", "deltaRatio_.yi_xi",
-      "deltaMin.yi_xi", "deltaMinSum.yi_xi", "deltaMinRatio.yi_xi",
-      #
-      "RND.xyi", "Gmin.xyi", "RNDmin.xyi",
-      #
-      "RND.xyo", "Gmin.xyo", "RNDmin.xyo")
-    #x
-    if(length(x.pos)==1){
-        OUT$dMean.x<-mean(dIUPAC$distIUPAC[x.pos, x.pos], na.rm=TRUE)
-        OUT$dSd.x<-sd(dIUPAC$distIUPAC[x.pos, x.pos], na.rm=TRUE)
-        OUT$dSites.x<-mean(dIUPAC$sitesUsed[x.pos, x.pos], na.rm=TRUE)
-        OUT$dMin.x<-min(dIUPAC$distIUPAC[x.pos, x.pos], na.rm=TRUE)
-        OUT$dMax.x<-max(dIUPAC$distIUPAC[x.pos, x.pos], na.rm=TRUE)
-    }
-    else{
-        OUT$dMean.x<-mean(as.dist(dIUPAC$distIUPAC[x.pos, x.pos]), na.rm=TRUE)
-        OUT$dSd.x<-sd(as.dist(dIUPAC$distIUPAC[x.pos, x.pos]), na.rm=TRUE)
-        OUT$dSites.x<-mean(as.dist(dIUPAC$sitesUsed[x.pos, x.pos]), na.rm=TRUE)
-        OUT$dMin.x<-min(as.dist(dIUPAC$distIUPAC[x.pos, x.pos]), na.rm=TRUE)
-        OUT$dMax.x<-max(as.dist(dIUPAC$distIUPAC[x.pos, x.pos]), na.rm=TRUE)
-    }
-    #y
-    if(length(y.pos)==1){
-        OUT$dMean.y<-mean(dIUPAC$distIUPAC[y.pos, y.pos], na.rm=TRUE)
-        OUT$dSd.y<-sd(dIUPAC$distIUPAC[y.pos, y.pos], na.rm=TRUE)
-        OUT$dSites.y<-mean(dIUPAC$sitesUsed[y.pos, y.pos], na.rm=TRUE)
-        OUT$dMin.y<-min(dIUPAC$distIUPAC[y.pos, y.pos], na.rm=TRUE)
-        OUT$dMax.y<-max(dIUPAC$distIUPAC[y.pos, y.pos], na.rm=TRUE)
-    }
-    else{
-        OUT$dMean.y<-mean(as.dist(dIUPAC$distIUPAC[y.pos, y.pos]), na.rm=TRUE)
-        OUT$dSd.y<-sd(as.dist(dIUPAC$distIUPAC[y.pos, y.pos]), na.rm=TRUE)
-        OUT$dSites.y<-mean(as.dist(dIUPAC$sitesUsed[y.pos, y.pos]), na.rm=TRUE)
-        OUT$dMin.y<-min(as.dist(dIUPAC$distIUPAC[y.pos, y.pos]), na.rm=TRUE)
-        OUT$dMax.y<-max(as.dist(dIUPAC$distIUPAC[y.pos, y.pos]), na.rm=TRUE)
-    }
-    #i
-    if(length(i.pos)==1){
-        OUT$dMean.i<-mean(dIUPAC$distIUPAC[i.pos, i.pos], na.rm=TRUE)
-        OUT$dSd.i<-sd(dIUPAC$distIUPAC[i.pos, i.pos], na.rm=TRUE)
-        OUT$dSites.i<-mean(dIUPAC$sitesUsed[i.pos, i.pos], na.rm=TRUE)
-        OUT$dMin.i<-min(dIUPAC$distIUPAC[i.pos, i.pos], na.rm=TRUE)
-        OUT$dMax.i<-max(dIUPAC$distIUPAC[i.pos, i.pos], na.rm=TRUE)
-    }
-    else{
-        OUT$dMean.i<-mean(as.dist(dIUPAC$distIUPAC[i.pos, i.pos]), na.rm=TRUE)
-        OUT$dSd.i<-sd(as.dist(dIUPAC$distIUPAC[i.pos, i.pos]), na.rm=TRUE)
-        OUT$dSites.i<-mean(as.dist(dIUPAC$sitesUsed[i.pos, i.pos]), na.rm=TRUE)
-        OUT$dMin.i<-min(as.dist(dIUPAC$distIUPAC[i.pos, i.pos]), na.rm=TRUE)
-        OUT$dMax.i<-max(as.dist(dIUPAC$distIUPAC[i.pos, i.pos]), na.rm=TRUE)
-    }
-    #o
-    if(length(o.pos)==1){
-        OUT$dMean.o<-mean(dIUPAC$distIUPAC[o.pos, o.pos], na.rm=TRUE)
-        OUT$dSd.o<-sd(dIUPAC$distIUPAC[o.pos, o.pos], na.rm=TRUE)
-        OUT$dSites.o<-mean(dIUPAC$sitesUsed[o.pos, o.pos], na.rm=TRUE)
-        OUT$dMin.o<-min(dIUPAC$distIUPAC[o.pos, o.pos], na.rm=TRUE)
-        OUT$dMax.o<-max(dIUPAC$distIUPAC[o.pos, o.pos], na.rm=TRUE)
-    }
-    else{
-        OUT$dMean.o<-mean(as.dist(dIUPAC$distIUPAC[o.pos, o.pos]), na.rm=TRUE)
-        OUT$dSd.o<-sd(as.dist(dIUPAC$distIUPAC[o.pos, o.pos]), na.rm=TRUE)
-        OUT$dSites.o<-mean(as.dist(dIUPAC$sitesUsed[o.pos, o.pos]), na.rm=TRUE)
-        OUT$dMin.o<-min(as.dist(dIUPAC$distIUPAC[o.pos, o.pos]), na.rm=TRUE)
-        OUT$dMax.o<-max(as.dist(dIUPAC$distIUPAC[o.pos, o.pos]), na.rm=TRUE)
-    }
-    #xy
-    OUT$dMean.xy<-mean(dIUPAC$distIUPAC[x.pos, y.pos], na.rm=TRUE)
-    OUT$dMean_.xy<-OUT$dMean.xy - (OUT$dMean.x/2) - (OUT$dMean.y/2)
-    OUT$dSd.xy<-sd(dIUPAC$distIUPAC[x.pos, y.pos], na.rm=TRUE)
-    OUT$dSites.xy<-mean(dIUPAC$sitesUsed[x.pos, y.pos], na.rm=TRUE)
-    OUT$dMin.xy<-min(dIUPAC$distIUPAC[x.pos, y.pos], na.rm=TRUE)
-    OUT$dMax.xy<-max(dIUPAC$distIUPAC[x.pos, y.pos], na.rm=TRUE)
-    OUT$dTotal.xy<-mean(as.dist(dIUPAC$distIUPAC[c(x.pos, y.pos),
-      c(x.pos, y.pos)]), na.rm=TRUE)
-    OUT$dSweighted.xy<-((length(x.pos)/(length(c(x.pos, y.pos)))) * 
-      OUT$dMean.x) + ((length(y.pos)/(length(c(x.pos, y.pos)))) * OUT$dMean.y)
-    OUT$Fst.xy<-(OUT$dTotal.xy - OUT$dSweighted.xy) / OUT$dTotal.xy
-    OUT$dRelative.xy<-OUT$dMean.xy - OUT$dSweighted.xy
-    #xi
-    OUT$dMean.xi<-mean(dIUPAC$distIUPAC[x.pos, i.pos], na.rm=TRUE)
-    OUT$dMean_.xi<-OUT$dMean.xi - (OUT$dMean.x/2) - (OUT$dMean.i/2)
-    OUT$dSd.xi<-sd(dIUPAC$distIUPAC[x.pos, i.pos], na.rm=TRUE)
-    OUT$dSites.xi<-mean(dIUPAC$sitesUsed[x.pos, i.pos], na.rm=TRUE)
-    OUT$dMin.xi<-min(dIUPAC$distIUPAC[x.pos, i.pos], na.rm=TRUE)
-    OUT$dMax.xi<-max(dIUPAC$distIUPAC[x.pos, i.pos], na.rm=TRUE)
-    OUT$dTotal.xi<-mean(as.dist(dIUPAC$distIUPAC[c(x.pos, i.pos),
-      c(x.pos, i.pos)]), na.rm=TRUE)
-    OUT$dSweighted.xi<-((length(x.pos)/(length(c(x.pos, i.pos)))) *
-      OUT$dMean.x) + ((length(i.pos)/(length(c(x.pos, i.pos)))) * OUT$dMean.i)
-    OUT$Fst.xi<-(OUT$dTotal.xi - OUT$dSweighted.xi) / OUT$dTotal.xi
-    OUT$dRelative.xi<-OUT$dMean.xi - OUT$dSweighted.xi
-    #xo
-    OUT$dMean.xo<-mean(dIUPAC$distIUPAC[x.pos, o.pos], na.rm=TRUE)
-    OUT$dMean_.xo<-OUT$dMean.xo - (OUT$dMean.x/2) - (OUT$dMean.o/2)
-    OUT$dSd.xo<-sd(dIUPAC$distIUPAC[x.pos, o.pos], na.rm=TRUE)
-    OUT$dSites.xo<-mean(dIUPAC$sitesUsed[x.pos, o.pos], na.rm=TRUE)
-    OUT$dMin.xo<-min(dIUPAC$distIUPAC[x.pos, o.pos], na.rm=TRUE)
-    OUT$dMax.xo<-max(dIUPAC$distIUPAC[x.pos, o.pos], na.rm=TRUE)
-    OUT$dTotal.xo<-mean(as.dist(dIUPAC$distIUPAC[c(x.pos, o.pos),
-      c(x.pos, o.pos)]), na.rm=TRUE)
-    OUT$dSweighted.xo<-((length(x.pos)/(length(c(x.pos, o.pos)))) *
-      OUT$dMean.x) + ((length(o.pos)/(length(c(x.pos, o.pos)))) * OUT$dMean.o)
-    OUT$Fst.xo<-(OUT$dTotal.xo - OUT$dSweighted.xo) / OUT$dTotal.xo
-    OUT$dRelative.xo<-OUT$dMean.xo - OUT$dSweighted.xo
-    #yi
-    OUT$dMean.yi<-mean(dIUPAC$distIUPAC[y.pos, i.pos], na.rm=TRUE)
-    OUT$dMean_.yi<-OUT$dMean.yi - (OUT$dMean.y/2) - (OUT$dMean.i/2)
-    OUT$dSd.yi<-sd(dIUPAC$distIUPAC[y.pos, i.pos], na.rm=TRUE)
-    OUT$dSites.yi<-mean(dIUPAC$sitesUsed[y.pos, i.pos], na.rm=TRUE)
-    OUT$dMin.yi<-min(dIUPAC$distIUPAC[y.pos, i.pos], na.rm=TRUE)
-    OUT$dMax.yi<-max(dIUPAC$distIUPAC[y.pos, i.pos], na.rm=TRUE)
-    OUT$dTotal.yi<-mean(as.dist(dIUPAC$distIUPAC[c(y.pos, i.pos),
-      c(y.pos, i.pos)]), na.rm=TRUE)
-    OUT$dSweighted.yi<-((length(y.pos)/(length(c(y.pos, i.pos)))) *
-      OUT$dMean.y) + ((length(i.pos)/(length(c(y.pos, i.pos)))) * OUT$dMean.i)
-    OUT$Fst.yi<-(OUT$dTotal.yi - OUT$dSweighted.yi) / OUT$dTotal.yi
-    OUT$dRelative.yi<-OUT$dMean.yi - OUT$dSweighted.yi
-    #yo
-    OUT$dMean.yo<-mean(dIUPAC$distIUPAC[y.pos, o.pos], na.rm=TRUE)
-    OUT$dMean_.yo<-OUT$dMean.yo - (OUT$dMean.y/2) - (OUT$dMean.o/2)
-    OUT$dSd.yo<-sd(dIUPAC$distIUPAC[y.pos, o.pos], na.rm=TRUE)
-    OUT$dSites.yo<-mean(dIUPAC$sitesUsed[y.pos, o.pos], na.rm=TRUE)
-    OUT$dMin.yo<-min(dIUPAC$distIUPAC[y.pos, o.pos], na.rm=TRUE)
-    OUT$dMax.yo<-max(dIUPAC$distIUPAC[y.pos, o.pos], na.rm=TRUE)
-    OUT$dTotal.yo<-mean(as.dist(dIUPAC$distIUPAC[c(y.pos, o.pos),
-      c(y.pos, o.pos)]), na.rm=TRUE)
-    OUT$dSweighted.yo<-((length(y.pos)/(length(c(y.pos, o.pos)))) *
-      OUT$dMean.y) + ((length(o.pos)/(length(c(y.pos, o.pos)))) * OUT$dMean.o)
-    OUT$Fst.yo<-(OUT$dTotal.yo - OUT$dSweighted.yo) / OUT$dTotal.yo
-    OUT$dRelative.yo<-OUT$dMean.yo - OUT$dSweighted.yo
-    #io
-    OUT$dMean.io<-mean(dIUPAC$distIUPAC[i.pos, o.pos], na.rm=TRUE)
-    OUT$dMean_.io<-OUT$dMean.io - (OUT$dMean.i/2) - (OUT$dMean.o/2)
-    OUT$dSd.io<-sd(dIUPAC$distIUPAC[i.pos, o.pos], na.rm=TRUE)
-    OUT$dSites.io<-mean(dIUPAC$sitesUsed[i.pos, o.pos], na.rm=TRUE)
-    OUT$dMin.io<-min(dIUPAC$distIUPAC[i.pos, o.pos], na.rm=TRUE)
-    OUT$dMax.io<-max(dIUPAC$distIUPAC[i.pos, o.pos], na.rm=TRUE)
-    OUT$dTotal.io<-mean(as.dist(dIUPAC$distIUPAC[c(i.pos, o.pos),
-      c(i.pos, o.pos)]), na.rm=TRUE)
-    OUT$dSweighted.io<-((length(i.pos)/(length(c(i.pos, o.pos)))) *
-      OUT$dMean.i) + ((length(o.pos)/(length(c(i.pos, o.pos)))) * OUT$dMean.o)
-    OUT$Fst.io<-(OUT$dTotal.io - OUT$dSweighted.io) / OUT$dTotal.io
-    OUT$dRelative.io<-OUT$dMean.io - OUT$dSweighted.io
-    #xyi
-    OUT$dMean.xyi<-mean(c(dIUPAC$distIUPAC[x.pos, c(y.pos, i.pos)],
-      dIUPAC$distIUPAC[y.pos, i.pos]), na.rm=TRUE)
-    OUT$dSd.xyi<-sd(c(dIUPAC$distIUPAC[x.pos, c(y.pos, i.pos)],
-      dIUPAC$distIUPAC[y.pos, i.pos]), na.rm=TRUE)
-    OUT$dSites.xyi<-mean(c(dIUPAC$sitesUsed[x.pos, c(y.pos, i.pos)],
-      dIUPAC$sitesUsed[y.pos, i.pos]), na.rm=TRUE)
-    OUT$dMin.xyi<-min(c(dIUPAC$distIUPAC[x.pos, c(y.pos, i.pos)],
-      dIUPAC$distIUPAC[y.pos, i.pos]), na.rm=TRUE)
-    OUT$dMax.xyi<-max(c(dIUPAC$distIUPAC[x.pos, c(y.pos, i.pos)],
-      dIUPAC$distIUPAC[y.pos, i.pos]), na.rm=TRUE)
-    OUT$dTotal.xyi<-mean(as.dist(dIUPAC$distIUPAC[c(x.pos, y.pos, i.pos), 
-      c(x.pos, y.pos, i.pos)]), na.rm=TRUE)
-    #xyo
-    OUT$dMean.xyo<-mean(c(dIUPAC$distIUPAC[x.pos, c(y.pos, o.pos)],
-      dIUPAC$distIUPAC[y.pos, o.pos]), na.rm=TRUE)
-    OUT$dSd.xyo<-sd(c(dIUPAC$distIUPAC[x.pos, c(y.pos, o.pos)],
-      dIUPAC$distIUPAC[y.pos, o.pos]), na.rm=TRUE)
-    OUT$dSites.xyo<-mean(c(dIUPAC$sitesUsed[x.pos, c(y.pos, o.pos)],
-      dIUPAC$sitesUsed[y.pos, o.pos]), na.rm=TRUE)
-    OUT$dMin.xyo<-min(c(dIUPAC$distIUPAC[x.pos, c(y.pos, o.pos)],
-      dIUPAC$distIUPAC[y.pos, o.pos]), na.rm=TRUE)
-    OUT$dMax.xyo<-max(c(dIUPAC$distIUPAC[x.pos, c(y.pos, o.pos)],
-      dIUPAC$distIUPAC[y.pos, o.pos]), na.rm=TRUE)
-    OUT$dTotal.xyo<-mean(as.dist(dIUPAC$distIUPAC[c(x.pos, y.pos, o.pos), 
-      c(x.pos, y.pos, o.pos)]), na.rm=TRUE)
-    #yio
-    OUT$dMean.yio<-mean(c(dIUPAC$distIUPAC[y.pos, c(i.pos, o.pos)],
-      dIUPAC$distIUPAC[i.pos, o.pos]), na.rm=TRUE)
-    OUT$dSd.yio<-sd(c(dIUPAC$distIUPAC[y.pos, c(i.pos, o.pos)],
-      dIUPAC$distIUPAC[i.pos, o.pos]), na.rm=TRUE)
-    OUT$dSites.yio<-mean(c(dIUPAC$sitesUsed[y.pos, c(i.pos, o.pos)],
-      dIUPAC$sitesUsed[i.pos, o.pos]), na.rm=TRUE)
-    OUT$dMin.yio<-min(c(dIUPAC$distIUPAC[y.pos, c(i.pos, o.pos)],
-      dIUPAC$distIUPAC[i.pos, o.pos]), na.rm=TRUE)
-    OUT$dMax.yio<-max(c(dIUPAC$distIUPAC[y.pos, c(i.pos, o.pos)],
-      dIUPAC$distIUPAC[i.pos, o.pos]), na.rm=TRUE)
-    OUT$dTotal.yio<-mean(as.dist(dIUPAC$distIUPAC[c(y.pos, i.pos, o.pos), 
-      c(y.pos, i.pos, o.pos)]), na.rm=TRUE)
-    #xyio
-    OUT$dMean.xyio<-mean(c(dIUPAC$distIUPAC[x.pos, c(y.pos, i.pos, o.pos)],
-      dIUPAC$distIUPAC[y.pos, c(i.pos, o.pos)],
-      dIUPAC$distIUPAC[i.pos, o.pos]), na.rm=TRUE)
-    OUT$dSd.xyio<-sd(c(dIUPAC$distIUPAC[x.pos, c(y.pos, i.pos, o.pos)],
-      dIUPAC$distIUPAC[y.pos, c(i.pos, o.pos)],
-      dIUPAC$distIUPAC[i.pos, o.pos]), na.rm=TRUE)
-    OUT$dSites.xyio<-mean(c(dIUPAC$sitesUsed[x.pos, c(y.pos, i.pos, o.pos)],
-      dIUPAC$sitesUsed[y.pos, c(i.pos, o.pos)],
-      dIUPAC$sitesUsed[i.pos, o.pos]), na.rm=TRUE)
-    OUT$dMin.xyio<-min(c(dIUPAC$distIUPAC[x.pos, c(y.pos, i.pos, o.pos)],
-      dIUPAC$distIUPAC[y.pos, c(i.pos, o.pos)],
-      dIUPAC$distIUPAC[i.pos, o.pos]), na.rm=TRUE)
-    OUT$dMax.xyio<-max(c(dIUPAC$distIUPAC[x.pos, c(y.pos, i.pos, o.pos)],
-      dIUPAC$distIUPAC[y.pos, c(i.pos, o.pos)],
-      dIUPAC$distIUPAC[i.pos, o.pos]), na.rm=TRUE)
-    OUT$dTotal.xyio<-mean(as.dist(dIUPAC$distIUPAC[
-      c(x.pos, y.pos, i.pos, o.pos), 
-      c(x.pos, y.pos, i.pos, o.pos)]), na.rm=TRUE)
-    #xy_xi
-    OUT$deltaMean.xy_xi<-OUT$dMean.xy - OUT$dMean.xi
-    OUT$deltaSum.xy_xi<-OUT$dMean.xy + OUT$dMean.xi
-    OUT$deltaRatio.xy_xi<-OUT$deltaMean.xy_xi / OUT$deltaSum.xy_xi
-    OUT$deltaMean_.xy_xi<-OUT$dMean_.xy - OUT$dMean_.xi
-    OUT$deltaSum_.xy_xi<-OUT$dMean_.xy + OUT$dMean_.xi
-    OUT$deltaRatio_.xy_xi<-OUT$deltaMean_.xy_xi / OUT$deltaSum_.xy_xi
-    OUT$deltaMin.xy_xi<-OUT$dMin.xy - OUT$dMean.xi
-    OUT$deltaMinSum.xy_xi<-OUT$dMin.xy + OUT$dMean.xi
-    OUT$deltaMinRatio.xy_xi<-OUT$deltaMin.xy_xi / OUT$deltaMinSum.xy_xi
-    #yi_xy
-    OUT$deltaMean.yi_xy<-OUT$dMean.yi - OUT$dMean.xy
-    OUT$deltaSum.yi_xy<-OUT$dMean.yi + OUT$dMean.xy
-    OUT$deltaRatio.yi_xy<-OUT$deltaMean.yi_xy / OUT$deltaSum.yi_xy
-    OUT$deltaMean_.yi_xy<-OUT$dMean_.yi - OUT$dMean_.xy
-    OUT$deltaSum_.yi_xy<-OUT$dMean_.yi + OUT$dMean_.xy
-    OUT$deltaRatio_.yi_xy<-OUT$deltaMean_.yi_xy / OUT$deltaSum_.yi_xy
-    OUT$deltaMin.yi_xy<-OUT$dMin.yi - OUT$dMean.xy
-    OUT$deltaMinSum.yi_xy<-OUT$dMin.yi + OUT$dMean.xy
-    OUT$deltaMinRatio.yi_xy<-OUT$deltaMin.yi_xy / OUT$deltaMinSum.yi_xy
-    #yi_xi
-    OUT$deltaMean.yi_xi<-OUT$dMean.yi - OUT$dMean.xi
-    OUT$deltaSum.yi_xi<-OUT$dMean.yi + OUT$dMean.xi
-    OUT$deltaRatio.yi_xi<-OUT$deltaMean.yi_xi / OUT$deltaSum.yi_xi
-    OUT$deltaMean_.yi_xi<-OUT$dMean_.yi - OUT$dMean_.xi
-    OUT$deltaSum_.yi_xi<-OUT$dMean_.yi + OUT$dMean_.xi
-    OUT$deltaRatio_.yi_xi<-OUT$deltaMean_.yi_xi / OUT$deltaSum_.yi_xi
-    OUT$deltaMin.yi_xi<-OUT$dMin.yi - OUT$dMean.xi
-    OUT$deltaMinSum.yi_xi<-OUT$dMin.yi + OUT$dMean.xi
-    OUT$deltaMinRatio.yi_xi<-OUT$deltaMin.yi_xi / OUT$deltaMinSum.yi_xi
+      "ABBAsum", "BABAsum", "ABBAsumG", "BABAsumG",
+      "maxABBAsumG", "maxBABAsumG", "maxABBAsumHom", "maxBABAsumHom",
+      "maxABBAsumD", "maxBABAsumD",
+      "monocount", "bicount", "tricount", "tetracount",
+      "remcount", "remcount.x", "remcount.y", "remcount.i", "remcount.o",
+      "D", "fG","fhom", "fd")
     #
-    OUT$RND.xyi<-OUT$dMean.xy/((OUT$dMean.xi + OUT$dMean.yi)/2)
-    OUT$Gmin.xyi<-OUT$dMin.xy/OUT$dMean.xy
-    OUT$RNDmin.xyi<-OUT$dMin.xy/((OUT$dMean.xi + OUT$dMean.yi)/2)
-    #
-    OUT$RND.xyo<-OUT$dMean.xy/((OUT$dMean.xo + OUT$dMean.yo)/2)
-    OUT$Gmin.xyo<-OUT$dMin.xy/OUT$dMean.xy
-    OUT$RNDmin.xyo<-OUT$dMin.xy/((OUT$dMean.xo + OUT$dMean.yo)/2)
+    cM<-consensusMatrix(iupac2diploid(tmpSEQ))
+    x.cM<-consensusMatrix(iupac2diploid(tmpSEQ[x.pos]))
+    y.cM<-consensusMatrix(iupac2diploid(tmpSEQ[y.pos]))
+    if(calc.real){
+        ya.cM<-consensusMatrix(iupac2diploid(tmpSEQ[ya.pos]))
+        yb.cM<-consensusMatrix(iupac2diploid(tmpSEQ[yb.pos]))
+    }
+    i.cM<-consensusMatrix(iupac2diploid(tmpSEQ[i.pos]))
+    o.cM<-consensusMatrix(iupac2diploid(tmpSEQ[o.pos]))
+    #get frequencies
+    freq.x<-colSums(x.cM[1:4, ])/(2*length(x.pos))
+    freq.y<-colSums(y.cM[1:4, ])/(2*length(y.pos))
+    freq.i<-colSums(i.cM[1:4, ])/(2*length(i.pos))
+    freq.o<-colSums(o.cM[1:4, ])/(2*length(o.pos))
+    #get idx of sites to be reomved based on minimal frequency per population
+    freq.x.rem<-which(freq.x<x.freq)
+    freq.y.rem<-which(freq.y<y.freq)
+    freq.i.rem<-which(freq.i<i.freq)
+    freq.o.rem<-which(freq.o<o.freq)
+    freq.all.rem<-unique(c(freq.x.rem, freq.y.rem, freq.i.rem, freq.o.rem))
+    OUT$remcount<-length(freq.all.rem)
+    OUT$remcount.x<-length(freq.x.rem)
+    OUT$remcount.y<-length(freq.y.rem)
+    OUT$remcount.i<-length(freq.i.rem)
+    OUT$remcount.o<-length(freq.o.rem)
+    #reduce to sites that are kept
+    cM.red<-cM[, -freq.all.rem, drop=FALSE]
+    x.cM.red<-x.cM[, -freq.all.rem, drop=FALSE]
+    y.cM.red<-y.cM[, -freq.all.rem, drop=FALSE]
+    i.cM.red<-i.cM[, -freq.all.rem, drop=FALSE]
+    o.cM.red<-o.cM[, -freq.all.rem, drop=FALSE]
+    if(calc.real){
+        ya.cM.red<-ya.cM[, -freq.all.rem, drop=FALSE]
+        yb.cM.red<-yb.cM[, -freq.all.rem, drop=FALSE]
+    }
+    #get allele counts
+    alleles<-apply(cM.red[1:4,], 2, function(x) length(which(x>0)))
+    OUT$monocount<-length(which(alleles==1))
+    OUT$bicount<-length(which(alleles==2))
+    OUT$tricount<-length(which(alleles==3))
+    OUT$tetracount<-length(which(alleles==4))
+    #consider only bicount sites
+    cM.red.bi<-cM.red[, alleles==2, drop=FALSE]
+    x.cM.red.bi<-x.cM.red[, alleles==2, drop=FALSE]
+    y.cM.red.bi<-y.cM.red[, alleles==2, drop=FALSE]
+    i.cM.red.bi<-i.cM.red[, alleles==2, drop=FALSE]
+    o.cM.red.bi<-o.cM.red[, alleles==2, drop=FALSE]
+    if(calc.real){
+        ya.cM.red.bi<-ya.cM.red[, alleles==2, drop=FALSE]
+        yb.cM.red.bi<-yb.cM.red[, alleles==2, drop=FALSE]
+    }
+    #get derived and ancestral state
+    #if the outgroup is fixed, then that is the ancestral state
+    #- otherwise the anc state is the most common allele overall
+    #get fixed outgroup positions
+    o.alleles<-apply(o.cM.red.bi, 2, function(x) length(which(x>0)))
+    o.fixed<-which(o.alleles==1)
+    if(length(o.fixed)>0){
+        ancestral.fixed<-apply(o.cM.red.bi[1:4, o.fixed, drop=FALSE], 2,
+          function(x) which(x==max(x)))
+        derived.fixed<-apply(rbind(cM.red.bi[1:4, o.fixed, drop=FALSE],
+          ancestral.fixed), 2, function(x) which(x[1:4]>0)
+          [which(x[1:4]>0)!=x[5]])
+        x.derived.fixed.freq<-(x.cM.red.bi[
+          cbind(derived.fixed, o.fixed)])/
+          (colSums(x.cM.red.bi[1:4, o.fixed]))
+        y.derived.fixed.freq<-(y.cM.red.bi[
+          cbind(derived.fixed, o.fixed)])/
+          (colSums(y.cM.red.bi[1:4, o.fixed]))
+        i.derived.fixed.freq<-(i.cM.red.bi[
+          cbind(derived.fixed, o.fixed)])/
+          (colSums(i.cM.red.bi[1:4, o.fixed]))
+        o.derived.fixed.freq<-(o.cM.red.bi[
+          cbind(derived.fixed, o.fixed)])/
+          (colSums(o.cM.red.bi[1:4, o.fixed]))
+        if(calc.real){
+            ya.derived.fixed.freq<-(ya.cM.red.bi[
+              cbind(derived.fixed, o.fixed)])/
+              (colSums(ya.cM.red.bi[1:4, o.fixed]))
+            yb.derived.fixed.freq<-(yb.cM.red.bi[
+              cbind(derived.fixed, o.fixed)])/
+              (colSums(yb.cM.red.bi[1:4, o.fixed]))
+        }
+                ABBAsum<-sum(ABBAsum, calc.ABBAsum(
+          i.derived.fixed.freq,
+          x.derived.fixed.freq,
+          y.derived.fixed.freq,
+          o.derived.fixed.freq))
+        BABAsum<-sum(BABAsum, calc.BABAsum(
+          i.derived.fixed.freq,
+          x.derived.fixed.freq,
+          y.derived.fixed.freq,
+          o.derived.fixed.freq))
+        maxABBAsumHom<-sum(maxABBAsumHom, calc.maxABBAsumHom(
+          i.derived.fixed.freq,
+          x.derived.fixed.freq,
+          y.derived.fixed.freq,
+          o.derived.fixed.freq))
+        maxBABAsumHom<-sum(maxBABAsumHom, calc.maxBABAsumHom(
+          i.derived.fixed.freq,
+          x.derived.fixed.freq,
+          y.derived.fixed.freq,
+          o.derived.fixed.freq))
+        maxABBAsumD<-sum(maxABBAsumD, calc.maxABBAsumD(
+          i.derived.fixed.freq,
+          x.derived.fixed.freq,
+          y.derived.fixed.freq,
+          o.derived.fixed.freq))
+        maxBABAsumD<-sum(maxBABAsumD, calc.maxBABAsumD(
+          i.derived.fixed.freq,
+          x.derived.fixed.freq,
+          y.derived.fixed.freq,
+          o.derived.fixed.freq))
+        if(calc.real){
+            maxABBAsumG<-sum(maxABBAsumG, calc.maxABBAsumG(
+              i.derived.fixed.freq,
+              ya.derived.fixed.freq,
+              yb.derived.fixed.freq,
+              o.derived.fixed.freq))
+            maxBABAsumG<-sum(maxBABAsumG, calc.maxBABAsumG(
+              i.derived.fixed.freq,
+              ya.derived.fixed.freq,
+              yb.derived.fixed.freq,
+              o.derived.fixed.freq))
+            ABBAsumG<-sum(ABBAsumG, calc.ABBAsumG(
+              i.derived.fixed.freq,
+              x.derived.fixed.freq,
+              y.derived.fixed.freq,
+              o.derived.fixed.freq))
+            BABAsumG<-sum(BABAsumG, calc.BABAsumG(
+              i.derived.fixed.freq,
+              x.derived.fixed.freq,
+              y.derived.fixed.freq,
+              o.derived.fixed.freq))
+        }
+    }
+    #get most common state for unfixed outgroup positions
+    o.unfixed<-which(o.alleles!=1)
+    if(length(o.unfixed)>0){
+        ancestral.unfixed<-apply(cM.red.bi[1:4, o.unfixed, drop=FALSE], 2,
+          function(x) which(x==max(x)))
+        derived.unfixed<-apply(cM.red.bi[1:4, o.unfixed, drop=FALSE], 2,
+          function(x) which(x==min(x[x>0])))
+        #get derived unfixed frequencies per population
+        x.derived.unfixed.freq<-(x.cM.red.bi[
+          cbind(derived.unfixed, o.unfixed)])/
+          (colSums(x.cM.red.bi[1:4, o.unfixed]))
+        y.derived.unfixed.freq<-(y.cM.red.bi[
+          cbind(derived.unfixed, o.unfixed)])/
+          (colSums(y.cM.red.bi[1:4, o.unfixed]))
+        i.derived.unfixed.freq<-(i.cM.red.bi[
+          cbind(derived.unfixed, o.unfixed)])/
+          (colSums(i.cM.red.bi[1:4, o.unfixed]))
+        o.derived.unfixed.freq<-(o.cM.red.bi[
+          cbind(derived.unfixed, o.unfixed)])/
+          (colSums(o.cM.red.bi[1:4, o.unfixed]))
+        if(calc.real){
+            ya.derived.unfixed.freq<-(ya.cM.red.bi[
+              cbind(derived.unfixed, o.unfixed)])/
+              (colSums(ya.cM.red.bi[1:4, o.unfixed]))
+            yb.derived.unfixed.freq<-(yb.cM.red.bi[
+              cbind(derived.unfixed, o.unfixed)])/
+              (colSums(yb.cM.red.bi[1:4, o.unfixed]))
+        }
+        ABBAsum<-sum(ABBAsum, calc.ABBAsum(
+          i.derived.unfixed.freq,
+          x.derived.unfixed.freq,
+          y.derived.unfixed.freq,
+          o.derived.unfixed.freq))
+        BABAsum<-sum(BABAsum, calc.BABAsum(
+          i.derived.unfixed.freq,
+          x.derived.unfixed.freq,
+          y.derived.unfixed.freq,
+          o.derived.unfixed.freq))
+        maxABBAsumHom<-sum(maxABBAsumHom, calc.maxABBAsumHom(
+          i.derived.unfixed.freq,
+          x.derived.unfixed.freq,
+          y.derived.unfixed.freq,
+          o.derived.unfixed.freq))
+        maxBABAsumHom<-sum(maxBABAsumHom, calc.maxBABAsumHom(
+          i.derived.unfixed.freq,
+          x.derived.unfixed.freq,
+          y.derived.unfixed.freq,
+          o.derived.unfixed.freq))
+        maxABBAsumD<-sum(maxABBAsumD, calc.maxABBAsumD(
+          i.derived.unfixed.freq,
+          x.derived.unfixed.freq,
+          y.derived.unfixed.freq,
+          o.derived.unfixed.freq))
+        maxBABAsumD<-sum(maxBABAsumD, calc.maxBABAsumD(
+          i.derived.unfixed.freq,
+          x.derived.unfixed.freq,
+          y.derived.unfixed.freq,
+          o.derived.unfixed.freq))
+        if(calc.real){
+            maxABBAsumG<-sum(maxABBAsumG, calc.maxABBAsumG(
+              i.derived.unfixed.freq,
+              ya.derived.unfixed.freq,
+              yb.derived.unfixed.freq,
+              o.derived.unfixed.freq))
+            maxBABAsumG<-sum(maxBABAsumG, calc.maxBABAsumG(
+              i.derived.unfixed.freq,
+              ya.derived.unfixed.freq,
+              yb.derived.unfixed.freq,
+              o.derived.unfixed.freq))
+            ABBAsumG<-sum(ABBAsumG, calc.ABBAsumG(
+              i.derived.unfixed.freq,
+              x.derived.unfixed.freq,
+              y.derived.unfixed.freq,
+              o.derived.unfixed.freq))
+            BABAsumG<-sum(BABAsumG, calc.BABAsumG(
+              i.derived.unfixed.freq,
+              x.derived.unfixed.freq,
+              y.derived.unfixed.freq,
+              o.derived.unfixed.freq))
+        }
+    }
+    OUT$ABBAsum<-ABBAsum
+    OUT$BABAsum<-BABAsum
+    OUT$ABBAsumG<-ABBAsumG
+    OUT$BABAsumG<-BABAsumG
+    OUT$maxABBAsumG<-maxABBAsumG
+    OUT$maxBABAsumG<-maxBABAsumG
+    OUT$maxABBAsumHom<-maxABBAsumHom
+    OUT$maxBABAsumHom<-maxBABAsumHom
+    OUT$maxABBAsumD<-maxABBAsumD
+    OUT$maxBABAsumD<-maxBABAsumD
+    OUT$D<-(ABBAsum - BABAsum) / (ABBAsum + BABAsum)
+    OUT$fG<-(ABBAsumG - BABAsumG) / (maxABBAsumG - maxBABAsumG)
+    OUT$fhom<-(ABBAsum - BABAsum) / (maxABBAsumHom - maxBABAsumHom)
+    OUT$fd<-(ABBAsum - BABAsum) / (maxABBAsumD - maxBABAsumD)
     return(OUT)
 }
