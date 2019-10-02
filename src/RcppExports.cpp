@@ -91,6 +91,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rcpp_iupacString2diploidString
+Rcpp::StringVector rcpp_iupacString2diploidString(std::string a, int nsites, std::string name_a, std::string name_b);
+RcppExport SEXP _distIUPAC_rcpp_iupacString2diploidString(SEXP aSEXP, SEXP nsitesSEXP, SEXP name_aSEXP, SEXP name_bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type a(aSEXP);
+    Rcpp::traits::input_parameter< int >::type nsites(nsitesSEXP);
+    Rcpp::traits::input_parameter< std::string >::type name_a(name_aSEXP);
+    Rcpp::traits::input_parameter< std::string >::type name_b(name_bSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_iupacString2diploidString(a, nsites, name_a, name_b));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rcpp_iupacString_ab
 Rcpp::StringVector rcpp_iupacString_ab(std::string a, std::string b, int nsites, std::string name);
 RcppExport SEXP _distIUPAC_rcpp_iupacString_ab(SEXP aSEXP, SEXP bSEXP, SEXP nsitesSEXP, SEXP nameSEXP) {
@@ -126,6 +140,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distIUPAC_rcpp_distIUPAC_ab", (DL_FUNC) &_distIUPAC_rcpp_distIUPAC_ab, 3},
     {"_distIUPAC_rcpp_distIUPACmatrix", (DL_FUNC) &_distIUPAC_rcpp_distIUPACmatrix, 3},
     {"_distIUPAC_rcpp_distIUPACmatrix_ab", (DL_FUNC) &_distIUPAC_rcpp_distIUPACmatrix_ab, 4},
+    {"_distIUPAC_rcpp_iupacString2diploidString", (DL_FUNC) &_distIUPAC_rcpp_iupacString2diploidString, 4},
     {"_distIUPAC_rcpp_iupacString_ab", (DL_FUNC) &_distIUPAC_rcpp_iupacString_ab, 4},
     {"_distIUPAC_rcpp_pairwiseDeletion", (DL_FUNC) &_distIUPAC_rcpp_pairwiseDeletion, 2},
     {NULL, NULL, 0}

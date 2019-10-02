@@ -1,7 +1,7 @@
 ---
 title: "02. distStats"
 author: "Kristian K Ullrich"
-date: "`r Sys.Date()`"
+date: "2019-02-13"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{02. distStats}

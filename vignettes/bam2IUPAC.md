@@ -1,31 +1,33 @@
 ---
-title: "02. distStats"
+title: "01. bam2IUPAC"
 author: "Kristian K Ullrich"
-date: "`r Sys.Date()`"
+date: "2019-02-13"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{02. distStats}
+  %\VignetteIndexEntry{01. bam2IUPAC}
   %\VignetteEngine{knitr::rmarkdown}
   %\usepackage[utf8]{inputenc}
 ---
 
-In this vignette Users learn how to use [distIUPAC](https://github.com/kullrich/distIUPAC) to calculate __`IUPAC distances`__ based on __`IUPAC fasta format`__ ([IUPAC code](https://www.bioinformatics.org/sms/iupac.html)) files.
-
-Next to learn how to calculate a distance matrix for one sequence alignment also within population distances (__`xStats`__) and between populations distances (__`xyStats`__, __`xyMultiStats`__ and `xyzStats`__) based on sliding windows will be shown.
+In this vignette Users learn how to create  __`IUPAC fasta format`__ ([IUPAC code](https://www.bioinformatics.org/sms/iupac.html)) files from __`reference mapped bam`__ files which can be used with [distIUPAC](https://github.com/kullrich/distIUPAC) to calculate __`IUPAC distances`__.
 
 ## Pre-requistes for obtaining __fasta__ format files from reference mapped __bam__ files
 
-One pre-requistes is a __fasta__ format alignment file (same length for all sequences) either in __`non IUPAC fasta format`__ ('ACTG-N') or in __`IUPAC fasta format`___ ('ACGTRYSWKMBDHV.-NX').
+The following external tools needs to be installed to be able to obtain IUPAC __fasta__ format files:
 
-To get __`IUPAC fasta format`__ files from __`reference mapped bam`__ files see the vignette [01. bam2IUPAC vignette](https://github.com/kullrich/distIUPAC/tree/master/vignettes/bam2IUPAC.Rmd).
+1. __`Genome mapper`__ of your choice (e.g. [bwa mem](http://bio-bwa.sourceforge.net/) or [NextGenMap](https://github.com/Cibiv/NextGenMap))
+2. __`Picard tools`__ for __`bam`__ file sorting and de-duplication ([picard tools](http://broadinstitute.github.io/picard/))
+3. __`angsd`__ for __`IUPAC fasta format`__ retrieval ([angsd](https://github.com/ANGSD/angsd))
 
-## STEP 1: Loading 
+A manual how the pre-requisites needs to be installed is given at the end of this vignette.
+
+## STEP 1: Mapping __`fastq`__ files to a __`reference`__
 
 ### Using __`BWA`__ for mapping:
 
 The user needs to perform five steps:
 
-1. __`fastq`__ files, prefernetially __`QC`__ pre-processed (see [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) for one of many trimming tools available)
+1. __`fastq`__ files, preferentially __`QC`__ pre-processed (see [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) for one of many trimming tools available)
 2. reference __`fasta`__ file
 3. __`build index`__ for the reference
 4. __`map reads`__
@@ -50,7 +52,7 @@ java -jar picard.jar SortSam I=ind1.sam O=ind1.sorted.bam SO=coordinate
 
 The usere needs to perform four steps:
 
-1. __`fastq`__ files, prefernetially __`QC`__ pre-processed (see [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) for one of many trimming tools available)
+1. __`fastq`__ files, preferentially __`QC`__ pre-processed (see [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) for one of many trimming tools available)
 2. reference __`fasta`__ file
 3. __`map reads`__
 4. __`sort reads`__
@@ -116,6 +118,107 @@ The following commands needs to be executed in __`R`__:
 library(distIUPAC)
 dna<-readDNAStringSet("chr1.fa")
 chr1.dist<-distIUPAC(as.character(subseq(dna,1,10000)))
+```
+
+## Pre-requisites installation - unix based systems (no MAC OS X)
+
+Short description of how to compile the external tools for a unix based system are given.
+See the next section for MAC OS X installation.
+
+### NextGenMap installation
+```
+#download latest release from NextGenMap
+wget https://codeload.github.com/Cibiv/NextGenMap/tar.gz/NextGenMap-0.5.5.tar.gz
+tar -xvf v0.5.5.tar.gz
+rm v0.5.5.tar.gz
+cd NextGenMap-0.5.5/
+mkdir -p build/
+cd build/
+cmake ..
+make
+```
+
+### Picard tools installation
+```
+#download latest release 'picard.jar' from broadinstitute
+wget https://github.com/broadinstitute/picard/releases/download/2.17.4/picard.jar
+```
+
+### ANGSD installation
+
+```
+#download latest release ANGSD from https://github.com/ANGSD/angsd
+git clone https://github.com/samtools/htslib.git;
+git clone https://github.com/angsd/angsd.git;
+cd htslib;make;
+cd ../angsd;
+make HTSSRC=../htslib
+```
+
+## Pre-requisites installation - MAC OS X systems
+
+For a MAC OS X system there are additional pre-requisites that needs to be installed to be able to compile all necessary software.
+
+### Xcode Command Line Tools
+'Xcode' needs to be installed from App-Store
+
+### Homebrew
+'Homebrew' needs to be installed [https://brew.sh/index_de.html](https://brew.sh/index_de.html)
+
+```
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)
+```
+
+### Git
+'Git' needs to be installed [https://git-scm.com/download/mac](https://git-scm.com/download/mac)
+
+1. download latest Git DMG Image
+2. Open DMG Iamge and Install PKG file
+
+### Autoconf via Homebrew
+'Autoconf' needs to be installed [http://www.gnu.org/software/autoconf/autoconf.html](http://www.gnu.org/software/autoconf/autoconf.html)
+```
+brew install autoconf
+```
+
+### Cmake
+'Cmake' needs to be installed [https://cmake.org/download/](https://cmake.org/download/)
+
+1. download latest cmake DMG Image release [https://cmake.org/files/v3.10/cmake-3.10.2-Darwin-x86_64.dmg](https://cmake.org/files/v3.10/cmake-3.10.2-Darwin-x86_64.dmg)
+2. Open DMG Image and copy to Applications
+3. in a Terminal
+```
+sudo "/Applications/CMake.app/Contents/bin/cmake-gui" --install
+```
+
+### NextGenMap installation
+```
+#download latest release from NextGenMap
+curl -L https://github.com/Cibiv/NextGenMap/archive/v0.5.5.tar.gz > v0.5.5.tar.gz
+tar -xvf v0.5.5.tar.gz
+rm v0.5.5.tar.gz
+cd NextGenMap-0.5.5/
+mkdir -p build/
+cd build/
+cmake ..
+make
+```
+
+### Picard tools installation
+```
+#download latest release 'picard.jar' from broadinstitute
+curl -L https://github.com/broadinstitute/picard/releases/download/2.17.4/picard.jar > picard.jar
+```
+
+### ANGSD installation
+
+```
+#download latest release ANGSD from https://github.com/ANGSD/angsd
+git clone https://github.com/samtools/htslib.git;
+git clone https://github.com/angsd/angsd.git;
+cd htslib;/usr/local/Cellar/autoconf/2.69/bin/autoconf;/usr/local/Cellar/autoconf/2.69/bin/autoheader;./configure --disable-lzma;make;
+cd ../angsd;
+make HTSSRC=../htslib
 ```
 
 ## References

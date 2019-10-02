@@ -61,6 +61,14 @@ rcpp_distIUPACmatrix_ab <- function(a, b, scoreMatrix, nsites) {
 
 #' @useDynLib distIUPAC, .registration = TRUE
 #' @import Rcpp
+#' @export rcpp_iupacString2diploidString
+#' @author Kristian K Ullrich
+rcpp_iupacString2diploidString <- function(a, nsites, name_a = "a1", name_b = "a2") {
+    .Call(`_distIUPAC_rcpp_iupacString2diploidString`, a, nsites, name_a, name_b)
+}
+
+#' @useDynLib distIUPAC, .registration = TRUE
+#' @import Rcpp
 #' @export rcpp_iupacString_ab
 #' @author Kristian K Ullrich
 rcpp_iupacString_ab <- function(a, b, nsites, name = "iupacString") {

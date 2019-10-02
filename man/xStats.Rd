@@ -33,7 +33,7 @@ or \code{triSites}  [default: "bp"]}
 \item{dist}{distance to use [default: "IUPAC"]}
 
 \item{global.deletion}{a logical indicating whether to delete the sites
-with missing data in a global [TRUE] or pairwise way [FALSE]}
+with missing data in a global [default: TRUE] or pairwise way [FALSE]}
 
 \item{threads}{number of parallel threads [default: 1]}
 

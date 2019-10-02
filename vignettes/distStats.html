@@ -163,28 +163,24 @@ hr {
 </head>
 
 <body>
-<p>In this vignette Users learn how to create  <strong><code>IUPAC fasta format</code>__ (<a href="https://www.bioinformatics.org/sms/iupac.html">IUPAC code</a>) files from __<code>reference mapped bam</code>__ files which can be used with <a href="https://github.com/kullrich/distIUPAC">distIUPAC</a> to calculate __<code>IUPAC distances</code></strong>.</p>
+<p>In this vignette Users learn how to use <a href="https://github.com/kullrich/distIUPAC">distIUPAC</a> to calculate <strong><code>IUPAC distances</code>__ based on __<code>IUPAC fasta format</code></strong> (<a href="https://www.bioinformatics.org/sms/iupac.html">IUPAC code</a>) files.</p>
+
+<p>Next to learn how to calculate a distance matrix for one sequence alignment also within population distances (<strong><code>xStats</code><strong>) and between populations distances (</strong><code>xyStats</code><strong>, __<code>xyMultiStats</code></strong> and <code>xyzStats</code></strong>) based on sliding windows will be shown.</p>
 
 <h2>Pre-requistes for obtaining <strong>fasta</strong> format files from reference mapped <strong>bam</strong> files</h2>
 
-<p>The following external tools needs to be installed to be able to obtain IUPAC <strong>fasta</strong> format files:</p>
+<p>One pre-requistes is a <strong>fasta</strong> format alignment file (same length for all sequences) either in <strong><code>non IUPAC fasta format</code>__ (&#39;ACTG-N&#39;) or in __<code>IUPAC fasta format</code></strong>_ (&#39;ACGTRYSWKMBDHV.-NX&#39;).</p>
 
-<ol>
-<li><strong><code>Genome mapper</code></strong> of your choice (e.g. <a href="http://bio-bwa.sourceforge.net/">bwa mem</a> or <a href="https://github.com/Cibiv/NextGenMap">NextGenMap</a>)</li>
-<li><strong><code>Picard tools</code>__ for __<code>bam</code></strong> file sorting and de-duplication (<a href="http://broadinstitute.github.io/picard/">picard tools</a>)</li>
-<li><strong><code>angsd</code>__ for __<code>IUPAC fasta format</code></strong> retrieval (<a href="https://github.com/ANGSD/angsd">angsd</a>)</li>
-</ol>
+<p>To get <strong><code>IUPAC fasta format</code>__ files from __<code>reference mapped bam</code></strong> files see the vignette <a href="https://github.com/kullrich/distIUPAC/tree/master/vignettes/bam2IUPAC.Rmd">01. bam2IUPAC vignette</a>.</p>
 
-<p>A manual how the pre-requisites needs to be installed is given at the end of this vignette.</p>
-
-<h2>STEP 1: Mapping <strong><code>fastq</code>__ files to a __<code>reference</code></strong></h2>
+<h2>STEP 1: Loading</h2>
 
 <h3>Using <strong><code>BWA</code></strong> for mapping:</h3>
 
 <p>The user needs to perform five steps:</p>
 
 <ol>
-<li><strong><code>fastq</code>__ files, preferentially __<code>QC</code></strong> pre-processed (see <a href="http://www.usadellab.org/cms/?page=trimmomatic">trimmomatic</a> for one of many trimming tools available)</li>
+<li><strong><code>fastq</code>__ files, prefernetially __<code>QC</code></strong> pre-processed (see <a href="http://www.usadellab.org/cms/?page=trimmomatic">trimmomatic</a> for one of many trimming tools available)</li>
 <li>reference <strong><code>fasta</code></strong> file</li>
 <li><strong><code>build index</code></strong> for the reference</li>
 <li><strong><code>map reads</code></strong></li>
@@ -210,7 +206,7 @@ java -jar picard.jar SortSam I=ind1.sam O=ind1.sorted.bam SO=coordinate
 <p>The usere needs to perform four steps:</p>
 
 <ol>
-<li><strong><code>fastq</code>__ files, preferentially __<code>QC</code></strong> pre-processed (see <a href="http://www.usadellab.org/cms/?page=trimmomatic">trimmomatic</a> for one of many trimming tools available)</li>
+<li><strong><code>fastq</code>__ files, prefernetially __<code>QC</code></strong> pre-processed (see <a href="http://www.usadellab.org/cms/?page=trimmomatic">trimmomatic</a> for one of many trimming tools available)</li>
 <li>reference <strong><code>fasta</code></strong> file</li>
 <li><strong><code>map reads</code></strong></li>
 <li><strong><code>sort reads</code></strong></li>
@@ -272,113 +268,6 @@ for file in *.chr1.fa;do cat $file &gt;&gt; chr1.fa;done
 <pre><code>library(distIUPAC)
 dna&lt;-readDNAStringSet(&quot;chr1.fa&quot;)
 chr1.dist&lt;-distIUPAC(as.character(subseq(dna,1,10000)))
-</code></pre>
-
-<h2>Pre-requisites installation - unix based systems (no MAC OS X)</h2>
-
-<p>Short description of how to compile the external tools for a unix based system are given.
-See the next section for MAC OS X installation.</p>
-
-<h3>NextGenMap installation</h3>
-
-<pre><code>#download latest release from NextGenMap
-wget https://codeload.github.com/Cibiv/NextGenMap/tar.gz/NextGenMap-0.5.5.tar.gz
-tar -xvf v0.5.5.tar.gz
-rm v0.5.5.tar.gz
-cd NextGenMap-0.5.5/
-mkdir -p build/
-cd build/
-cmake ..
-make
-</code></pre>
-
-<h3>Picard tools installation</h3>
-
-<pre><code>#download latest release &#39;picard.jar&#39; from broadinstitute
-wget https://github.com/broadinstitute/picard/releases/download/2.17.4/picard.jar
-</code></pre>
-
-<h3>ANGSD installation</h3>
-
-<pre><code>#download latest release ANGSD from https://github.com/ANGSD/angsd
-git clone https://github.com/samtools/htslib.git;
-git clone https://github.com/angsd/angsd.git;
-cd htslib;make;
-cd ../angsd;
-make HTSSRC=../htslib
-</code></pre>
-
-<h2>Pre-requisites installation - MAC OS X systems</h2>
-
-<p>For a MAC OS X system there are additional pre-requisites that needs to be installed to be able to compile all necessary software.</p>
-
-<h3>Xcode Command Line Tools</h3>
-
-<p>&#39;Xcode&#39; needs to be installed from App-Store</p>
-
-<h3>Homebrew</h3>
-
-<p>&#39;Homebrew&#39; needs to be installed <a href="https://brew.sh/index_de.html">https://brew.sh/index_de.html</a></p>
-
-<pre><code>/usr/bin/ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)
-</code></pre>
-
-<h3>Git</h3>
-
-<p>&#39;Git&#39; needs to be installed <a href="https://git-scm.com/download/mac">https://git-scm.com/download/mac</a></p>
-
-<ol>
-<li>download latest Git DMG Image</li>
-<li>Open DMG Iamge and Install PKG file</li>
-</ol>
-
-<h3>Autoconf via Homebrew</h3>
-
-<p>&#39;Autoconf&#39; needs to be installed <a href="http://www.gnu.org/software/autoconf/autoconf.html">http://www.gnu.org/software/autoconf/autoconf.html</a></p>
-
-<pre><code>brew install autoconf
-</code></pre>
-
-<h3>Cmake</h3>
-
-<p>&#39;Cmake&#39; needs to be installed <a href="https://cmake.org/download/">https://cmake.org/download/</a></p>
-
-<ol>
-<li>download latest cmake DMG Image release <a href="https://cmake.org/files/v3.10/cmake-3.10.2-Darwin-x86_64.dmg">https://cmake.org/files/v3.10/cmake-3.10.2-Darwin-x86_64.dmg</a></li>
-<li>Open DMG Image and copy to Applications</li>
-<li>in a Terminal
-<code>
-sudo &quot;/Applications/CMake.app/Contents/bin/cmake-gui&quot; --install
-</code></li>
-</ol>
-
-<h3>NextGenMap installation</h3>
-
-<pre><code>#download latest release from NextGenMap
-curl -L https://github.com/Cibiv/NextGenMap/archive/v0.5.5.tar.gz &gt; v0.5.5.tar.gz
-tar -xvf v0.5.5.tar.gz
-rm v0.5.5.tar.gz
-cd NextGenMap-0.5.5/
-mkdir -p build/
-cd build/
-cmake ..
-make
-</code></pre>
-
-<h3>Picard tools installation</h3>
-
-<pre><code>#download latest release &#39;picard.jar&#39; from broadinstitute
-curl -L https://github.com/broadinstitute/picard/releases/download/2.17.4/picard.jar &gt; picard.jar
-</code></pre>
-
-<h3>ANGSD installation</h3>
-
-<pre><code>#download latest release ANGSD from https://github.com/ANGSD/angsd
-git clone https://github.com/samtools/htslib.git;
-git clone https://github.com/angsd/angsd.git;
-cd htslib;/usr/local/Cellar/autoconf/2.69/bin/autoconf;/usr/local/Cellar/autoconf/2.69/bin/autoheader;./configure --disable-lzma;make;
-cd ../angsd;
-make HTSSRC=../htslib
 </code></pre>
 
 <h2>References</h2>

@@ -15,7 +15,7 @@
 #' or \code{triSites}  [default: "bp"]
 #' @param dist distance to use [default: "IUPAC"]
 #' @param global.deletion a logical indicating whether to delete the sites
-#' with missing data in a global [TRUE] or pairwise way [FALSE]
+#' with missing data in a global [default: TRUE] or pairwise way [FALSE]
 #' @param threads number of parallel threads [default: 1]
 #' @param ncores number of parallel cores to process pairwise distance
 #' calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC}

@@ -32,18 +32,18 @@
 #' @examples
 #' data("MySequences", package="distIUPAC")
 #' CAS.pos<-5:34
-#' CAS.dIUPAC<-distIUPACsw(MySequences[CAS.pos])
+#' CAS.tmpSEQsw<-tmpSEQsw(MySequences[CAS.pos])
 #' ##xStats
-#' CAS.xStats<-distIUPACsw(MySequences[CAS.pos], FUN=dist.xStats)
+#' CAS.xStats<-tmpSEQsw(MySequences[CAS.pos], FUN=dist.xStats)
 #' ##multiple threads to process windows
-#' CAS.xStats<-distIUPACsw(MySequences[CAS.pos], threads=2)
+#' CAS.xStats<-tmpSEQsw(MySequences[CAS.pos], threads=2)
 #' ##multiple cores to process pairwise distance calculation
-#' CAS.xStats<-distIUPACsw(MySequences[CAS.pos], ncores=2)
+#' CAS.xStats<-tmpSEQsw(MySequences[CAS.pos], FUN=function(x) {dist.xStats(x, ncores=2)})
 #' ##disbale global deletion
-#' CAS.pairwiseDeletion.xStats<-distIUPACsw(MySequences[CAS.pos],
-#' global.deletion=FALSE, FUN=dist.xStats, ncores=2)
+#' CAS.pairwiseDeletion.xStats<-tmpSEQsw(MySequences[CAS.pos],
+#' global.deletion=FALSE, FUN=function(x) {dist.xStats(x, ncores=2)})
 #' ##using K80 distance from ape package
-#' distIUPACsw(MySequences[CAS.pos], dist="K80", FUN=dist.xStats)
+#' tmpSEQsw(MySequences[CAS.pos], FUN=function(x) {dist.xStats(x, dist="K80")})
 #' @export tmpSEQsw
 #' @author Kristian K Ullrich
 tmpSEQsw<-function(dna, FUN=NULL, chr.name="chr",

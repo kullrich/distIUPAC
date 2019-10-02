@@ -5,45 +5,56 @@
 \title{getTrees}
 \usage{
 getTrees(dna, x.pos = NULL, r.pos = 1, resolve.root = TRUE,
-  wlen = 25000, wjump = 25000, start.by = NULL, end.by = NULL,
-  wtype = "bp", dist = "IUPAC", global.deletion = FALSE,
-  model = "bionjs", threads = 1, x.name = "x", r.name = "r",
-  chr.name = "chr", plot = FALSE)
+  wlen = 25000, wjump = 25000, start.by = 1, end.by = NULL,
+  wtype = "bp", dist = "IUPAC", global.deletion = TRUE,
+  model = "bionjs", threads = 1, ncores = 1, x.name = "x",
+  r.name = "r", chr.name = "chr", plot = FALSE, pB = FALSE)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
 
-\item{x.pos}{population X positions}
+\item{x.pos}{population X positions [default: NULL]
+take all sequences from \code{DNAStringSet}}
 
-\item{r.pos}{root position, needs to be within x.pos}
+\item{r.pos}{root position, needs to be within x.pos [default: 1]}
 
-\item{resolve.root}{adds a zero-length branch below the MRCA of the ingroup \link[ape]{root}}
+\item{resolve.root}{adds a zero-length branch below the MRCA
+of the ingroup \link[ape]{root} [default: TRUE]}
 
-\item{wlen}{sliding windows length}
+\item{wlen}{sliding windows length  [default: 25000]}
 
-\item{wjump}{sliding windows jump}
+\item{wjump}{sliding windows jump [default: 25000]}
 
-\item{start.by}{optional start position}
+\item{start.by}{optional start position [default: 1]}
 
-\item{end.by}{optional end position}
+\item{end.by}{optional end position [default: NULL]}
 
-\item{wtype}{sliding windows type to use \code{bp}, \code{biSites} or \code{triSites}}
+\item{wtype}{sliding windows type to use \code{bp}, \code{biSites}
+or \code{triSites}  [default: "bp"]}
 
-\item{dist}{distance to use}
+\item{dist}{distance to use [default: "IUPAC"]}
 
-\item{global.deletion}{a logical indicating whether to delete the sites with missing data in a global way (default is to delete in a pairwise way)}
+\item{global.deletion}{a logical indicating whether to delete the sites
+with missing data in a global [default: TRUE] or pairwise way [FALSE]}
 
-\item{model}{tree model to use either \link[ape]{njs} or \link[ape]{bionjs}}
+\item{model}{tree model to use either \link[ape]{njs}
+or \link[ape]{bionjs} [default: "bionjs"]}
 
-\item{threads}{number of parallel threads}
+\item{threads}{number of parallel threads [default: 1]}
 
-\item{x.name}{population X name}
+\item{ncores}{number of parallel cores to process pairwise distance
+calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC}}
 
-\item{r.name}{root name}
+\item{x.name}{population X name [default: "x"]}
 
-\item{chr.name}{chromosome name}
+\item{r.name}{root name [default: "r"]}
 
-\item{plot}{indicates if tree should be plotted}
+\item{chr.name}{chromosome name [default: "chr"]}
+
+\item{plot}{indicates if tree should be plotted [default: FALSE]}
+
+\item{pB}{specifies if progress should be shown as a progress bar
+[default: FALSE]}
 }
 \description{
 This function returns nieghbor-joining (\link[ape]{njs} or \link[ape]{bionjs})
@@ -57,7 +68,8 @@ trees<-getTrees(MySequences, x.pos = x.pos, r.pos = r.pos,
 wlen = 10000, wjump = 10000, x.name = "all", r.name = "Rnor", threads = 1)
 trees
 trees<-getTrees(MySequences, x.pos = x.pos, r.pos = r.pos,
-wlen = 10000, wjump = 10000, x.name = "all", r.name = "Rnor", threads = 1, plot = TRUE)
+wlen = 10000, wjump = 10000, x.name = "all", r.name = "Rnor",
+threads = 2, plot = TRUE)
 }
 \author{
 Kristian K Ullrich
