@@ -7,6 +7,7 @@
 #' the populations should be defined as follows [x:P2 y:P3 i:P1 o:P4].
 #' Accordingly in the four-taxon scenario (((P1,P2),P3),O) with geneflow from
 #' P2>>P3, the populations should be defined as follows [x:P3 y:P2 i:P1 o:P4].
+#' @import foreach
 #' @importFrom stats as.dist sd setNames
 #' @param tmpSEQ \code{DNAStringSet} [mandatory]
 #' @param x.pos population X positions [mandatory]
@@ -67,11 +68,42 @@
 abbababa.xyioStats<-function(tmpSEQ, x.pos, y.pos, i.pos, o.pos,
   x.freq=1.0, y.freq=1.0, i.freq=1.0, o.freq=1.0,
   x.name="x", y.name="y", i.name="i", o.name="o"){
+    #forked from https://github.com/simonhmartin/genomics_general
+    calc.f4<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
+        ((1 - p1dFreq) * p2dFreq * p3dFreq * (1 - p4dFreq)) - 
+        (p1dFreq * (1 - p2dFreq) * p3dFreq * (1 - p4dFreq))
+    }
+    calc.f4_c<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
+        calc.f4(p1dFreq, p2dFreq, p3dFreq, p4dFreq) +
+        calc.f4((1 - p1dFreq), (1 - p2dFreq), (1 - p3dFreq), (1 - p4dFreq))
+    }
+    calc.ABAAsum<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
+        (1 - p1dFreq) * p2dFreq * (1 - p3dFreq) * (1 - p4dFreq)
+    }
+    calc.BAAAsum<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
+        p1dFreq * (1 - p2dFreq) * (1 - p3dFreq) * (1 - p4dFreq)
+    }
     calc.ABBAsum<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
         (1 - p1dFreq) * p2dFreq * p3dFreq * (1 - p4dFreq)
     }
     calc.BABAsum<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
         p1dFreq * (1 - p2dFreq) * p3dFreq * (1 - p4dFreq)
+    }
+    calc.ABAA_BABBsum<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
+        ((1 - p1dFreq) * p2dFreq * (1 - p3dFreq) * (1 - p4dFreq)) +
+        (p1dFreq * (1 - p2dFreq) * p3dFreq * p4dFreq)
+    }
+    calc.BAAA_ABBBsum<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
+        (p1dFreq * (1 - p2dFreq) * (1 - p3dFreq) * (1 - p4dFreq)) +
+        ((1 - p1dFreq) * p2dFreq * p3dFreq * p4dFreq)
+    }
+    calc.ABBA_BAABsum<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
+        ((1 - p1dFreq) * p2dFreq * p3dFreq * (1 - p4dFreq)) +
+        (p1dFreq * (1 - p2dFreq) * (1 - p3dFreq) * p4dFreq)
+    }
+    calc.BABA_ABABsum<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
+        (p1dFreq * (1 - p2dFreq) * p3dFreq * (1 - p4dFreq)) +
+        ((1 - p1dFreq) * p2dFreq * (1 - p3dFreq) * p4dFreq)
     }
     calc.maxABBAsumHom<-function(p1dFreq, p2dFreq, p3dFreq, p4dFreq){
         (1 - p1dFreq) * p3dFreq * p3dFreq * (1 - p4dFreq)
@@ -206,14 +238,27 @@ abbababa.xyioStats<-function(tmpSEQ, x.pos, y.pos, i.pos, o.pos,
     OUT$remcount.i<-length(freq.i.rem)
     OUT$remcount.o<-length(freq.o.rem)
     #reduce to sites that are kept
-    cM.red<-cM[, -freq.all.rem, drop=FALSE]
-    x.cM.red<-x.cM[, -freq.all.rem, drop=FALSE]
-    y.cM.red<-y.cM[, -freq.all.rem, drop=FALSE]
-    i.cM.red<-i.cM[, -freq.all.rem, drop=FALSE]
-    o.cM.red<-o.cM[, -freq.all.rem, drop=FALSE]
-    if(calc.real){
-        ya.cM.red<-ya.cM[, -freq.all.rem, drop=FALSE]
-        yb.cM.red<-yb.cM[, -freq.all.rem, drop=FALSE]
+    if(length(freq.all.rem)!=0){
+        cM.red<-cM[, -freq.all.rem, drop=FALSE]
+        x.cM.red<-x.cM[, -freq.all.rem, drop=FALSE]
+        y.cM.red<-y.cM[, -freq.all.rem, drop=FALSE]
+        i.cM.red<-i.cM[, -freq.all.rem, drop=FALSE]
+        o.cM.red<-o.cM[, -freq.all.rem, drop=FALSE]
+        if(calc.real){
+            ya.cM.red<-ya.cM[, -freq.all.rem, drop=FALSE]
+            yb.cM.red<-yb.cM[, -freq.all.rem, drop=FALSE]
+        }
+    }
+    if(length(freq.all.rem)==0){
+        cM.red<-cM
+        x.cM.red<-x.cM
+        y.cM.red<-y.cM
+        i.cM.red<-i.cM
+        o.cM.red<-o.cM
+        if(calc.real){
+            ya.cM.red<-ya.cM
+            yb.cM.red<-yb.cM
+        }
     }
     #get allele counts
     alleles<-apply(cM.red[1:4,], 2, function(x) length(which(x>0)))
@@ -263,7 +308,7 @@ abbababa.xyioStats<-function(tmpSEQ, x.pos, y.pos, i.pos, o.pos,
               cbind(derived.fixed, o.fixed)])/
               (colSums(yb.cM.red.bi[1:4, o.fixed]))
         }
-                ABBAsum<-sum(ABBAsum, calc.ABBAsum(
+        ABBAsum<-sum(ABBAsum, calc.ABBAsum(
           i.derived.fixed.freq,
           x.derived.fixed.freq,
           y.derived.fixed.freq,

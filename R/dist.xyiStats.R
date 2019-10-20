@@ -259,7 +259,7 @@ dist.xyiStats<-function(tmpSEQ, x.pos, y.pos, i.pos,
     }
     #xy
     OUT$dMean.xy<-mean(dIUPAC$distIUPAC[x.pos, y.pos], na.rm=TRUE)
-    OUT$dMean_.xy<-OUT$dMean.xy - (OUT$dMean.x/2) - (OUT$dMean.y/2)
+    OUT$dMean_.xy<-OUT$dMean.xy - (OUT$dMean.x/2) - (OUT$dMean.y/2) #F2(x,y) equation (17) Peter, Genetics, Vol. 202, 1485-1501, April 2016
     OUT$dSd.xy<-sd(dIUPAC$distIUPAC[x.pos, y.pos], na.rm=TRUE)
     OUT$dSites.xy<-mean(dIUPAC$sitesUsed[x.pos, y.pos], na.rm=TRUE)
     OUT$dMin.xy<-min(dIUPAC$distIUPAC[x.pos, y.pos], na.rm=TRUE)
@@ -272,7 +272,7 @@ dist.xyiStats<-function(tmpSEQ, x.pos, y.pos, i.pos,
     OUT$dRelative.xy<-OUT$dMean.xy - OUT$dSweighted.xy
     #xi
     OUT$dMean.xi<-mean(dIUPAC$distIUPAC[x.pos, i.pos], na.rm=TRUE)
-    OUT$dMean_.xi<-OUT$dMean.xi - (OUT$dMean.x/2) - (OUT$dMean.i/2)
+    OUT$dMean_.xi<-OUT$dMean.xi - (OUT$dMean.x/2) - (OUT$dMean.i/2) #F2(x,i) equation (17) Peter, Genetics, Vol. 202, 1485-1501, April 2016
     OUT$dSd.xi<-sd(dIUPAC$distIUPAC[x.pos, i.pos], na.rm=TRUE)
     OUT$dSites.xi<-mean(dIUPAC$sitesUsed[x.pos, i.pos], na.rm=TRUE)
     OUT$dMin.xi<-min(dIUPAC$distIUPAC[x.pos, i.pos], na.rm=TRUE)
@@ -285,7 +285,7 @@ dist.xyiStats<-function(tmpSEQ, x.pos, y.pos, i.pos,
     OUT$dRelative.xi<-OUT$dMean.xi - OUT$dSweighted.xi
     #yi
     OUT$dMean.yi<-mean(dIUPAC$distIUPAC[y.pos, i.pos], na.rm=TRUE)
-    OUT$dMean_.yi<-OUT$dMean.yi - (OUT$dMean.y/2) - (OUT$dMean.i/2)
+    OUT$dMean_.yi<-OUT$dMean.yi - (OUT$dMean.y/2) - (OUT$dMean.i/2) #F2(y,i) equation (17) Peter, Genetics, Vol. 202, 1485-1501, April 2016
     OUT$dSd.yi<-sd(dIUPAC$distIUPAC[y.pos, i.pos], na.rm=TRUE)
     OUT$dSites.yi<-mean(dIUPAC$sitesUsed[y.pos, i.pos], na.rm=TRUE)
     OUT$dMin.yi<-min(dIUPAC$distIUPAC[y.pos, i.pos], na.rm=TRUE)

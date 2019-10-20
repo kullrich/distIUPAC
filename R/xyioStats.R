@@ -62,7 +62,7 @@
 xyioStats<-function(dna, x.pos, y.pos, i.pos, o.pos, x.name="x", y.name="y",
   i.name="i", o.name="o", chr.name="chr", wlen=25000, wjump=25000, start.by=1,
   end.by=NULL, wtype="bp", dist="IUPAC", global.deletion=TRUE, threads=1,
-  ncores=1, pB=FALSE, do.ABBA=FALSE, x.frq=1.0, y.freq=1.0, i.freq=1.0,
+  ncores=1, pB=FALSE, do.ABBA=FALSE, x.freq=1.0, y.freq=1.0, i.freq=1.0,
   o.freq=1.0){
     options(scipen=22)
     dna_<-dna[c(x.pos, y.pos, i.pos, o.pos)]
@@ -79,6 +79,7 @@ xyioStats<-function(dna, x.pos, y.pos, i.pos, o.pos, x.name="x", y.name="y",
     #  }, chr.name=chr.name, wlen=wlen, wjump=wjump, start.by=start.by,
     #  end.by=end.by, wtype=wtype, dist=dist, global.deletion=global.deletion,
     #  threads=threads, ncores=ncores, pB=pB)
+
     OUT<-tmpSEQsw(dna_, FUN=function(x) {
           dist.xyioStats(x, x.pos=x.pos_, y.pos=y.pos_, i.pos=i.pos_,
           o.pos=o.pos_, x.name=x.name, y.name=y.name, i.name=i.name,
@@ -86,16 +87,18 @@ xyioStats<-function(dna, x.pos, y.pos, i.pos, o.pos, x.name="x", y.name="y",
       }, chr.name=chr.name, wlen=wlen, wjump=wjump, start.by=start.by,
       end.by=end.by, wtype=wtype, global.deletion=global.deletion,
       threads=threads, pB=pB)
+    if(!do.ABBA){
+        return(OUT)
+    }
     if(do.ABBA){
         ABBA<-tmpSEQsw(dna_, FUN=function(x) {
               abbababa.xyioStats(x, x.pos=x.pos_, y.pos=y.pos_, i.pos=i.pos_,
               o.pos=o.pos_, x.name=x.name, y.name=y.name, i.name=i.name,
               o.name=o.name, x.freq=x.freq, y.freq=y.freq, i.freq=i.freq,
-              o.freq=o.freq, ncores=ncores)
+              o.freq=o.freq)
           }, chr.name=chr.name, wlen=wlen, wjump=wjump, start.by=start.by,
           end.by=end.by, wtype=wtype, global.deletion=global.deletion,
           threads=threads, pB=pB)
-        return(setNames(list(OUT,ABBA),c("xyioStats","xyioABBA")))
+        return(setNames(list(OUT, ABBA), c("xyioStats", "xyioABBA")))
     }
-    return(OUT)
 }

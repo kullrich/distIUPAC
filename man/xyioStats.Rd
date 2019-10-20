@@ -8,8 +8,8 @@ xyioStats(dna, x.pos, y.pos, i.pos, o.pos, x.name = "x", y.name = "y",
   i.name = "i", o.name = "o", chr.name = "chr", wlen = 25000,
   wjump = 25000, start.by = 1, end.by = NULL, wtype = "bp",
   dist = "IUPAC", global.deletion = TRUE, threads = 1, ncores = 1,
-  pB = FALSE, do.ABBA = FALSE, x.frq = 1, y.freq = 1, i.freq = 1,
-  o.freq = 1)
+  pB = FALSE, do.ABBA = FALSE, x.freq = 1, y.freq = 1,
+  i.freq = 1, o.freq = 1)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet} [mandatory]}
@@ -64,13 +64,13 @@ calculation [default: 1] see \code{\link[distIUPAC]{rcpp_distIUPAC}}}
 \item{do.ABBA}{specifies if ABBA-BABA statistics should be calculated
 [default: FALSE]}
 
+\item{x.freq}{[default: 1.0]}
+
 \item{y.freq}{[default: 1.0]}
 
 \item{i.freq}{[default: 1.0]}
 
 \item{o.freq}{[default: 1.0]}
-
-\item{x.freq}{[default: 1.0]}
 }
 \description{
 This function calculates \code{distIUPAC} based distances

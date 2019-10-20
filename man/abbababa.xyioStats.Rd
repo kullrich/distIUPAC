@@ -6,7 +6,7 @@
 \usage{
 abbababa.xyioStats(tmpSEQ, x.pos, y.pos, i.pos, o.pos, x.freq = 1,
   y.freq = 1, i.freq = 1, o.freq = 1, x.name = "x", y.name = "y",
-  i.name = "i", o.name = "o", dist = "IUPAC", ncores = 1)
+  i.name = "i", o.name = "o")
 }
 \arguments{
 \item{tmpSEQ}{\code{DNAStringSet} [mandatory]}
@@ -19,19 +19,21 @@ abbababa.xyioStats(tmpSEQ, x.pos, y.pos, i.pos, o.pos, x.freq = 1,
 
 \item{o.pos}{population O positions [mandatory]}
 
+\item{x.freq}{minimal frequency for population X to keep site [default: 1.0]}
+
+\item{y.freq}{minimal frequency for population Y to keep site [default: 1.0]}
+
+\item{i.freq}{minimal frequency for population I to keep site [default: 1.0]}
+
+\item{o.freq}{minimal frequency for population O to keep site [default: 1.0]}
+
 \item{x.name}{population X name [default: "x"]}
 
 \item{y.name}{population Y name [default: "y"]}
 
 \item{i.name}{population I name [default: "i"]}
 
-\item{o.name}{population I name [default: "o"]}
-
-\item{dist}{distance to use [default: IUPAC] or choose one model as in
-\link[ape]{dist.dna} [default: "IUPAC"]}
-
-\item{ncores}{number of parallel cores to process pairwise distance
-calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC} [default: 1]}
+\item{o.name}{population O name [default: "o"]}
 }
 \description{
 This function calculates ABBA-BABA statistics
@@ -84,7 +86,7 @@ rbind(CAS_AFG_IRA_APO.pairwiseDeletion.xyiStats,
 }
 \seealso{
 \code{\link[distIUPAC]{xyioStats}},
-\code{\link[distIUPAC]{distIUPAC}}, \code{\link[distIUPAC]{rcpp_distIUPAC}}
+\code{\link[distIUPAC]{diploid2haploid}}
 }
 \author{
 Kristian K Ullrich
