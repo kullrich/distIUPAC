@@ -189,6 +189,7 @@ abbababa.xyioStats<-function(tmpSEQ, x.pos, y.pos, i.pos, o.pos,
     remcount.y<-0
     remcount.i<-0
     remcount.o<-0
+    remcount.equal<-0
     monocount<-0
     bicount<-0
     tricount<-0
@@ -202,14 +203,14 @@ abbababa.xyioStats<-function(tmpSEQ, x.pos, y.pos, i.pos, o.pos,
       ABBAsum, BABAsum, ABBAsumG, BABAsumG, maxABBAsumG, maxBABAsumG,
       maxABBAsumHom, maxBABAsumHom, maxABBAsumD, maxBABAsumD,
       monocount, bicount, tricount, tetracount,
-      remcount, remcount.x, remcount.y, remcount.i, remcount.o,
+      remcount, remcount.x, remcount.y, remcount.i, remcount.o, remcount.equal,
       D, fG, fhom, fd)
     names(OUT)<-c("XNAME", "YNAME", "INAME", "ONAME",
       "ABBAsum", "BABAsum", "ABBAsumG", "BABAsumG",
       "maxABBAsumG", "maxBABAsumG", "maxABBAsumHom", "maxBABAsumHom",
       "maxABBAsumD", "maxBABAsumD",
       "monocount", "bicount", "tricount", "tetracount",
-      "remcount", "remcount.x", "remcount.y", "remcount.i", "remcount.o",
+      "remcount", "remcount.x", "remcount.y", "remcount.i", "remcount.o", "remcount.equal",
       "D", "fG","fhom", "fd")
     #
     cM<-consensusMatrix(iupac2diploid(tmpSEQ))
@@ -364,6 +365,14 @@ abbababa.xyioStats<-function(tmpSEQ, x.pos, y.pos, i.pos, o.pos,
     #get most common state for unfixed outgroup positions
     o.unfixed<-which(o.alleles!=1)
     if(length(o.unfixed)>0){
+        #get unfixed positions that can not be classified as ancestral due to equal amount of max and min frequency
+        ancestral.max<-apply(cM.red.bi[1:4, o.unfixed, drop=FALSE], 2,
+          function(x) which(x==max(x)))
+        unfixed.keep<-which(unlist(lapply(ancestral.max, length))==1)
+        OUT$remcount.equal<-length(which(unlist(lapply(ancestral.max, length))==2))
+        #reduce to unfixed sites that have a max and min frequency
+        o.unfixed<-o.unfixed[unfixed.keep]
+        #only use reduced set of unfixed sites
         ancestral.unfixed<-apply(cM.red.bi[1:4, o.unfixed, drop=FALSE], 2,
           function(x) which(x==max(x)))
         derived.unfixed<-apply(cM.red.bi[1:4, o.unfixed, drop=FALSE], 2,
