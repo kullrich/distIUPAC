@@ -32,7 +32,8 @@ of the ingroup \link[ape]{root} [default: TRUE]}
 \item{wtype}{sliding windows type to use \code{bp}, \code{biSites}
 or \code{triSites}  [default: "bp"]}
 
-\item{dist}{distance to use [default: "IUPAC"]}
+\item{dist}{distance to use, choose one model as in
+\link[ape]{dist.dna} or [default: "IUPAC"]}
 
 \item{global.deletion}{a logical indicating whether to delete the sites
 with missing data in a global [default: TRUE] or pairwise way [FALSE]}
@@ -43,7 +44,7 @@ or \link[ape]{bionjs} [default: "bionjs"]}
 \item{threads}{number of parallel threads [default: 1]}
 
 \item{ncores}{number of parallel cores to process pairwise distance
-calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC}}
+calculation [default: 1]}
 
 \item{x.name}{population X name [default: "x"]}
 

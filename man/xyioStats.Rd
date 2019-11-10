@@ -47,7 +47,8 @@ scenario (((P1,P2),P3),O) with geneflow from P3>>P2] [mandatory]}
 \item{wtype}{sliding windows type to use \code{bp}, \code{biSites}
 or \code{triSites} [default: "bp"]}
 
-\item{dist}{distance to use [default: "IUPAC"]}
+\item{dist}{distance to use, choose one model as in
+\link[ape]{dist.dna} or [default: "IUPAC"]}
 
 \item{global.deletion}{a logical indicating whether to delete the sites
 with missing data in a global or pairwise way (default is to delete in a
@@ -56,7 +57,7 @@ global way) [default: TRUE]}
 \item{threads}{number of parallel threads [default: 1]}
 
 \item{ncores}{number of parallel cores to process pairwise distance
-calculation [default: 1] see \code{\link[distIUPAC]{rcpp_distIUPAC}}}
+calculation [default: 1]}
 
 \item{pB}{specifies if progress should be shown as a progress bar
 [default: FALSE]}
@@ -96,6 +97,43 @@ y.pos=SPRE.pos, i.pos=CAS.pos, o.pos=APO.pos,
 x.name="AFG", y.name="SPRE", i.name="CAS", o.name="APO",
 threads=2)
 AFG.SPRE.CAS.APO.xyioStats
+}
+\references{
+Slatkin, M. (1991). Inbreeding coefficients and coalescence 
+times. \emph{Genetics Research}, \bold{58(2)}, 167-175.
+
+Beerli, P. (1998). Structured Populations. \emph{Advances in molecular
+ecology}, \bold{306}, 39.
+
+Reich, D., Thangaraj, K., Patterson, N., Price, A. L., & Singh,
+L. (2009). Reconstructing Indian population history. \emph{Nature},
+\bold{461(7263)}, 489.
+
+Patterson, N., Moorjani, P., Luo, Y., Mallick, S., Rohland, N., Zhan, Y.,
+... & Reich, D. (2012). Ancient admixture in human history. \emph{Genetics},
+\bold{192(3)}, 1065-1093.
+
+Martin, S. H., Davey, J. W., & Jiggins, C. D. (2014). Evaluating the use of
+ABBA–BABA statistics to locate introgressed loci. \emph{Molecular biology
+and evolution}, \bold{32(1)}, 244-257.
+
+Peter, B. M. (2016). Admixture, population structure, and F-statistics.
+\emph{Genetics}, \bold{202(4)}, 1485-1501.
+
+Rosenzweig, B. K., Pease, J. B., Besansky, N. J., & Hahn, M. W. (2016).
+Powerful methods for detecting introgressed regions from population genomic
+data. \emph{Molecular ecology}, \bold{25(11)}, 2387-2397.
+
+Paradis, E., & Schliep, K. (2018). ape 5.0: an environment for modern
+phylogenetics and evolutionary analyses in R. \emph{Bioinformatics},
+\bold{35(3)}, 526-528.
+
+Hahn, M. W., Hibbins, M. S. (2019). A Three-Sample Test for Introgression.
+\emph{Molecular biology and evolution}, \bold{msz178}.
+}
+\seealso{
+\code{\link[distIUPAC]{dist.xyioStats}},
+\code{\link[ape]{dist.dna}}
 }
 \author{
 Kristian K Ullrich

@@ -84,6 +84,19 @@ CAS_AFG_IRA_APO.globalDeletion.xyioStats<-dist.xyioStats(
 rbind(CAS_AFG_IRA_APO.pairwiseDeletion.xyiStats,
   CAS_AFG_IRA_APO.globalDeletion.xyiStats)
 }
+\references{
+Reich, D., Thangaraj, K., Patterson, N., Price, A. L., & Singh,
+L. (2009). Reconstructing Indian population history. \emph{Nature},
+\bold{461(7263)}, 489.
+
+Patterson, N., Moorjani, P., Luo, Y., Mallick, S., Rohland, N., Zhan, Y.,
+... & Reich, D. (2012). Ancient admixture in human history. \emph{Genetics},
+\bold{192(3)}, 1065-1093.
+
+Martin, S. H., Davey, J. W., & Jiggins, C. D. (2014). Evaluating the use of
+ABBA–BABA statistics to locate introgressed loci. \emph{Molecular biology
+and evolution}, \bold{32(1)}, 244-257.
+}
 \seealso{
 \code{\link[distIUPAC]{xyioStats}},
 \code{\link[distIUPAC]{diploid2haploid}}

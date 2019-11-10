@@ -18,11 +18,11 @@ dist.xyStats(tmpSEQ, x.pos, y.pos, x.name = "x", y.name = "y",
 
 \item{y.name}{population Y name [default: "y"]}
 
-\item{dist}{distance to use [default: IUPAC] or choose one model as in
-\link[ape]{dist.dna} [default: "IUPAC"]}
+\item{dist}{distance to use, choose one model as in
+\link[ape]{dist.dna} or [default: "IUPAC"]}
 
 \item{ncores}{number of parallel cores to process pairwise distance
-calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC} [default: 1]}
+calculation [default: 1]}
 }
 \description{
 This function calculates \code{distIUPAC} based distances
@@ -58,9 +58,33 @@ CAS_AFG.globalDeletion.dist<-distIUPAC(
 ##compare results
 rbind(CAS_AFG.pairwiseDeletion.xyStats, CAS_AFG.globalDeletion.xyStats)
 }
+\references{
+Slatkin, M. (1991). Inbreeding coefficients and coalescence 
+times. \emph{Genetics Research}, \bold{58(2)}, 167-175.
+
+Beerli, P. (1998). Structured Populations. \emph{Advances in molecular
+ecology}, \bold{306}, 39.
+
+Reich, D., Thangaraj, K., Patterson, N., Price, A. L., & Singh,
+L. (2009). Reconstructing Indian population history. \emph{Nature},
+\bold{461(7263)}, 489.
+
+Patterson, N., Moorjani, P., Luo, Y., Mallick, S., Rohland, N., Zhan, Y.,
+... & Reich, D. (2012). Ancient admixture in human history. \emph{Genetics},
+\bold{192(3)}, 1065-1093.
+
+Peter, B. M. (2016). Admixture, population structure, and F-statistics.
+\emph{Genetics}, \bold{202(4)}, 1485-1501.
+
+Paradis, E., & Schliep, K. (2018). ape 5.0: an environment for modern
+phylogenetics and evolutionary analyses in R. \emph{Bioinformatics},
+\bold{35(3)}, 526-528.
+}
 \seealso{
 \code{\link[distIUPAC]{xyStats}},
-\code{\link[distIUPAC]{distIUPAC}}, \code{\link[distIUPAC]{rcpp_distIUPAC}}
+\code{\link[distIUPAC]{distIUPAC}},
+\code{\link[distIUPAC]{rcpp_distIUPAC}},
+\code{\link[ape]{dist.dna}}
 }
 \author{
 Kristian K Ullrich

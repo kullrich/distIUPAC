@@ -27,11 +27,11 @@ dist.xyioStats(tmpSEQ, x.pos, y.pos, i.pos, o.pos, x.name = "x",
 
 \item{o.name}{population I name [default: "o"]}
 
-\item{dist}{distance to use [default: IUPAC] or choose one model as in
-\link[ape]{dist.dna} [default: "IUPAC"]}
+\item{dist}{distance to use, choose one model as in
+\link[ape]{dist.dna} or [default: "IUPAC"]}
 
 \item{ncores}{number of parallel cores to process pairwise distance
-calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC} [default: 1]}
+calculation [default: 1]}
 }
 \description{
 This function calculates \code{distIUPAC} based distances
@@ -84,9 +84,31 @@ CAS_AFG_IRA_APO.globalDeletion.xyioStats<-dist.xyioStats(
 rbind(CAS_AFG_IRA_APO.pairwiseDeletion.xyiStats,
   CAS_AFG_IRA_APO.globalDeletion.xyiStats)
 }
+\references{
+Slatkin, M. (1991). Inbreeding coefficients and coalescence 
+times. \emph{Genetics Research}, \bold{58(2)}, 167-175.
+
+Beerli, P. (1998). Structured Populations. \emph{Advances in molecular
+ecology}, \bold{306}, 39.
+
+Peter, B. M. (2016). Admixture, population structure, and F-statistics.
+\emph{Genetics}, \bold{202(4)}, 1485-1501.
+
+Paradis, E., & Schliep, K. (2018). ape 5.0: an environment for modern
+phylogenetics and evolutionary analyses in R. \emph{Bioinformatics},
+\bold{35(3)}, 526-528.
+
+Rosenzweig, B. K., Pease, J. B., Besansky, N. J., & Hahn, M. W. (2016).
+Powerful methods for detecting introgressed regions from population genomic
+data. \emph{Molecular ecology}, \bold{25(11)}, 2387-2397.
+
+Hahn, M. W., Hibbins, M. S. (2019). A Three-Sample Test for Introgression.
+\emph{Molecular biology and evolution}, \bold{msz178}.
+}
 \seealso{
 \code{\link[distIUPAC]{xyioStats}},
-\code{\link[distIUPAC]{distIUPAC}}, \code{\link[distIUPAC]{rcpp_distIUPAC}}
+\code{\link[distIUPAC]{distIUPAC}}, \code{\link[distIUPAC]{rcpp_distIUPAC}},
+\code{\link[ape]{dist.dna}}
 }
 \author{
 Kristian K Ullrich

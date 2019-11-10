@@ -14,8 +14,8 @@ dist.xStats(tmpSEQ, x.pos = NULL, x.name = "x", dist = "IUPAC",
 
 \item{x.name}{population X name [default: "x"]}
 
-\item{dist}{distance to use [default: IUPAC] or choose one model as in
-\link[ape]{dist.dna} [default: "IUPAC"]}
+\item{dist}{distance to use, choose one model as in
+\link[ape]{dist.dna} or [default: "IUPAC"]}
 
 \item{ncores}{number of parallel cores to process pairwise distance
 calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC} [default: 1]}
@@ -45,10 +45,14 @@ CAS.globalDeletion.xStats<-dist.xStats(
 ##compare results
 rbind(CAS.pairwiseDeletion.xStats, CAS.globalDeletion.xStats)
 }
+\references{
+Paradis, E., & Schliep, K. (2018). ape 5.0: an environment for modern phylogenetics and evolutionary analyses in R. \emph{Bioinformatics}, \bold{35(3)}, 526-528.
+}
 \seealso{
 \code{\link[distIUPAC]{xStats}},
 \code{\link[distIUPAC]{distIUPAC}},
-\code{\link[distIUPAC]{rcpp_distIUPAC}}
+\code{\link[distIUPAC]{rcpp_distIUPAC}},
+\code{\link[ape]{dist.dna}}
 }
 \author{
 Kristian K Ullrich

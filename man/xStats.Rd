@@ -30,7 +30,8 @@ take all sequences from \code{DNAStringSet}}
 \item{wtype}{sliding windows type to use \code{bp}, \code{biSites}
 or \code{triSites}  [default: "bp"]}
 
-\item{dist}{distance to use [default: "IUPAC"]}
+\item{dist}{distance to use [default: IUPAC] or choose one model as in
+\link[ape]{dist.dna} [default: "IUPAC"]}
 
 \item{global.deletion}{a logical indicating whether to delete the sites
 with missing data in a global [default: TRUE] or pairwise way [FALSE]}
@@ -38,7 +39,7 @@ with missing data in a global [default: TRUE] or pairwise way [FALSE]}
 \item{threads}{number of parallel threads [default: 1]}
 
 \item{ncores}{number of parallel cores to process pairwise distance
-calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC}}
+calculation [default: 1]}
 
 \item{pB}{specifies if progress should be shown as a progress bar
 [default: FALSE]}
@@ -53,6 +54,15 @@ CAS.pos<-5:34
 ##multiple threads to process 
 CAS.xStats<-xStats(MySequences, x.pos=CAS.pos, x.name="CAS", threads=2)
 CAS.xStats
+}
+\references{
+Paradis, E., & Schliep, K. (2018). ape 5.0: an environment for
+modern phylogenetics and evolutionary analyses in R. \emph{Bioinformatics},
+\bold{35(3)}, 526-528.
+}
+\seealso{
+\code{\link[distIUPAC]{dist.xStats}},
+\code{\link[ape]{dist.dna}}
 }
 \author{
 Kristian K Ullrich

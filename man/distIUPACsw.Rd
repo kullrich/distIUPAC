@@ -6,8 +6,8 @@
 \usage{
 distIUPACsw(dna, FUN = NULL, chr.name = "chr", wlen = 25000,
   wjump = 25000, start.by = 1, end.by = NULL, wtype = "bp",
-  dist = "IUPAC", global.deletion = TRUE, threads = 1, ncores = 1,
-  pB = TRUE)
+  dist = "IUPAC", score.matrix = NULL, global.deletion = TRUE,
+  threads = 1, ncores = 1, pB = TRUE)
 }
 \arguments{
 \item{dna}{\code{DNAStringSet}}
@@ -40,7 +40,7 @@ with missing data in a global or pairwise way
 \item{threads}{number of parallel threads to process windows [default: 1]}
 
 \item{ncores}{number of parallel cores to process pairwise distance
-calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC} [default: 1]}
+calculation [default: 1]}
 
 \item{pB}{specifies if progress should be shown as a progress bar
 [default: TRUE]}
@@ -48,7 +48,8 @@ calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC} [default: 1]}
 \description{
 This function calculates \code{IUPAC} distances on
 \code{Biostrings} \code{DNAStringSet} objects
-on sliding windows which can be used to parse to further functions
+on sliding windows which can be used to parse to further functions.
+By default, literal distances are used to calculate pairwise-distances.
 }
 \examples{
 data("MySequences", package="distIUPAC")
@@ -66,8 +67,16 @@ global.deletion=FALSE, FUN=dist.xStats, ncores=2)
 ##using K80 distance from ape package
 distIUPACsw(MySequences[CAS.pos], dist="K80", FUN=dist.xStats)
 }
+\references{
+Chang, P. L., Kopania, E., Keeble, S., Sarver, B. A., Larson,
+E., Orth, A., ... & Dean, M. D. (2017). Whole exome sequencing of
+wild-derived inbred strains of mice improves power to link phenotype and
+genotype. \emph{Mammalian genome}, \bold{28(9-10)}, 416-425.
+}
 \seealso{
-\link[distIUPAC]{distIUPAC}, \link[ape]{dist.dna}
+\link[distIUPAC]{distIUPAC},
+\link[ape]{dist.dna},
+\link[distIUPAC]{scoreMatrix}
 }
 \author{
 Kristian K Ullrich
