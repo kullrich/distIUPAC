@@ -2,7 +2,8 @@
 #' @name distIUPACsw
 #' @description This function calculates \code{IUPAC} distances on
 #' \code{Biostrings} \code{DNAStringSet} objects
-#' on sliding windows which can be used to parse to further functions
+#' on sliding windows which can be used to parse to further functions.
+#' By default, literal distances are used to calculate pairwise-distances.
 #' @import Biostrings
 #' @import doMC
 #' @import foreach
@@ -29,10 +30,16 @@
 #' (default is to delete in a global way) [default: TRUE]
 #' @param threads number of parallel threads to process windows [default: 1]
 #' @param ncores number of parallel cores to process pairwise distance
-#' calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC} [default: 1]
+#' calculation [default: 1]
 #' @param pB specifies if progress should be shown as a progress bar
 #' [default: TRUE]
-#' @seealso \link[distIUPAC]{distIUPAC}, \link[ape]{dist.dna} 
+#' @references Chang, P. L., Kopania, E., Keeble, S., Sarver, B. A., Larson,
+#' E., Orth, A., ... & Dean, M. D. (2017). Whole exome sequencing of
+#' wild-derived inbred strains of mice improves power to link phenotype and
+#' genotype. \emph{Mammalian genome}, \bold{28(9-10)}, 416-425.
+#' @seealso \link[distIUPAC]{distIUPAC},
+#' \link[ape]{dist.dna},
+#' \link[distIUPAC]{scoreMatrix}
 #' @examples
 #' data("MySequences", package="distIUPAC")
 #' CAS.pos<-5:34
@@ -52,7 +59,8 @@
 #' @author Kristian K Ullrich
 distIUPACsw<-function(dna, FUN=NULL, chr.name="chr",
  wlen=25000, wjump=25000, start.by=1, end.by=NULL, wtype="bp",
- dist="IUPAC", global.deletion=TRUE, threads=1, ncores=1, pB=TRUE){
+ dist="IUPAC", score.matrix=NULL, global.deletion=TRUE, threads=1, ncores=1,
+ pB=TRUE){
     options(scipen=22)
     if(is.null(end.by)){end.by<-unique(width(dna))}
     if(start.by>unique(width(dna))){
@@ -90,8 +98,12 @@ distIUPACsw<-function(dna, FUN=NULL, chr.name="chr",
         if(global.deletion){
             tmp.seq<-globalDeletion(tmp.seq, pB=FALSE)
         }
-        if(dist=="IUPAC"){
+        if(dist=="IUPAC" && is.null(score.matrix)){
             OUT$distIUPAC<-rcpp_distIUPAC(as.character(tmp.seq), ncores=ncores)
+        }
+        if(dist=="IUPAC" && !is.null(score.matrix)){
+            OUT$distIUPAC<-rcpp_distIUPACmatrix(as.character(tmp.seq),
+              score.matrix, ncores=ncores)
         }
         if(dist!="IUPAC"){
             OUT$distIUPAC<-setNames( list(
