@@ -13,14 +13,20 @@
 #' @param end.by optional end position [default: NULL]
 #' @param wtype sliding windows type to use \code{bp}, \code{biSites}
 #' or \code{triSites}  [default: "bp"]
-#' @param dist distance to use [default: "IUPAC"]
+#' @param dist distance to use [default: IUPAC] or choose one model as in
+#' \link[ape]{dist.dna} [default: "IUPAC"]
 #' @param global.deletion a logical indicating whether to delete the sites
 #' with missing data in a global [default: TRUE] or pairwise way [FALSE]
 #' @param threads number of parallel threads [default: 1]
 #' @param ncores number of parallel cores to process pairwise distance
-#' calculation [default: 1] see \link[distIUPAC]{rcpp_distIUPAC}
+#' calculation [default: 1]
 #' @param pB specifies if progress should be shown as a progress bar
 #' [default: FALSE]
+#' @references Paradis, E., & Schliep, K. (2018). ape 5.0: an environment for
+#' modern phylogenetics and evolutionary analyses in R. \emph{Bioinformatics},
+#' \bold{35(3)}, 526-528.
+#' @seealso \code{\link[distIUPAC]{dist.xStats}},
+#' \code{\link[ape]{dist.dna}}
 #' @examples
 #' data("MySequences", package = "distIUPAC")
 #' CAS.pos<-5:34
