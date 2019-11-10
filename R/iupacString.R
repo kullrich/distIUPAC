@@ -23,22 +23,27 @@
 #' iupacString(MySequences, x.pos=5, y.pos=6)
 #' @export iupacString
 #' @author Kristian K Ullrich
-iupacString<-function(dna, x.pos=1, y.pos=2, name="iupacString",
-  wlen=25000, start.by=1, end.by=NULL, threads=1, pB=FALSE){
-    options(scipen=22)
-    dna_<-dna[c(x.pos, y.pos)]
-    if(length(dna_)!=2){stop("dna needs to be of length 2")}
-    OUT<-tmpSEQsw(dna_,
-      FUN=function(x) {
-          x.len<-unique(width(x))
-          list(
-            rcpp_iupacString_ab(as.character(x[1]), as.character(x[2]),
-              x.len, "iupacString")
-          )
-      }, chr.name="chr", wlen=wlen, wjump=wlen,
-      start.by=start.by, end.by=end.by, wtype="bp",
-      global.deletion=FALSE, threads=threads, pB=pB)
-    OUT.seq<-DNAStringSet(paste0(OUT[,4],collapse = ""))
-    names(OUT.seq)<-name
-    return(OUT.seq)
-}
+  iupacString<-function(dna, x.pos=1, y.pos=2, name="iupacString",
+    wlen=25000, start.by=1, end.by=NULL, threads=1, pB=FALSE){
+      options(scipen=22)
+      dna_<-dna[c(x.pos, y.pos)]
+      if(length(dna_)!=2){stop("dna needs to be of length 2")}
+      OUT<-tmpSEQsw(dna_,
+        FUN=function(x) {
+            x.len<-unique(width(x))
+            list(
+              rcpp_iupacString_ab(as.character(x[1]), as.character(x[2]),
+                x.len, "iupacString")
+            )
+        }, chr.name="chr", wlen=wlen, wjump=wlen,
+        start.by=start.by, end.by=end.by, wtype="bp",
+        global.deletion=FALSE, threads=threads, pB=pB)
+      if(!is.null(dim(OUT))){
+          OUT.seq<-DNAStringSet(paste0(OUT[,4],collapse = ""))
+      }
+      if(is.null(dim(OUT))){
+         OUT.seq<-DNAStringSet(OUT[4][[1]])
+      }
+      names(OUT.seq)<-name
+      return(OUT.seq)
+  }
