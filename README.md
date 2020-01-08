@@ -11,11 +11,28 @@ First install [Biostrings](https://bioconductor.org/packages/release/bioc/html/B
 ```
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install("Biostrings", version = "3.8")
+
+BiocManager::install("Biostrings")
 ```
 
 Second install additional packages from cran [CRAN](https://cran.r-project.org/web/packages/index.html).
+
+In most cases you need to first install the following system-wide packages to be able to compile the R dependencies.
+
+Ubuntu/Debian
+
+```
+sudo apt-get install libcurl4-openssl-dev libssl-dev libxml2-dev
+```
+
+CentOS
+
+```
+sudo yum install libcurl-devel openssl-devel libxml2-devel
+```
+
 - [devtools](https://cran.r-project.org/web/packages/devtools/index.html)
+- [knitr](https://www.r-project.org/nosvn/pandoc/knitr.html)
 - [Rcpp](https://cran.r-project.org/web/packages/Rcpp/index.html)
 - [RcppThread](https://cran.r-project.org/web/packages/RcppThread/index.html)
 - [ape](https://cran.r-project.org/web/packages/ape/index.html)
